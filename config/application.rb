@@ -31,5 +31,6 @@ module BearerTokenService
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
+    ActiveModelSerializers.config.key_transform = :camel_lower
   end
 end
