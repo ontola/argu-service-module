@@ -2,7 +2,7 @@ build:
   version: 2016-03-14
   steps:
     service:
-      name: env(IMAGE_NAME)
+      name: _env(IMAGE_NAME)
       dockerfile: Dockerfile
       secrets:
         id_rsa:
