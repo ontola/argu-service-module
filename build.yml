@@ -2,7 +2,7 @@ build:
   version: 2016-03-14
   steps:
     service:
-      name: _env(IMAGE_NAME)
+      name: _env(SEMAPHORE_PROJECT_NAME)
       dockerfile: Dockerfile
       secrets:
         id_rsa:
