@@ -18,7 +18,7 @@ RUN mkdir ~/.ssh && echo "bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN
 ARG host
 RUN wget -O ~/.ssh/id_rsa http://$host:8080/v1/secrets/file/id_rsa\
   && chmod 0600 ~/.ssh/id_rsa\
-  && RAILS_ENV=production bundle install --deployment --frozen --clean --without development --path vendor/bundle\
+  && RAILS_ENV=production bundle install --deployment --frozen --clean --without development test --path vendor/bundle\
   && rm ~/.ssh/id_rsa
 
 COPY . /usr/src/app
