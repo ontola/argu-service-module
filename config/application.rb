@@ -31,6 +31,7 @@ module Service
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
+    Rails.application.routes.default_url_options[:host] = config.host_name
     ActiveModelSerializers.config.key_transform = :camel_lower
   end
 end
