@@ -2,13 +2,13 @@
 require 'bunny'
 
 class Connection
-  @@connection = nil
+  @connection = nil
 
   def connection
-    return @@connection if @@connection&.open?
+    return @connection if @connection&.open?
     connection = Bunny.new
     connection.start
-    @@connection = connection
+    @connection = connection
   end
 
   # @param [String] name The name of the channel to publish to

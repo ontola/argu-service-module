@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 gem 'active_model_serializers', '= 0.10.4'
@@ -8,3 +9,4 @@ gem 'pundit'
 gem 'rails'
 gem 'rake'
 gem 'rspec-rails'
+gem 'rubocop'

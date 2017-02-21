@@ -1,0 +1,29 @@
+inherit_from: .rubocop_todo.yml
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+    - 'bin/*'
+Rails:
+  Enabled: true
+Metrics/LineLength:
+  Max: 120
+Style/IfUnlessModifier:
+  MaxLineLength: 100
+Style/WhileUntilModifier:
+  MaxLineLength: 100
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented_relative_to_receiver
+Style/RaiseArgs:
+  EnforcedStyle: compact
+Metrics/ModuleLength:
+  Max: 300
+Style/Documentation:
+  Enabled: false

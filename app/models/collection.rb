@@ -49,7 +49,7 @@ class Collection
 
   def views
     if filter?
-      return association_class.filter_options.map do |key, values|
+      association_class.filter_options.map do |key, values|
         values[:values].map { |value| child_with_options(filter: {key => value[0]}) }
       end.flatten
     elsif paginate?

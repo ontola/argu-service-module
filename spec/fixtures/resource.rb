@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Resource
   include ActiveModel::Model
   alias read_attribute_for_serialization send
@@ -23,6 +24,9 @@ class Resource
   end
 
   def previous_changes
-    {attr_1: ['was', 'is'], attr_2: [nil, 'new']}
+    {
+      attr_1: %w(was is),
+      attr_2: [nil, 'new']
+    }
   end
 end

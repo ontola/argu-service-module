@@ -32,16 +32,17 @@ class DataEvent
       {
         id: resource_id,
         type: resource_type,
-        attributes: ActionDispatch::Http::ParameterFilter
-                      .new(Rails.application.config.filter_parameters)
-                      .filter(resource.previous_changes)
+        attributes:
+          ActionDispatch::Http::ParameterFilter
+            .new(Rails.application.config.filter_parameters)
+            .filter(resource.previous_changes)
       }
     ]
   end
 
   def event_from_resource
     return if resource.nil?
-    new_resource?  ? 'create' : 'update'
+    new_resource? ? 'create' : 'update'
   end
 
   def included_resource(attrs, hash)
@@ -62,10 +63,11 @@ class DataEvent
   end
 
   def parse_json_api(attrs)
-    self.resource = included_resource(attrs, attrs['data']['relationships']['resource'])
+    relationships = attrs['data']['relationships']
+    self.resource = included_resource(attrs, relationships['resource'])
     self.resource_id = resource['id']
     self.resource_type = resource['type']
-    self.affected_resources = attrs['data']['relationships'].try(:[], 'affected_resources')&.map do |r|
+    self.affected_resources = relationships.try(:[], 'affected_resources')&.map do |r|
       included_resource(attrs, r)
     end
     self.event = attrs['data']['type'].split('Event').first
