@@ -27,10 +27,10 @@ class Connection
     body
   end
 
-  def self.subscribe
+  def self.subscribe(queue)
     ch = new.connection.create_channel
     x = ch.fanout('events', durable: true)
-    q = ch.queue('events', durable: true)
+    q = ch.queue(queue, durable: true)
     q.bind(x)
     puts ' [*] Waiting for events. To exit press CTRL+C'
     begin
