@@ -6,24 +6,12 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 3
-Metrics/AbcSize:
-  Exclude:
-    - 'app/models/data_event.rb'
-    - 'app/models/collection.rb'
-    - 'app/models/connection.rb'
-    - '../app/models/data_event.rb'
-    - '../app/models/collection.rb'
-    - '../app/models/connection.rb'
-
-# Offense count: 4
+# Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/BlockLength:
   Exclude:
-    - 'app/models/concerns/ldable.rb'
-    - 'spec/features/data_event_spec.rb'
-    - '../app/models/concerns/ldable.rb'
-    - '../spec/features/data_event_spec.rb'
+    - 'service_module_internal/spec/features/data_event_spec.rb'
+    - '../service_module_internal/spec/features/data_event_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: CountComments.
@@ -32,17 +20,6 @@ Metrics/ClassLength:
     - 'app/models/collection.rb'
     - '../app/models/collection.rb'
 
-# Offense count: 3
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Exclude:
-    - 'app/models/collection.rb'
-    - 'app/models/connection.rb'
-    - 'app/models/data_event.rb'
-    - '../app/models/collection.rb'
-    - '../app/models/connection.rb'
-    - '../app/models/data_event.rb'
-
 # Offense count: 2
 # Configuration parameters: Include.
 # Include: app/**/*.rb, config/**/*.rb, db/**/*.rb, lib/**/*.rb
@@ -50,15 +27,3 @@ Rails/Output:
   Exclude:
     - 'app/models/connection.rb'
     - '../app/models/connection.rb'
-
-# Offense count: 1
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-Style/PredicateName:
-  Exclude:
-    - 'app/models/concerns/ldable.rb'
-    - 'spec/**/*'
-    - '../app/models/concerns/ldable.rb'
-    - '../spec/**/*'

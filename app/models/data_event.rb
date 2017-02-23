@@ -32,12 +32,15 @@ class DataEvent
       {
         id: resource_id,
         type: resource_type,
-        attributes:
-          ActionDispatch::Http::ParameterFilter
-            .new(Rails.application.config.filter_parameters)
-            .filter(resource.previous_changes)
+        attributes: filtered_attributes(resource.previous_changes)
       }
     ]
+  end
+
+  def filtered_attributes(attributes)
+    ActionDispatch::Http::ParameterFilter
+      .new(Rails.application.config.filter_parameters)
+      .filter(attributes)
   end
 
   def event_from_resource
@@ -63,15 +66,18 @@ class DataEvent
   end
 
   def parse_json_api(attrs)
-    relationships = attrs['data']['relationships']
-    self.resource = included_resource(attrs, relationships['resource'])
+    self.resource = included_resource(attrs, attrs.dig('data', 'relationships', 'resource'))
     self.resource_id = resource['id']
     self.resource_type = resource['type']
-    self.affected_resources = relationships.try(:[], 'affected_resources')&.map do |r|
+    self.affected_resources = attrs.dig('data', 'relationships', 'affected_resources')&.map do |r|
       included_resource(attrs, r)
     end
-    self.event = attrs['data']['type'].split('Event').first
-    self.changes = attrs['data']['attributes']['changes']&.map(&:with_indifferent_access)
+    self.event = parse_event(attrs)
+    self.changes = attrs.dig('data', 'attributes', 'changes')&.map(&:with_indifferent_access)
+  end
+
+  def parse_event(attrs)
+    attrs.dig('data', 'type').split('Event').first
   end
 
   def parse_resource(attrs)

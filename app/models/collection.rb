@@ -60,9 +60,10 @@ class Collection
   end
 
   def title
-    I18n.t("#{association_class.name.tableize}.collection.#{filter&.values&.join('.').presence || name}",
-           default: I18n.t("#{association_class.name.tableize}.plural",
-                           default: association_class.name.tableize.humanize))
+    plural = association_class.name.tableize
+    I18n.t("#{plural}.collection.#{filter&.values&.join('.').presence || name}",
+           default: I18n.t("#{plural}.plural",
+                           default: plural.humanize))
   end
 
   def total_count
@@ -94,20 +95,33 @@ class Collection
 
   def filter_query
     return if filter.nil?
-    filter_values = []
-    [
-      filter.map do |k, v|
-        key = association_class.filter_options.fetch(k)[:key] || k
-        value = association_class.filter_options.fetch(k)[:values].try(:[], v.to_sym) || v
-        if value.is_a?(String) && value.include?('NULL')
-          [key, value].join(' IS ')
-        else
-          filter_values <<  value
-          [key, '?'].join(' = ')
-        end
-      end.join(' AND '),
-      *filter_values
-    ]
+    queries, values = filter_query_with_values
+    [queries.join(' AND '), *values]
+  end
+
+  def filter_query_with_values
+    queries = []
+    values = []
+    filter.map do |k, v|
+      options = association_class.filter_options.fetch(k)
+      value = filter_single_value(options, v)
+      values << value unless value.is_a?(String) && value.include?('NULL')
+      queries << filter_single_query(options, k, value)
+    end
+    [queries, values]
+  end
+
+  def filter_single_query(options, key, value)
+    key = options[:key] || key
+    if value.is_a?(String) && value.include?('NULL')
+      [key, value].join(' IS ')
+    else
+      [key, '?'].join(' = ')
+    end
+  end
+
+  def filter_single_value(options, value)
+    options[:values].try(:[], value.to_sym) || value
   end
 
   def included_associations

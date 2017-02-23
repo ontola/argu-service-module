@@ -28,20 +28,25 @@ class Connection
   end
 
   def self.subscribe(queue)
-    ch = new.connection.create_channel
-    x = ch.fanout('events', durable: true)
-    q = ch.queue(queue, durable: true)
-    q.bind(x)
-    puts ' [*] Waiting for events. To exit press CTRL+C'
+    channel, q = subscribe_to_queue(queue)
     begin
       q.subscribe(manual_ack: true, block: true) do |delivery_info, _properties, body|
         puts " [x] #{delivery_info.delivery_tag}:#{JSON.parse(body)}"
         yield DataEvent.parse(body)
-        ch.ack(delivery_info.delivery_tag)
+        channel.ack(delivery_info.delivery_tag)
       end
     rescue Interrupt
       connection.close
     end
+  end
+
+  def self.subscribe_to_queue(queue)
+    channel = new.connection.create_channel
+    x = channel.fanout('events', durable: true)
+    q = channel.queue(queue, durable: true)
+    q.bind(x)
+    puts ' [*] Waiting for events. To exit press CTRL+C'
+    [channel, q]
   end
 
   private

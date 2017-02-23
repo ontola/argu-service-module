@@ -3,7 +3,7 @@ module Ldable
   extend ActiveSupport::Concern
 
   included do
-    include PragmaticContext::Contextualizable
+    include PragmaticContext::Contextualizable, Ldable::ClassMethods
     contextualize :schema, as: 'http://schema.org/'
     contextualize :hydra, as: 'http://www.w3.org/ns/hydra/core#'
     contextualize :argu, as: 'https://argu.co/ns/core#'
@@ -16,27 +16,6 @@ module Ldable
     end
     cattr_accessor :collections do
       []
-    end
-
-    # Defines a collection to be used in {collection_for}
-    # @see Ldable#collection_for
-    # @note Adds a instance_method <name>_collection
-    # @param [Hash] name as to be used in {collection_for}
-    # @param [Hash] options
-    # @option options [Sym] association the name of the association
-    # @option options [Class] association_class the class of the association
-    # @option options [Bool] pagination whether to paginate this collection
-    # @option options [Sym] url_constructor the method to use to generate the ids
-    # @return [Collection]
-    def self.has_collection(name, options = {})
-      options[:association] ||= name.to_sym
-      options[:association_class] ||= name.to_s.classify.constantize
-
-      collections << {name: name, options: options}
-
-      define_method "#{name.to_s.singularize}_collection" do |opts = {}|
-        collection_for(name, opts)
-      end
     end
 
     # Initialises a {Collection} for one of the collections defined by {has_collection}
@@ -58,8 +37,31 @@ module Ldable
     def context_id
       self.class.context_id_factory.call(self)
     end
+  end
 
-    def self.filterable(options = {})
+  module ClassMethods
+    # Defines a collection to be used in {collection_for}
+    # @see Ldable#collection_for
+    # @note Adds a instance_method <name>_collection
+    # @param [Hash] name as to be used in {collection_for}
+    # @param [Hash] options
+    # @option options [Sym] association the name of the association
+    # @option options [Class] association_class the class of the association
+    # @option options [Bool] pagination whether to paginate this collection
+    # @option options [Sym] url_constructor the method to use to generate the ids
+    # @return [Collection]
+    def with_collection(name, options = {})
+      options[:association] ||= name.to_sym
+      options[:association_class] ||= name.to_s.classify.constantize
+
+      collections << {name: name, options: options}
+
+      define_method "#{name.to_s.singularize}_collection" do |opts = {}|
+        collection_for(name, opts)
+      end
+    end
+
+    def filterable(options = {})
       self.filter_options = HashWithIndifferentAccess.new(options)
     end
   end
