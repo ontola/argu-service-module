@@ -25,10 +25,12 @@ class Collection
   end
 
   def first
+    return unless paginate?
     uri(query_opts.merge(page: 1))
   end
 
   def last
+    return unless paginate?
     uri(query_opts.merge(page: [total_page_count, 1].max))
   end
 
@@ -38,12 +40,12 @@ class Collection
   end
 
   def next
-    return if page.nil? || page.to_i >= total_page_count
+    return if !paginate? || page.nil? || page.to_i >= total_page_count
     uri(query_opts.merge(page: page.to_i + 1))
   end
 
   def previous
-    return if page.nil? || page.to_i <= 1
+    return if !paginate? || page.nil? || page.to_i <= 1
     uri(query_opts.merge(page: page.to_i - 1))
   end
 
@@ -58,7 +60,7 @@ class Collection
   end
 
   def title
-    I18n.t("#{association_class.name.tableize}.collection.#{filter&.values&.join('.')}",
+    I18n.t("#{association_class.name.tableize}.collection.#{filter&.values&.join('.').presence || name}",
            default: I18n.t("#{association_class.name.tableize}.plural",
                            default: association_class.name.tableize.humanize))
   end
@@ -110,7 +112,7 @@ class Collection
 
   def included_associations
     included_associations = {}
-    included_associations[:creator] = :profileable
+    included_associations[:creator] = :profileable if association_class.reflect_on_association(:creator)
     included_associations[:edge] = :parent if association_class.is_fertile?
     included_associations
   end
