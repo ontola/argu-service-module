@@ -1,15 +1,7 @@
 # frozen_string_literal: true
-require 'bundler'
-Bundler.require :default, :development
+require_relative '../spec_helper'
 
-require 'fixtures/resource'
-require 'fixtures/resource_serializer'
-require 'active_support/core_ext/hash'
-require_relative '../../config/initializers/resource_identifier'
-Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{models/concerns,models,serializers}', '*.rb'),
-         &method(:require))
-
-describe 'DataEvent' do
+describe 'DataEvents' do
   it 'should publish new resource' do
     body = JSON.parse(DataEvent.new(Resource.new(true)).publish)
     expect(body['data']['type']).to eq('createEvent')
