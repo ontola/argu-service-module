@@ -90,11 +90,13 @@ class Collection
   end
 
   def filter?
-    association_class.filter_options.present? && filter.empty?
+    association_class.filter_options.present? && !filter.present? && association_class.filter_options.any? do |_k, v|
+      v.present?
+    end
   end
 
   def filter_query
-    return if filter.nil?
+    return unless filter.present?
     queries, values = filter_query_with_values
     [queries.join(' AND '), *values]
   end
@@ -121,7 +123,7 @@ class Collection
   end
 
   def filter_single_value(options, value)
-    options[:values].try(:[], value.to_sym) || value
+    options[:values].try(:[], value.try(:to_sym)) || value
   end
 
   def included_associations
