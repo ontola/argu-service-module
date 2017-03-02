@@ -1,4 +1,4 @@
-FROM ruby:2.3.3-alpine
+FROM ruby:2.4.0-alpine
 ARG C66=true
 
 RUN apk update && apk upgrade && apk add git openssh-client build-base postgresql-dev libffi-dev sqlite-dev
