@@ -37,6 +37,10 @@ module Ldable
     def context_id
       self.class.context_id_factory.call(self)
     end
+
+    def context_type
+      self.class.contextualized_type
+    end
   end
 
   module ClassMethods
