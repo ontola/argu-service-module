@@ -17,30 +17,30 @@ module Ldable
     cattr_accessor :collections do
       []
     end
+  end
 
-    # Initialises a {Collection} for one of the collections defined by {has_collection}
-    # @see Ldable#has_collection
-    # @param [Hash] name as defined with {has_collection}
-    # @param [UserContext] user_context
-    # @param [Hash] filter
-    # @param [Integer, String] page
-    # @return [Collection]
-    def collection_for(name, user_context: nil, filter: {}, page: nil)
-      collection = collections.detect { |c| c[:name] == name }
-      opts = {
-        user_context: user_context, filter: filter, page: page, name: name
-      }.merge(collection[:options])
-      opts[:parent] = self
-      Collection.new(opts)
-    end
+  # Initialises a {Collection} for one of the collections defined by {has_collection}
+  # @see Ldable#has_collection
+  # @param [Hash] name as defined with {has_collection}
+  # @param [UserContext] user_context
+  # @param [Hash] filter
+  # @param [Integer, String] page
+  # @return [Collection]
+  def collection_for(name, user_context: nil, filter: {}, page: nil)
+    collection = collections.detect { |c| c[:name] == name }
+    opts = {
+      user_context: user_context, filter: filter, page: page, name: name
+    }.merge(collection[:options])
+    opts[:parent] = self
+    Collection.new(opts)
+  end
 
-    def context_id
-      self.class.context_id_factory.call(self)
-    end
+  def context_id
+    self.class.context_id_factory.call(self)
+  end
 
-    def context_type
-      self.class.contextualized_type
-    end
+  def context_type
+    self.class.contextualized_type
   end
 
   module ClassMethods
