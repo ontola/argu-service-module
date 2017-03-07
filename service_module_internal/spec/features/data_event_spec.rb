@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 
 describe 'DataEvents' do
   it 'should publish new resource' do
-    body = JSON.parse(DataEvent.new(Resource.new(true)).publish)
+    body = JSON.parse(DataEvent.new(Record.new(true)).publish)
     expect(body['data']['type']).to eq('createEvent')
     expect(body['data']['attributes']['changes']).to be_nil
     expect(body['data']['relationships'].keys).to include('resource')
@@ -11,14 +11,14 @@ describe 'DataEvents' do
   end
 
   it 'should publish updated resource' do
-    body = JSON.parse(DataEvent.new(Resource.new(false)).publish)
+    body = JSON.parse(DataEvent.new(Record.new(false)).publish)
     expect(body['data']['type']).to eq('updateEvent')
     expect(body['data']['attributes']['changes']).to(
       match(
         [
           {
-            id: 'resource_id',
-            type: 'resources',
+            id: 'record_id',
+            type: 'records',
             attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
           }.with_indifferent_access
         ]
@@ -37,8 +37,8 @@ describe 'DataEvents' do
           attributes: {
             changes: [
               {
-                id: 'resource_id',
-                type: 'resources',
+                id: 'record_id',
+                type: 'records',
                 attributes: [
                   attr1: %w(was is),
                   attr2: [nil, 'new']
@@ -63,8 +63,8 @@ describe 'DataEvents' do
           relationships: {
             resource: {
               data: {
-                id: 'resource_id',
-                type: 'resources'
+                id: 'record_id',
+                type: 'records'
               }
             },
             affected_resources: [
@@ -85,8 +85,8 @@ describe 'DataEvents' do
         },
         included: [
           {
-            id: 'resource_id',
-            type: 'resources',
+            id: 'record_id',
+            type: 'records',
             attributes: {
               attr1: 'is',
               attr2: 'new'
@@ -109,13 +109,13 @@ describe 'DataEvents' do
         ]
       }.to_json
     )
-    expect(data_event.resource_id).to eq('resource_id')
-    expect(data_event.resource_type).to eq('resources')
+    expect(data_event.resource_id).to eq('record_id')
+    expect(data_event.resource_type).to eq('records')
     expect(data_event.event).to eq('update')
     expect(data_event.resource).to(
       match(
-        id: 'resource_id',
-        type: 'resources',
+        id: 'record_id',
+        type: 'records',
         attributes: {
           attr1: 'is',
           attr2: 'new'
@@ -146,8 +146,8 @@ describe 'DataEvents' do
       match(
         [
           {
-            id: 'resource_id',
-            type: 'resources',
+            id: 'record_id',
+            type: 'records',
             attributes: [
               attr1: %w(was is),
               attr2: [nil, 'new']
@@ -183,8 +183,8 @@ describe 'DataEvents' do
           relationships: {
             resource: {
               data: {
-                id: 'resource_id',
-                type: 'resources'
+                id: 'record_id',
+                type: 'records'
               }
             },
             affected_resources: [
@@ -205,8 +205,8 @@ describe 'DataEvents' do
         },
         included: [
           {
-            id: 'resource_id',
-            type: 'resources',
+            id: 'record_id',
+            type: 'records',
             attributes: {
               attr1: 'is',
               attr2: 'new'
@@ -229,13 +229,13 @@ describe 'DataEvents' do
         ]
       }.to_json
     )
-    expect(data_event.resource_id).to eq('resource_id')
-    expect(data_event.resource_type).to eq('resources')
+    expect(data_event.resource_id).to eq('record_id')
+    expect(data_event.resource_type).to eq('records')
     expect(data_event.event).to eq('create')
     expect(data_event.resource).to(
       match(
-        id: 'resource_id',
-        type: 'resources',
+        id: 'record_id',
+        type: 'records',
         attributes: {
           attr1: 'is',
           attr2: 'new'

@@ -7,6 +7,7 @@ gem 'activeresource',
     branch: 'master'
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
+gem 'oauth2'
 gem 'pragmatic_context'
 gem 'pundit'
 gem 'rails'

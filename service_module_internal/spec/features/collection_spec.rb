@@ -5,7 +5,7 @@ describe 'Collections' do
   it 'should build filter_query' do
     collection = Collection.new(
       association: :resource,
-      association_class: Resource,
+      association_class: Record,
       filter: {key: :value, key2: 'value2', key3: 'empty'}
     )
     expect(collection.send(:filter_query)).to(

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-require_relative '../../../app/models/concerns/ldable'
-require 'active_support/core_ext/hash'
-
-class Resource
+class Record
   include ActiveModel::Model, Ldable
   alias read_attribute_for_serialization send
   filterable key: {key: :actual_key, values: {value: 'actual_value'}}, key2: {}, key3: {values: {empty: 'NULL'}}
@@ -16,7 +13,7 @@ class Resource
   end
 
   def id
-    'resource_id'
+    'record_id'
   end
 
   def as_json(_options = {})

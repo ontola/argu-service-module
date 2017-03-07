@@ -37,8 +37,8 @@ Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
                    '{helpers,models/concerns,models,resources,serializers}', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
-require_relative 'fixtures/resource'
-require_relative 'fixtures/resource_serializer'
+require_relative 'fixtures/record'
+require_relative 'fixtures/record_serializer'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
