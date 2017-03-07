@@ -2,6 +2,8 @@
 require 'oauth2'
 
 class ActiveResourceModel < ActiveResource::Base
+  extend JsonApiHelper
+
   self.include_format_in_path = false
   self.site = Rails.configuration.oauth_url
   headers[:headers] = {'Accept' => 'application/vnd.api+json'}
@@ -22,22 +24,11 @@ class ActiveResourceModel < ActiveResource::Base
     @argu_token ||= OAuth2::AccessToken.new(argu_client, ENV['CLIENT_TOKEN'])
   end
 
-  def self.merge_included(response, record)
-    response['included']&.delete_if do |r|
-      if r['id'] == record['id'] && r['type'] == record['type']
-        record.merge!(r || {})
-        true
-      else
-        false
-      end
-    end
-  end
-
-  def self.parse_record(response, record)
+  def self.parse_record(body, record)
     return if record.nil?
-    merge_included(response, record)
+    record = json_api_included_resource(body, record) || record
     parsed_attributes(record)
-      .merge(parsed_relationships(response, record))
+      .merge(parsed_relationships(body, record))
       .transform_keys { |key| key.to_s.underscore }
   end
 
@@ -48,12 +39,12 @@ class ActiveResourceModel < ActiveResource::Base
     }.merge(record['attributes']&.select { |key, _value| key[0] != '@' } || {})
   end
 
-  def self.parsed_relationships(response, record)
+  def self.parsed_relationships(body, record)
     a = record['relationships']&.map do |key, value|
       relationship = if value['data'].is_a?(Hash)
-                       parse_record(response, value['data'])
+                       parse_record(body, value['data'])
                      else
-                       value['data']&.map { |r| parse_record(response, r) }
+                       value['data']&.map { |r| parse_record(body, r) }
                      end
       [key, relationship]
     end

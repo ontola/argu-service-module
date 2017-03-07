@@ -32,7 +32,7 @@ describe 'Active resource model' do
                   type: 'records'
                 }
               }
-            },
+            }
           },
           included: [
             {

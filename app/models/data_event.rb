@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class DataEvent
-  include Ldable
+  include Ldable, JsonApiHelper
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
   alias read_attribute_for_serialization send
 
@@ -48,12 +48,6 @@ class DataEvent
     new_resource? ? 'create' : 'update'
   end
 
-  def included_resource(attrs, hash)
-    attrs['included']
-      .find { |r| r['id'] == hash['data']['id'] && r['type'] == hash['data']['type'] }
-      .with_indifferent_access
-  end
-
   def new_resource?
     resource.instance_variable_get(:@new_record_before_save) ||
       resource.previous_changes['id']&.first.nil? && resource.previous_changes['id']&.second.present?
@@ -66,11 +60,11 @@ class DataEvent
   end
 
   def parse_json_api(attrs)
-    self.resource = included_resource(attrs, attrs.dig('data', 'relationships', 'resource'))
+    self.resource = json_api_included_resource(attrs, attrs.dig('data', 'relationships', 'resource', 'data'))
     self.resource_id = resource['id']
     self.resource_type = resource['type']
     self.affected_resources = attrs.dig('data', 'relationships', 'affected_resources')&.map do |r|
-      included_resource(attrs, r)
+      json_api_included_resource(attrs, r['data'])
     end
     self.event = parse_event(attrs)
     self.changes = attrs.dig('data', 'attributes', 'changes')&.map(&:with_indifferent_access)

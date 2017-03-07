@@ -13,14 +13,13 @@ require 'factory_girl_rails'
 require 'minitest/spec'
 require 'assert_difference'
 require 'webmock/minitest'
-require 'service_base/test_helpers'
 require 'argu/test_helpers'
 require 'argu/test_mocks'
 
 module ActiveSupport
   class TestCase
     include FactoryGirl::Syntax::Methods
-    include AssertDifference, TestMocks, ServiceBase::TestHelpers::RequestHelpers
+    include AssertDifference, TestMocks, Argu::TestHelpers::RequestHelpers
     extend MiniTest::Spec::DSL
   end
 end

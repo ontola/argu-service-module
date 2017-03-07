@@ -12,14 +12,13 @@ ActiveRecord::Migration.maintain_test_schema! if defined?(ActiveRecord)
 require 'factory_girl_rails'
 require 'assert_difference'
 require 'webmock/rspec'
-require 'service_base/test_helpers'
 require 'argu/test_helpers'
 require 'argu/test_mocks'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include AssertDifference
-  config.include ServiceBase::TestHelpers::RequestHelpers
+  config.include Argu::TestHelpers::RequestHelpers
   config.include TestMocks
 
   config.use_transactional_fixtures = true

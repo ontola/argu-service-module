@@ -6,24 +6,29 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 2
-# Configuration parameters: CountComments.
 Metrics/BlockLength:
   Exclude:
+    - 'service_module_internal/spec/features/active_resource_model_spec.rb'
+    - '../service_module_internal/spec/features/active_resource_model_spec.rb'
     - 'service_module_internal/spec/features/data_event_spec.rb'
     - '../service_module_internal/spec/features/data_event_spec.rb'
 
-# Offense count: 1
-# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Exclude:
+    - 'service_module_internal/spec/features/active_resource_model_spec.rb'
+    - '../service_module_internal/spec/features/active_resource_model_spec.rb'
+
 Metrics/ClassLength:
   Exclude:
     - 'app/models/collection.rb'
     - '../app/models/collection.rb'
 
-# Offense count: 2
-# Configuration parameters: Include.
-# Include: app/**/*.rb, config/**/*.rb, db/**/*.rb, lib/**/*.rb
 Rails/Output:
   Exclude:
     - 'app/models/connection.rb'
     - '../app/models/connection.rb'
+
+Lint/Eval:
+  Exclude:
+    - '../lib/argu/test_helpers.rb'
+    - 'lib/argu/test_helpers.rb'
