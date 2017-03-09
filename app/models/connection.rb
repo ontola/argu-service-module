@@ -14,6 +14,7 @@ class Connection
   # @param [String] name The name of the channel to publish to
   # @param [String] body The string to publish
   def publish(name, body)
+    return if Rails.env.test?
     with_channel do |channel|
       channel
         .fanout(name, durable: true)
@@ -52,7 +53,6 @@ class Connection
   private
 
   def with_channel
-    return if Rails.env.test?
     connection.with_channel { |c| yield c }
   end
 end
