@@ -19,7 +19,7 @@
 require 'bundler'
 Bundler.require :default, :development
 
-ENV['HOSTNAME'] = 'https://argu.test'
+ENV['HOSTNAME'] = 'argu.test'
 ENV['OAUTH_URL'] = 'https://argu.test'
 
 module ServiceModule
