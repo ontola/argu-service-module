@@ -11,6 +11,10 @@ class Resource
     @new_record_before_save = new_record
   end
 
+  def context_id
+    id
+  end
+
   def id
     'resource_id'
   end
@@ -30,7 +34,8 @@ class Resource
   def previous_changes
     {
       attr_1: %w(was is),
-      attr_2: [nil, 'new']
+      attr_2: [nil, 'new'],
+      password: %w(old_pass new_pass)
     }
   end
 end

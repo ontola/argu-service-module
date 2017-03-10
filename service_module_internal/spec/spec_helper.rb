@@ -19,12 +19,26 @@
 require 'bundler'
 Bundler.require :default, :development
 
+ENV['HOSTNAME'] = 'https://argu.test'
+ENV['OAUTH_URL'] = 'https://argu.test'
+
+module ServiceModule
+  class Application < Rails::Application
+    config.api_only = true
+    config.host_name = ENV['HOSTNAME']
+    config.oauth_url = ENV['OAUTH_URL']
+    config.filter_parameters += [:password]
+  end
+end
+
+require 'active_support/core_ext/hash'
+require 'action_controller'
+Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
+                   '{helpers,models/concerns,models,resources,serializers}', '*.rb'),
+         &method(:require))
+require_relative '../../config/initializers/resource_identifier'
 require_relative 'fixtures/resource'
 require_relative 'fixtures/resource_serializer'
-require 'active_support/core_ext/hash'
-require_relative '../../config/initializers/resource_identifier'
-Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{models/concerns,models,serializers}', '*.rb'),
-         &method(:require))
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

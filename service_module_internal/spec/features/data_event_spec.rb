@@ -16,8 +16,11 @@ describe 'DataEvents' do
     expect(body['data']['attributes']['changes']).to(
       match(
         [
-          {id: 'resource_id', type: 'resources', attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new']}}
-            .with_indifferent_access
+          {
+            id: 'resource_id',
+            type: 'resources',
+            attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
+          }.with_indifferent_access
         ]
       )
     )
