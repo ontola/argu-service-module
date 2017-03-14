@@ -8,7 +8,7 @@ module UriTemplateHelper
     if args[:path_only]
       uri_template(template).expand(args)
     else
-      "https://#{Rails.application.config.host}#{uri_template(template).expand(args)}"
+      "https://#{Rails.application.config.host_name}#{uri_template(template).expand(args)}"
     end
   end
 
