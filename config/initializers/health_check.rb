@@ -22,10 +22,10 @@ HealthCheck.setup do |config|
   config.http_status_for_error_object = 500
 
   # You can customize which checks happen on a standard health check, eg to set an explicit list use:
-  config.standard_checks = %w(database migrations redis custom)
+  config.standard_checks = ENV['HEALTH_CHECKS']&.split(',') || %w(database migrations redis rabbitmq)
 
   # Add one or more custom checks that return a blank string if ok, or an error message if there is an error
-  config.add_custom_check do
+  config.add_custom_check('rabbitmq') do
     # Check RabbitMQ connection
     Connection.new.connection.close && ''
   end
