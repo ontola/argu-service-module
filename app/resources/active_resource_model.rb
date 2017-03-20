@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 require 'oauth2'
+require 'json_api_collection_parser'
 
 class ActiveResourceModel < ActiveResource::Base
   extend JsonApiHelper
 
+  self.collection_parser = JsonApiCollectionParser
   self.include_format_in_path = false
   self.site = Rails.configuration.oauth_url
   headers[:headers] = {'Accept' => 'application/vnd.api+json'}
