@@ -33,8 +33,10 @@ end
 
 require 'active_support/core_ext/hash'
 require 'action_controller'
+Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
+require_relative '../../app/resources/active_resource_model'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
-                   '{helpers,models/concerns,models,resources,serializers}', '*.rb'),
+                   '{models/concerns,models,resources,serializers}', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
 require_relative 'fixtures/resource'

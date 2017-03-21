@@ -60,14 +60,13 @@ class ApiController < ActionController::API
       handle_unauthorized_error
     when 403
       handle_forbidden_error
-    when 404
-      handle_record_not_found_error
     else
       handle_general_oauth_error(e)
     end
   end
 
   def handle_general_oauth_error(e)
+    Bugsnag.notify(e)
     respond_to do |format|
       format.html { render_status e.response.status }
       format.json_api { render json_api_error(e.response.status, e.response.body) }
