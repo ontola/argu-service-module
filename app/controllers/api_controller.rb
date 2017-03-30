@@ -16,9 +16,7 @@ class ApiController < ActionController::API
   rescue_from OAuth2::Error, with: :handle_oauth_error
 
   def current_user
-    return @current_user if @current_user.present?
-    response = argu_token.get('/spi/current_user')
-    @current_user = OpenStruct.new(JSON.parse(response.body)['data']['attributes']) if response.status == 200
+    @current_user ||= CurrentUser.find(request.cookie_jar.encrypted['argu_client_token'])
   end
 
   private
