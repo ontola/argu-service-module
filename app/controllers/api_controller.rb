@@ -66,8 +66,9 @@ class ApiController < ActionController::API
   def handle_general_oauth_error(e)
     Bugsnag.notify(e)
     respond_to do |format|
-      format.html { render_status e.response.status }
-      format.json_api { render json_api_error(e.response.status, e.response.body) }
+      format.html { render_status 500 }
+      format.json { render status: 500 }
+      format.json_api { render json_api_error(500, e.response.body) }
     end
   end
 
@@ -79,6 +80,7 @@ class ApiController < ActionController::API
   def handle_record_not_found_error
     respond_to do |format|
       format.html { render_status 404 }
+      format.json { render status: 404 }
       format.json_api { render json_api_error(404, 'The requested resource could not be found') }
     end
   end
@@ -86,6 +88,7 @@ class ApiController < ActionController::API
   def handle_unauthorized_error
     respond_to do |format|
       format.html { render_status 401 }
+      format.json { render status: 401 }
       format.json_api { render json_api_error(401, 'Please sign in to continue') }
     end
   end
