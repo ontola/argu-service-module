@@ -57,7 +57,7 @@ module Argu
       end
 
       def parsed_body
-        @json ||= JSON.parse(response.body)
+        @json ||= JSON.parse(response.body).with_indifferent_access
       end
     end
   end
