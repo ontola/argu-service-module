@@ -5,7 +5,7 @@ class Collection
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
 
-  attr_accessor :association, :association_class, :filter, :name, :page, :pagination,
+  attr_accessor :association, :association_class, :association_scope, :filter, :name, :page, :pagination,
                 :parent, :potential_action, :title, :url_constructor, :user_context
 
   alias pundit_user user_context
@@ -75,6 +75,7 @@ class Collection
   def association_base
     policy_scope(
       (parent&.send(association) || association_class)
+        .send(association_scope || :all)
         .joins(joined_associations)
         .where(filter_query)
     )
@@ -86,7 +87,8 @@ class Collection
       filter: filter,
       page: page
     }.merge(options)
-    parent&.collection_for(name, options) || Collection.new(options.merge(association_class: association_class))
+    parent&.collection_for(name, options) ||
+      Collection.new(options.merge(association_class: association_class, association_scope: association_scope))
   end
 
   def filter?
