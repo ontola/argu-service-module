@@ -40,10 +40,17 @@ module Ldable
   end
 
   def context_type
-    self.class.contextualized_type
+    self.class.context_type_factory&.call(self) || self.class.contextualized_type
   end
 
   module ClassMethods
+    attr_accessor :context_type_factory
+
+    def contextualize_with_type(&block)
+      raise 'contextualize_with_type must be called with a block' unless block_given?
+      self.context_type_factory = block
+    end
+
     # Defines a collection to be used in {collection_for}
     # @see Ldable#collection_for
     # @note Adds a instance_method <name>_collection
