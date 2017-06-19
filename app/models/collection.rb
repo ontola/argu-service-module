@@ -6,7 +6,7 @@ class Collection
   include Rails.application.routes.url_helpers
 
   attr_accessor :association, :association_class, :association_scope, :filter, :name, :page, :pagination,
-                :parent, :potential_action, :title, :url_constructor, :user_context
+                :parent, :title, :url_constructor, :user_context
 
   alias pundit_user user_context
 
