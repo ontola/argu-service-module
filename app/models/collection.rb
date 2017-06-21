@@ -29,27 +29,27 @@ class Collection
   end
 
   def first
-    return unless paginate?
+    return unless pagination
     uri(query_opts.merge(page: 1))
   end
 
   def last
-    return unless paginate?
+    return unless pagination
     uri(query_opts.merge(page: [total_page_count, 1].max))
   end
 
   def members
-    return if paginate? || filter?
+    return if include_pages? || filter?
     @members ||= policy_scope(association_base).includes(included_associations).page(page)
   end
 
   def next
-    return if !paginate? || page.nil? || page.to_i >= total_page_count
+    return if !pagination || page.nil? || page.to_i >= total_page_count
     uri(query_opts.merge(page: page.to_i + 1))
   end
 
   def previous
-    return if !paginate? || page.nil? || page.to_i <= 1
+    return if !pagination || page.nil? || page.to_i <= 1
     uri(query_opts.merge(page: page.to_i - 1))
   end
 
@@ -58,7 +58,7 @@ class Collection
       association_class.filter_options.map do |key, values|
         values[:values].map { |value| child_with_options(filter: {key => value[0]}) }
       end.flatten
-    elsif paginate?
+    elsif include_pages?
       [child_with_options(page: 1)]
     end
   end
@@ -143,7 +143,7 @@ class Collection
     association_class.is_fertile? ? [:edge] : nil
   end
 
-  def paginate?
+  def include_pages?
     pagination && page.nil?
   end
 
