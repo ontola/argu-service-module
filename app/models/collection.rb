@@ -20,6 +20,10 @@ class Collection
     super(options.merge(except: ['association_class']))
   end
 
+  def create_action
+    Action.new(base_iri: uri, filter: query_opts[:filter], type: :create, resource_type: name)
+  end
+
   def id
     uri(query_opts)
   end
