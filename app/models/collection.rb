@@ -17,7 +17,7 @@ class Collection
 
   # prevents a `stack level too deep`
   def as_json(options = {})
-    super(options.merge(except: ['association_class']))
+    super(options.merge(except: %w(association_class user_context)))
   end
 
   def create_action
