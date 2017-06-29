@@ -55,7 +55,13 @@ class DataEvent
 
   def json
     ActiveModelSerializers::SerializableResource
-      .new(self, adapter: :json_api, include: :resource, key_transform: :camel_lower, serializer: DataEventSerializer)
+      .new(
+        self,
+        adapter: :json_api,
+        include: :resource,
+        key_transform: :camel_lower,
+        scope: OpenStruct.new(doorkeeper_scopes: %w(service))
+      )
       .to_json
   end
 
