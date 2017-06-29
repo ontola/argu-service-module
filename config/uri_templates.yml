@@ -1,5 +1,6 @@
 # Argu Service
 new_vote: "{/voteable_path*}/votes/new{?confirm,r,vote%5Bfor%5D}"
+user_confirmation: "/users/confirmation{?confirmation_token}"
 # Token Service
 bearer_token: "/tokens/{access_token}"
 verify_token: "/tokens/verify{?jwt}"
