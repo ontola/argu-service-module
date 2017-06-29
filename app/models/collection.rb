@@ -5,8 +5,9 @@ class Collection
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
 
-  attr_accessor :association, :association_class, :association_scope, :filter, :name, :page, :pagination,
-                :parent, :title, :url_constructor, :user_context
+  attr_accessor :association, :association_class, :association_scope, :filter,
+                :name, :page, :pagination, :parent, :parent_view_iri, :title,
+                :url_constructor, :user_context
 
   alias pundit_user user_context
 
@@ -46,6 +47,11 @@ class Collection
   def next
     return if !pagination || page.nil? || page.to_i >= total_page_count
     uri(query_opts.merge(page: page.to_i + 1))
+  end
+
+  def parent_view_iri
+    return @parent_view_iri if @parent_view_iri
+    uri(query_opts.except(:page)) if page
   end
 
   def previous
@@ -89,10 +95,10 @@ class Collection
     options = {
       user_context: user_context,
       filter: filter,
-      page: page
+      page: page,
+      parent_view_iri: id
     }.merge(options)
-    parent&.collection_for(name, options) ||
-      Collection.new(options.merge(association_class: association_class, association_scope: association_scope))
+    parent&.collection_for(name, options) || new_child(options)
   end
 
   def filter?
@@ -145,6 +151,15 @@ class Collection
 
   def include_pages?
     pagination && page.nil?
+  end
+
+  def new_child(options)
+    Collection.new(
+      options.merge(
+        association_class: association_class,
+        association_scope: association_scope
+      )
+    )
   end
 
   def query_opts
