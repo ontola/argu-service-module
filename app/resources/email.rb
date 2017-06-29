@@ -6,7 +6,7 @@ class Email < ActiveResourceModel
 
   %w(opened accepted rejected delivered failed clicked unsubscribed complained stored).each do |event|
     define_method "#{event}?" do
-      email_events.any? { |e| e.event == event }
+      email_tracking_events.any? { |e| e.event == event }
     end
   end
 
