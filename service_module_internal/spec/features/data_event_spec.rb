@@ -1,267 +1,273 @@
 # frozen_string_literal: true
 require_relative '../spec_helper'
 
-describe 'DataEvents' do
-  it 'should publish new resource' do
-    body = JSON.parse(DataEvent.new(Record.new(true)).publish)
-    expect(body['data']['type']).to eq('createEvent')
-    expect(body['data']['attributes']['changes']).to be_nil
-    expect(body['data']['relationships'].keys).to include('resource')
-    expect(body['included'].first['attributes']).to eq('attr1' => 'is', 'attr2' => 'new')
+describe DataEvent do
+  describe 'new resource' do
+    let(:body) { JSON.parse(described_class.new(Record.new(true)).publish) }
+
+    it { expect(body['data']['type']).to eq('createEvent') }
+    it { expect(body['data']['attributes']['changes']).to be_nil }
+    it { expect(body['data']['relationships'].keys).to include('resource') }
+    it { expect(body['included'].first['attributes']).to eq('attr1' => 'is', 'attr2' => 'new') }
   end
 
-  it 'should publish updated resource' do
-    body = JSON.parse(DataEvent.new(Record.new(false)).publish)
-    expect(body['data']['type']).to eq('updateEvent')
-    expect(body['data']['attributes']['changes']).to(
-      match(
-        [
-          {
-            id: 'record_id',
-            type: 'records',
-            attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
-          }.with_indifferent_access
-        ]
-      )
-    )
-    expect(body['data']['relationships'].keys).to include('resource')
-    expect(body['included'].first['attributes']).to eq('attr1' => 'is', 'attr2' => 'new')
+  describe 'publish updated resource' do
+    let(:body) { JSON.parse(described_class.new(Record.new(false)).publish) }
+    let(:changes) do
+      [
+        {
+          id: 'record_id',
+          type: 'records',
+          attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
+        }.with_indifferent_access
+      ]
+    end
+
+    it { expect(body['data']['type']).to eq('updateEvent') }
+    it { expect(body['data']['attributes']['changes']).to(match(changes)) }
+    it { expect(body['data']['relationships'].keys).to include('resource') }
+    it { expect(body['included'].first['attributes']).to eq('attr1' => 'is', 'attr2' => 'new') }
   end
 
-  it 'should parse update event' do
-    data_event = DataEvent.parse(
-      {
-        data: {
-          id: '',
-          type: 'updateEvent',
-          attributes: {
-            changes: [
-              {
-                id: 'record_id',
-                type: 'records',
-                attributes: [
-                  attr1: %w(was is),
-                  attr2: [nil, 'new']
-                ]
+  describe 'update event parsing' do
+    let(:data_event) do
+      described_class.parse(
+        {
+          data: {
+            id: '',
+            type: 'updateEvent',
+            attributes: {
+              changes: [
+                {
+                  id: 'record_id',
+                  type: 'records',
+                  attributes: [
+                    attr1: %w(was is),
+                    attr2: [nil, 'new']
+                  ]
+                },
+                {
+                  id: 'affected_resource_1',
+                  type: 'resources',
+                  attributes: [
+                    attr: [nil, 'r1']
+                  ]
+                },
+                {
+                  id: 'affected_resource_2',
+                  type: 'resources',
+                  attributes: [
+                    attr: [nil, 'r2']
+                  ]
+                }
+              ]
+            },
+            relationships: {
+              resource: {
+                data: {
+                  id: 'record_id',
+                  type: 'records'
+                }
               },
-              {
-                id: 'affected_resource_1',
-                type: 'resources',
-                attributes: [
-                  attr: [nil, 'r1']
-                ]
-              },
-              {
-                id: 'affected_resource_2',
-                type: 'resources',
-                attributes: [
-                  attr: [nil, 'r2']
-                ]
-              }
-            ]
+              affected_resources: [
+                {
+                  data: {
+                    id: 'affected_resource_1',
+                    type: 'resources'
+                  }
+                },
+                {
+                  data: {
+                    id: 'affected_resource_2',
+                    type: 'resources'
+                  }
+                }
+              ]
+            }
           },
-          relationships: {
-            resource: {
-              data: {
-                id: 'record_id',
-                type: 'records'
+          included: [
+            {
+              id: 'record_id',
+              type: 'records',
+              attributes: {
+                attr1: 'is',
+                attr2: 'new'
               }
             },
-            affected_resources: [
-              {
-                data: {
-                  id: 'affected_resource_1',
-                  type: 'resources'
-                }
-              },
-              {
-                data: {
-                  id: 'affected_resource_2',
-                  type: 'resources'
-                }
+            {
+              id: 'affected_resource_2',
+              type: 'resources',
+              attributes: {
+                attr: 'r2'
               }
-            ]
-          }
-        },
-        included: [
-          {
-            id: 'record_id',
-            type: 'records',
-            attributes: {
-              attr1: 'is',
-              attr2: 'new'
+            },
+            {
+              id: 'affected_resource_1',
+              type: 'resources',
+              attributes: {
+                attr: 'r1'
+              }
             }
-          },
-          {
-            id: 'affected_resource_2',
-            type: 'resources',
-            attributes: {
-              attr: 'r2'
-            }
-          },
-          {
-            id: 'affected_resource_1',
-            type: 'resources',
-            attributes: {
-              attr: 'r1'
-            }
-          }
-        ]
-      }.to_json
-    )
-    expect(data_event.resource_id).to eq('record_id')
-    expect(data_event.resource_type).to eq('records')
-    expect(data_event.event).to eq('update')
-    expect(data_event.resource).to(
-      match(
+          ]
+        }.to_json
+      )
+    end
+    let(:resource_attributes) do
+      {
         id: 'record_id',
         type: 'records',
         attributes: {
           attr1: 'is',
           attr2: 'new'
         }
-      )
-    )
-    expect(data_event.affected_resources).to(
-      match(
-        [
-          {
-            id: 'affected_resource_1',
-            type: 'resources',
-            attributes: {
-              attr: 'r1'
-            }
-          },
-          {
-            id: 'affected_resource_2',
-            type: 'resources',
-            attributes: {
-              attr: 'r2'
-            }
-          }
-        ]
-      )
-    )
-    expect(data_event.changes).to(
-      match(
-        [
-          {
-            id: 'record_id',
-            type: 'records',
-            attributes: [
-              attr1: %w(was is),
-              attr2: [nil, 'new']
-            ]
-          },
-          {
-            id: 'affected_resource_1',
-            type: 'resources',
-            attributes: [
-              attr: [nil, 'r1']
-            ]
-          },
-          {
-            id: 'affected_resource_2',
-            type: 'resources',
-            attributes: [
-              attr: [nil, 'r2']
-            ]
-          }
-        ]
-      )
-    )
-  end
-
-  it 'should parse create event' do
-    data_event = DataEvent.parse(
-      {
-        data: {
-          id: '',
-          type: 'createEvent',
+      }
+    end
+    let(:affected_resources_attributes) do
+      [
+        {
+          id: 'affected_resource_1',
+          type: 'resources',
           attributes: {
-          },
-          relationships: {
-            resource: {
-              data: {
-                id: 'record_id',
-                type: 'records'
-              }
-            },
-            affected_resources: [
-              {
-                data: {
-                  id: 'affected_resource_1',
-                  type: 'resources'
-                }
-              },
-              {
-                data: {
-                  id: 'affected_resource_2',
-                  type: 'resources'
-                }
-              }
-            ]
+            attr: 'r1'
           }
         },
-        included: [
-          {
-            id: 'record_id',
-            type: 'records',
-            attributes: {
-              attr1: 'is',
-              attr2: 'new'
-            }
-          },
-          {
-            id: 'affected_resource_2',
-            type: 'resources',
-            attributes: {
-              attr: 'r2'
-            }
-          },
-          {
-            id: 'affected_resource_1',
-            type: 'resources',
-            attributes: {
-              attr: 'r1'
-            }
+        {
+          id: 'affected_resource_2',
+          type: 'resources',
+          attributes: {
+            attr: 'r2'
           }
-        ]
-      }.to_json
-    )
-    expect(data_event.resource_id).to eq('record_id')
-    expect(data_event.resource_type).to eq('records')
-    expect(data_event.event).to eq('create')
-    expect(data_event.resource).to(
-      match(
+        }
+      ]
+    end
+    let(:data_event_changes) do
+      [
+        {
+          id: 'record_id',
+          type: 'records',
+          attributes: [
+            attr1: %w(was is),
+            attr2: [nil, 'new']
+          ]
+        },
+        {
+          id: 'affected_resource_1',
+          type: 'resources',
+          attributes: [
+            attr: [nil, 'r1']
+          ]
+        },
+        {
+          id: 'affected_resource_2',
+          type: 'resources',
+          attributes: [
+            attr: [nil, 'r2']
+          ]
+        }
+      ]
+    end
+
+    it { expect(data_event.resource_id).to eq('record_id') }
+    it { expect(data_event.resource_type).to eq('records') }
+    it { expect(data_event.event).to eq('update') }
+    it { expect(data_event.resource).to match(resource_attributes) }
+    it { expect(data_event.affected_resources).to match(affected_resources_attributes) }
+    it { expect(data_event.changes).to match(data_event_changes) }
+  end
+
+  describe 'create event parsing' do
+    let(:data_event) do
+      described_class.parse(
+        {
+          data: {
+            id: '',
+            type: 'createEvent',
+            attributes: {
+            },
+            relationships: {
+              resource: {
+                data: {
+                  id: 'record_id',
+                  type: 'records'
+                }
+              },
+              affected_resources: [
+                {
+                  data: {
+                    id: 'affected_resource_1',
+                    type: 'resources'
+                  }
+                },
+                {
+                  data: {
+                    id: 'affected_resource_2',
+                    type: 'resources'
+                  }
+                }
+              ]
+            }
+          },
+          included: [
+            {
+              id: 'record_id',
+              type: 'records',
+              attributes: {
+                attr1: 'is',
+                attr2: 'new'
+              }
+            },
+            {
+              id: 'affected_resource_2',
+              type: 'resources',
+              attributes: {
+                attr: 'r2'
+              }
+            },
+            {
+              id: 'affected_resource_1',
+              type: 'resources',
+              attributes: {
+                attr: 'r1'
+              }
+            }
+          ]
+        }.to_json
+      )
+    end
+    let(:resource_attributes) do
+      {
         id: 'record_id',
         type: 'records',
         attributes: {
           attr1: 'is',
           attr2: 'new'
         }
-      )
-    )
-    expect(data_event.affected_resources).to(
-      match(
-        [
-          {
-            id: 'affected_resource_1',
-            type: 'resources',
-            attributes: {
-              attr: 'r1'
-            }
-          },
-          {
-            id: 'affected_resource_2',
-            type: 'resources',
-            attributes: {
-              attr: 'r2'
-            }
+      }
+    end
+    let(:affected_resources_attributes) do
+      [
+        {
+          id: 'affected_resource_1',
+          type: 'resources',
+          attributes: {
+            attr: 'r1'
           }
-        ]
-      )
-    )
-    expect(data_event.changes).to be_nil
+        },
+        {
+          id: 'affected_resource_2',
+          type: 'resources',
+          attributes: {
+            attr: 'r2'
+          }
+        }
+      ]
+    end
+
+    it { expect(data_event.resource_id).to eq('record_id') }
+    it { expect(data_event.resource_type).to eq('records') }
+    it { expect(data_event.event).to eq('create') }
+    it { expect(data_event.resource).to match(resource_attributes) }
+    it { expect(data_event.affected_resources).to match(affected_resources_attributes) }
+    it { expect(data_event.changes).to be_nil }
   end
 end

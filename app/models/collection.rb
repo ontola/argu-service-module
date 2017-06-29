@@ -102,13 +102,13 @@ class Collection
   end
 
   def filter?
-    association_class.filter_options.present? && !filter.present? && association_class.filter_options.any? do |_k, v|
+    association_class.filter_options.present? && filter.blank? && association_class.filter_options.any? do |_k, v|
       v.present?
     end
   end
 
   def filter_query
-    return unless filter.present?
+    return if filter.blank?
     queries, values = filter_query_with_values
     [queries.join(' AND '), *values]
   end

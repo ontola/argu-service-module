@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 module UriTemplateHelper
   URI_TEMPLATES =
-    Hash[YAML.load(File.read("#{Rails.root}/config/uri_templates.yml")).map { |k, v| [k, URITemplate.new(v)] }]
-      .with_indifferent_access.freeze
+    Hash[
+      YAML.safe_load(File.read(Rails.root.join('config', 'uri_templates.yml')))
+        .map { |k, v| [k, URITemplate.new(v)] }
+    ].with_indifferent_access.freeze
 
   def expand_uri_template(template, args = {})
     if args[:path_only]

@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 require_relative '../spec_helper'
 
-describe 'Active resource model' do
-  it 'should parse json_api' do
-    mock_resource
-    resource = Resource.find(1)
-    expect(resource.id).to eq('resource_id')
-    expect(resource.attr1).to eq('attribute 1')
-    expect(resource.parent.id).to eq('record_id')
-    expect(resource.parent.attr_one).to eq('attribute one')
+describe Resource do
+  describe 'json_api parsing' do
+    let(:resource) { described_class.find(1) }
+
+    it { expect(resource.id).to eq('resource_id') }
+    it { expect(resource.attr1).to eq('attribute 1') }
+    it { expect(resource.parent.id).to eq('record_id') }
+    it { expect(resource.parent.attr_one).to eq('attribute one') }
   end
 
-  private
-
-  def mock_resource
+  before do
     stub_request(:get, 'https://argu.test/resources/1')
       .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer'})
       .to_return(
