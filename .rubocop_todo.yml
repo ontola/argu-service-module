@@ -34,3 +34,6 @@ Security/Eval:
   Exclude:
     - '../lib/argu/test_helpers.rb'
     - 'lib/argu/test_helpers.rb'
+
+RSpec/NestedGroups:
+  Enabled: false
