@@ -15,7 +15,7 @@ module JsonApiHelper
   def json_api_formatted_errors(errors, status)
     case errors
     when Array
-      errors.map { |error| json_api_formatted_errors(error, status) }
+      errors.map { |error| json_api_formatted_errors(error, status) }.flatten
     when ActiveModel::Errors
       errors.keys.map { |key| errors[key].map { |e| {status: status, source: {parameter: key}, message: e} } }.flatten
     when Hash
