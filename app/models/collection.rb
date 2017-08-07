@@ -141,12 +141,12 @@ class Collection
   def included_associations
     included_associations = {}
     included_associations[:creator] = :profileable if association_class.reflect_on_association(:creator)
-    included_associations[:edge] = :parent if association_class.is_fertile?
+    included_associations[:edge] = :parent if association_class.is_edgeable?
     included_associations
   end
 
   def joined_associations
-    association_class.is_fertile? ? [:edge] : nil
+    association_class.is_edgeable? ? [:edge] : nil
   end
 
   def include_pages?
