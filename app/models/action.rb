@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Action
   include ActiveModel::Model, ActiveModel::Serialization, PragmaticContext::Contextualizable, Ldable
   attr_accessor :base_iri, :filter, :type, :resource_type

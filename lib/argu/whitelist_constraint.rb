@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Argu
   module WhitelistConstraint
     module_function

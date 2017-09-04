@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module UriTemplateHelper
   URI_TEMPLATES =
     Hash[

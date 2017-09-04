@@ -19,8 +19,6 @@ Metrics/LineLength:
   Max: 120
 Style/IfUnlessModifier:
   MaxLineLength: 100
-Layout/EmptyLineAfterMagicComment:
-  Enabled: false
 Style/WhileUntilModifier:
   MaxLineLength: 100
 Style/PercentLiteralDelimiters:

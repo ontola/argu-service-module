@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'uri_template'
 require 'oauth2'
 require 'argu/errors/unauthorized_error'

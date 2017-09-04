@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module UrlHelper
   def argu_url(path = '', params = {})
     url = URI("https://#{Rails.application.config.host_name}")

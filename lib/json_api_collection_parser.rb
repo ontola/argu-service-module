@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class JsonApiCollectionParser < ActiveResource::Collection
   def initialize(elements = [])
     @elements = if elements.is_a?(Hash)

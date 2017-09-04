@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module JsonApiHelper
   # @param [Integer] status HTML response code
   # @param [Array<Hash, String>] errors A list of errors

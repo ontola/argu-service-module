@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Record
   include ActiveModel::Model, Ldable
   alias read_attribute_for_serialization send

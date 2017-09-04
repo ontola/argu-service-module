@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'oauth2'
 require 'json_api_collection_parser'
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'argu/test_helpers/request_helpers'
 
 # Runs assert_difference with a number of conditions and varying difference
