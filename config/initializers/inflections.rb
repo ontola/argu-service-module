@@ -4,6 +4,7 @@
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'JWT'
+  inflect.acronym 'RDF'
   inflect.acronym 'SPI'
   inflect.acronym 'IRI'
 end

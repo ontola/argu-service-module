@@ -23,6 +23,7 @@ module Ldable
   # @return [Collection]
   def collection_for(name, user_context: nil, filter: {}, page: nil, **opts)
     collection = collections.detect { |c| c[:name] == name }
+    collection_class = opts.delete(:collection_class) || ::Collection
     args = opts.merge(
       user_context: user_context,
       filter: filter,
@@ -30,7 +31,7 @@ module Ldable
       name: name
     ).merge(collection[:options])
     args[:parent] = self
-    Collection.new(args)
+    collection_class.new(args)
   end
 
   def context_id
@@ -65,6 +66,7 @@ module Ldable
     # @param [Hash] options
     # @option options [Sym] association the name of the association
     # @option options [Class] association_class the class of the association
+    # @option options [Class] collection_class the class of the collection
     # @option options [Bool] pagination whether to paginate this collection
     # @option options [Sym] url_constructor the method to use to generate the ids
     # @option options [Sym] joins the associations to join
@@ -73,11 +75,12 @@ module Ldable
     def with_collection(name, options = {})
       options[:association] ||= name.to_sym
       options[:association_class] ||= name.to_s.classify.constantize
+      collection_class = options.delete(:collection_class)
 
       collections_add(name: name, options: options)
 
       define_method "#{name.to_s.singularize}_collection" do |opts = {}|
-        collection_for(name, opts)
+        collection_for(name, opts.merge(collection_class: collection_class))
       end
     end
 
