@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class Collection
-  include ActiveModel::Model, ActiveModel::Serialization, PragmaticContext::Contextualizable,
-          Ldable, Pundit
+  include Pundit
+  include Ldable
+  include PragmaticContext::Contextualizable
+  include ActiveModel::Serialization
+  include ActiveModel::Model
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
 

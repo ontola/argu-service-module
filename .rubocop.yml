@@ -23,8 +23,6 @@ Style/WhileUntilModifier:
   MaxLineLength: 100
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
-Style/MixinGrouping:
-  Enabled: false
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 Layout/MultilineMethodCallIndentation:

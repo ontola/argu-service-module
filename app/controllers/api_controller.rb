@@ -6,7 +6,9 @@ require 'argu/errors/unauthorized_error'
 require 'argu/errors/forbidden_error'
 
 class ApiController < ActionController::API
-  include UrlHelper, JsonApiHelper, ActionController::MimeResponds
+  include ActionController::MimeResponds
+  include JsonApiHelper
+  include UrlHelper
   AUTH_URL = URITemplate.new('/spi/authorize{?resource_type,resource_id,authorize_action}')
   serialization_scope :nil
 

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Record
-  include ActiveModel::Model, Ldable
+  include Ldable
+  include ActiveModel::Model
   alias read_attribute_for_serialization send
   filterable key: {key: :actual_key, values: {value: 'actual_value'}}, key2: {}, key3: {values: {empty: 'NULL'}}
 

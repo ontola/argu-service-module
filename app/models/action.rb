@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Action
-  include ActiveModel::Model, ActiveModel::Serialization, PragmaticContext::Contextualizable, Ldable
+  include Ldable
+  include PragmaticContext::Contextualizable
+  include ActiveModel::Serialization
+  include ActiveModel::Model
   attr_accessor :base_iri, :filter, :type, :resource_type
   contextualize_with_type(&:context_type)
   contextualize_with_id(&:id)

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class DataEvent
-  include Ldable, JsonApiHelper
+  include JsonApiHelper
+  include Ldable
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
   alias read_attribute_for_serialization send
 

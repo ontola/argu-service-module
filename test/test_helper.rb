@@ -20,7 +20,9 @@ require 'argu/test_mocks'
 module ActiveSupport
   class TestCase
     include FactoryGirl::Syntax::Methods
-    include AssertDifference, TestMocks, Argu::TestHelpers::RequestHelpers
+    include Argu::TestHelpers::RequestHelpers
+    include TestMocks
+    include AssertDifference
     extend MiniTest::Spec::DSL
   end
 end
