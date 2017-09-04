@@ -19,7 +19,7 @@ describe DataEvent do
         {
           id: 'record_id',
           type: 'records',
-          attributes: {'attr1' => %w(was is), 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
+          attributes: {'attr1' => %w[was is], 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
         }.with_indifferent_access
       ]
     end
@@ -43,7 +43,7 @@ describe DataEvent do
                   id: 'record_id',
                   type: 'records',
                   attributes: [
-                    attr1: %w(was is),
+                    attr1: %w[was is],
                     attr2: [nil, 'new']
                   ]
                 },
@@ -147,7 +147,7 @@ describe DataEvent do
           id: 'record_id',
           type: 'records',
           attributes: [
-            attr1: %w(was is),
+            attr1: %w[was is],
             attr2: [nil, 'new']
           ]
         },

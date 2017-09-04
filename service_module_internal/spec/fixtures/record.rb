@@ -31,9 +31,9 @@ class Record
 
   def previous_changes
     {
-      attr_1: %w(was is),
+      attr_1: %w[was is],
       attr_2: [nil, 'new'],
-      password: %w(old_pass new_pass)
+      password: %w[old_pass new_pass]
     }
   end
 end

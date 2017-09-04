@@ -21,9 +21,6 @@ Style/IfUnlessModifier:
   MaxLineLength: 100
 Style/WhileUntilModifier:
   MaxLineLength: 100
-Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%w': '()'
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 Style/MixinGrouping:
