@@ -4,20 +4,13 @@ module Ldable
   extend ActiveSupport::Concern
 
   included do
-    include PragmaticContext::Contextualizable, Ldable::ClassMethods
+    include PragmaticContext::Contextualizable
     contextualize :schema, as: 'http://schema.org/'
     contextualize :hydra, as: 'http://www.w3.org/ns/hydra/core#'
     contextualize :argu, as: 'https://argu.co/ns/core#'
 
     contextualize :created_at, as: 'http://schema.org/dateCreated'
     contextualize :updated_at, as: 'http://schema.org/dateModified'
-
-    cattr_accessor :filter_options do
-      {}
-    end
-    cattr_accessor :collections do
-      []
-    end
   end
 
   # Initialises a {Collection} for one of the collections defined by {has_collection}
@@ -49,6 +42,15 @@ module Ldable
   end
 
   module ClassMethods
+    def collections
+      class_variables.include?(:@@collections) ? super : []
+    end
+
+    def collections_add(opts)
+      cattr_accessor :collections { [] } unless class_variables.include?(:@@collections)
+      collections.append(opts)
+    end
+
     attr_accessor :context_type_factory
 
     def contextualize_with_type(&block)
@@ -70,15 +72,21 @@ module Ldable
       options[:association] ||= name.to_sym
       options[:association_class] ||= name.to_s.classify.constantize
 
-      collections << {name: name, options: options}
+      collections_add(name: name, options: options)
 
       define_method "#{name.to_s.singularize}_collection" do |opts = {}|
         collection_for(name, opts)
       end
     end
 
+    def filter_options
+      class_variables.include?(:@@filter_options) ? super : {}
+    end
+
     def filterable(options = {})
-      self.filter_options = HashWithIndifferentAccess.new(options)
+      cattr_accessor :filter_options do
+        HashWithIndifferentAccess.new(options)
+      end
     end
   end
 end
