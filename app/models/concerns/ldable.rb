@@ -67,6 +67,8 @@ module Ldable
     # @option options [Class] association_class the class of the association
     # @option options [Bool] pagination whether to paginate this collection
     # @option options [Sym] url_constructor the method to use to generate the ids
+    # @option options [Sym] joins the associations to join
+    # @option options [Sym] includes the associations to include
     # @return [Collection]
     def with_collection(name, options = {})
       options[:association] ||= name.to_sym

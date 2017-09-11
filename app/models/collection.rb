@@ -10,8 +10,8 @@ class Collection
   include Rails.application.routes.url_helpers
 
   attr_accessor :association, :association_class, :association_scope, :filter,
-                :name, :page, :pagination, :parent, :parent_view_iri, :title,
-                :url_constructor, :user_context
+                :includes, :joins, :name, :page, :pagination, :parent, :parent_view_iri,
+                :title, :url_constructor, :user_context
 
   EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
@@ -47,7 +47,7 @@ class Collection
 
   def members
     return if include_pages? || filter?
-    @members ||= policy_scope(association_base).includes(included_associations).page(page)
+    @members ||= policy_scope(association_base).includes(includes).page(page)
   end
 
   def next
@@ -92,7 +92,7 @@ class Collection
     policy_scope(
       (parent&.send(association) || association_class)
         .send(association_scope || :all)
-        .joins(joined_associations)
+        .joins(joins)
         .where(filter_query)
     )
   end
@@ -142,17 +142,6 @@ class Collection
 
   def filter_single_value(options, value)
     options[:values].try(:[], value.try(:to_sym)) || value
-  end
-
-  def included_associations
-    included_associations = {}
-    included_associations[:creator] = :profileable if association_class.reflect_on_association(:creator)
-    included_associations[:edge] = :parent if EDGEABLE_CLASS && association_class.is_a?(EDGEABLE_CLASS)
-    included_associations
-  end
-
-  def joined_associations
-    EDGEABLE_CLASS && association_class.is_a?(EDGEABLE_CLASS) ? [:edge] : nil
   end
 
   def include_pages?
