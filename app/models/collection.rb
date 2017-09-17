@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class Collection
-  include ActiveModel::Model
-  include ActiveModel::Serialization
-
-  include Ldable
   include Pundit
+  include Ldable
+  include ActiveModel::Serialization
+  include ActiveModel::Model
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
 
@@ -17,18 +16,19 @@ class Collection
       attr_accessor :association, :association_class, :association_scope, :filter,
                     :includes, :joins, :name, :page, :pagination, :parent, :parent_view_iri,
                     :title, :url_constructor, :user_context
-      alias_method :pundit_user, :user_context
 
       EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
-      contextualize_as_type 'argu:Collection'
+      alias_method :pundit_user, :user_context
+
+      contextualize_as_type 'https://argu.co/ns/core#Collection'
       contextualize_with_id(&:id)
-      contextualize :title, as: 'schema:name'
-      contextualize :total_count, as: 'argu:totalCount'
+      contextualize :title, as: 'http://schema.org/name'
+      contextualize :total_count, as: 'https://argu.co/ns/core#totalCount'
 
       # prevents a `stack level too deep`
       def as_json(options = {})
-        super(options.merge(except: %w(association_class user_context)))
+        super(options.merge(except: %w[association_class user_context]))
       end
 
       def create_action
