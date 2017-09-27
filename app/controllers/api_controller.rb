@@ -32,20 +32,20 @@ class ApiController < ActionController::API
     )
   end
 
-  def argu_token
-    @argu_token ||= OAuth2::AccessToken.new(argu_client, client_token)
+  def service_token
+    @service_token ||= OAuth2::AccessToken.new(argu_client, ENV['SERVICE_TOKEN'])
+  end
+
+  def user_token
+    @user_token ||= OAuth2::AccessToken.new(argu_client, request.cookie_jar.encrypted['argu_client_token'])
   end
 
   def authorize_action(resource_type, resource_id, action)
-    argu_token.get(AUTH_URL.expand(resource_type: resource_type, resource_id: resource_id, authorize_action: action))
+    user_token.get(AUTH_URL.expand(resource_type: resource_type, resource_id: resource_id, authorize_action: action))
   end
 
   def check_if_registered
     raise Errors::UnauthorizedError if current_user.blank?
-  end
-
-  def client_token
-    ENV['CLIENT_TOKEN']
   end
 
   def handle_forbidden_error

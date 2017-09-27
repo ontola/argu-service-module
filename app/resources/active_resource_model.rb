@@ -24,7 +24,7 @@ class ActiveResourceModel < ActiveResource::Base
   end
 
   def self.connection
-    @argu_token ||= OAuth2::AccessToken.new(argu_client, ENV['CLIENT_TOKEN'])
+    @service_token ||= OAuth2::AccessToken.new(argu_client, ENV['SERVICE_TOKEN'])
   end
 
   def self.parse_record(body, record)
