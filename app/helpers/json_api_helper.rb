@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JsonApiHelper
-  # @param [Integer] status HTML response code
+  # @param [Integer] status HTTP response code
   # @param [Array<Hash, String>] errors A list of errors
   # @return [Hash] JSONApi error hash to use in a render method
   def json_api_error(status, errors = nil)
@@ -18,11 +18,21 @@ module JsonApiHelper
     when Array
       errors.map { |error| json_api_formatted_errors(error, status) }.flatten
     when ActiveModel::Errors
-      errors.keys.map { |key| errors[key].map { |e| {status: status, source: {parameter: key}, message: e} } }.flatten
+      json_api_formatted_model_errors(errors, status)
     when Hash
       [errors.merge(status: status)]
     else
       [{status: status, message: errors.is_a?(String) ? errors : nil}]
+    end
+  end
+
+  def json_api_formatted_model_errors(errors, status)
+    errors.keys.reduce([]) do |array, key|
+      array.concat(
+        errors.full_messages_for(key).map.with_index do |m, i|
+          {code: "value_#{errors.details[key][i][:error]}".upcase, message: m, status: status, source: {parameter: key}}
+        end
+      )
     end
   end
 
