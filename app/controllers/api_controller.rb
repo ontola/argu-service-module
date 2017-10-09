@@ -20,6 +20,8 @@ class ApiController < ActionController::API
 
   def current_user
     @current_user ||= CurrentUser.find(request.cookie_jar.encrypted['argu_client_token'])
+  rescue OAuth2::Error
+    nil
   end
 
   private
