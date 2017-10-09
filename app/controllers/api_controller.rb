@@ -2,6 +2,7 @@
 
 require 'uri_template'
 require 'oauth2'
+require 'argu/api'
 require 'argu/errors/unauthorized_error'
 require 'argu/errors/forbidden_error'
 
@@ -25,6 +26,10 @@ class ApiController < ActionController::API
   end
 
   private
+
+  def api
+    @api ||= Argu::API.new(service_token, user_token, request.cookie_jar)
+  end
 
   def argu_client
     @argu_client ||= OAuth2::Client.new(
