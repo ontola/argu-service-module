@@ -39,10 +39,10 @@ module Argu
       )
     end
 
-    def create_user(email)
+    def create_user(email, skip_confirmation: false)
       response = user_token.post(
         expand_uri_template(:user_registration),
-        body: {user: {email: email}},
+        body: {user: {email: email, skip_confirmation: skip_confirmation}},
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
