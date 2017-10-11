@@ -1,15 +1,24 @@
 # frozen_string_literal: true
 
+require 'oauth2'
+
 module Argu
   class API
     include UriTemplateHelper
     attr_accessor :service_token, :user_token
     attr_reader :cookie_jar
 
-    def initialize(service_token, user_token, cookie_jar)
-      @service_token = service_token
-      @user_token = user_token
+    def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
+      @service_token = OAuth2::AccessToken.new(argu_client, service_token)
+      @user_token = OAuth2::AccessToken.new(argu_client, user_token)
       @cookie_jar = cookie_jar
+    end
+
+    def authorize_action(resource_type, resource_id, action)
+      user_token.get(
+        uri_template(:spi_authorize)
+          .expand(resource_type: resource_type, resource_id: resource_id, authorize_action: action)
+      )
     end
 
     def authorize_redirect_resource(token)
@@ -75,6 +84,10 @@ module Argu
     end
 
     private
+
+    def argu_client
+      @argu_client ||= OAuth2::Client.new(ENV['ARGU_APP_ID'], ENV['ARGU_APP_SECRET'], site: ENV['OAUTH_URL'])
+    end
 
     def parsed_cookies(response)
       cookies = {}

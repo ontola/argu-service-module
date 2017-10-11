@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'uri_template'
-require 'oauth2'
 require 'argu/api'
 require 'argu/errors/unauthorized_error'
 require 'argu/errors/forbidden_error'
@@ -10,7 +9,6 @@ class ApiController < ActionController::API
   include ActionController::MimeResponds
   include JsonApiHelper
   include UrlHelper
-  AUTH_URL = URITemplate.new('/spi/authorize{?resource_type,resource_id,authorize_action}')
   serialization_scope :nil
 
   rescue_from Errors::UnauthorizedError, with: :handle_unauthorized_error
@@ -28,27 +26,15 @@ class ApiController < ActionController::API
   private
 
   def api
-    @api ||= Argu::API.new(service_token, user_token, request.cookie_jar)
-  end
-
-  def argu_client
-    @argu_client ||= OAuth2::Client.new(
-      ENV['ARGU_APP_ID'],
-      ENV['ARGU_APP_SECRET'],
-      site: ENV['OAUTH_URL']
+    @api ||= Argu::API.new(
+      service_token: ENV['SERVICE_TOKEN'],
+      user_token: request.cookie_jar.encrypted['argu_client_token'],
+      cookie_jar: request.cookie_jar
     )
   end
 
-  def service_token
-    @service_token ||= OAuth2::AccessToken.new(argu_client, ENV['SERVICE_TOKEN'])
-  end
-
-  def user_token
-    @user_token ||= OAuth2::AccessToken.new(argu_client, request.cookie_jar.encrypted['argu_client_token'])
-  end
-
   def authorize_action(resource_type, resource_id, action)
-    user_token.get(AUTH_URL.expand(resource_type: resource_type, resource_id: resource_id, authorize_action: action))
+    api.authorize_action(resource_type, resource_id, action)
   end
 
   def check_if_registered
