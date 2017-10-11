@@ -23,10 +23,19 @@ module Argu
       false
     end
 
-    def confirm_email(email)
+    def confirm_email_address(email)
       service_token.put(
         expand_uri_template(:user_confirm),
         body: {email: email},
+        headers: {accept: 'application/json'}
+      )
+    end
+
+    def create_email(mailer, template, recipient, options = {})
+      recipient = recipient.slice(:display_name, :email, :language, :id)
+      service_token.post(
+        expand_uri_template(:email_spi_create),
+        body: {email: {mailer: mailer, template: template, recipient: recipient, options: options}},
         headers: {accept: 'application/json'}
       )
     end

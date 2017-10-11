@@ -7,3 +7,6 @@ spi_authorize: "/spi/authorize{?resource_type,resource_id,resource_iri,authorize
 # Token Service
 bearer_token: "/tokens/{access_token}"
 verify_token: "/tokens/verify{?jwt}"
+# Email Service
+email_spi_create: "/email/spi/emails"
+email_index: "/email/emails"
