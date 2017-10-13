@@ -40,11 +40,11 @@ module Argu
       )
     end
 
-    def create_email(mailer, template, recipient, options = {})
+    def create_email(template, recipient, options = {})
       recipient = recipient.slice(:display_name, :email, :language, :id)
       service_token.post(
         expand_uri_template(:email_spi_create),
-        body: {email: {mailer: mailer, template: template, recipient: recipient, options: options}},
+        body: {email: {template: template, recipient: recipient, options: options}},
         headers: {accept: 'application/json'}
       )
     end
