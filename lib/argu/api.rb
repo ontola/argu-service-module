@@ -23,21 +23,14 @@ module Argu
 
     def authorize_redirect_resource(token)
       return unless token&.redirect_url
-      authorize_url = uri_template(:spi_authorize).expand(
-        resource_iri: token.redirect_url,
-        authorize_action: :show
-      )
+      authorize_url = uri_template(:spi_authorize).expand(resource_iri: token.redirect_url, authorize_action: :show)
       user_token.get(authorize_url).status == 200
     rescue OAuth2::Error
       false
     end
 
     def confirm_email_address(email)
-      service_token.put(
-        expand_uri_template(:user_confirm),
-        body: {email: email},
-        headers: {accept: 'application/json'}
-      )
+      service_token.put(expand_uri_template(:user_confirm), body: {email: email}, headers: {accept: 'application/json'})
     end
 
     def create_email(template, recipient, options = {})
@@ -68,6 +61,10 @@ module Argu
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
+    end
+
+    def self.service_api
+      new(service_token: ENV['SERVICE_TOKEN'])
     end
 
     def user_is_group_member?(group_id)
