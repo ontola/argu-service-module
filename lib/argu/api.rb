@@ -42,10 +42,10 @@ module Argu
       )
     end
 
-    def create_membership(token, user)
+    def create_membership(token)
       user_token.post(
         "/g/#{token.group_id}/memberships",
-        body: {shortname: user.url, token: token.secret},
+        body: {token: token.secret},
         headers: {accept: 'application/json'}
       )
     end
