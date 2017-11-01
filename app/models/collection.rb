@@ -3,7 +3,6 @@
 class Collection
   include Pundit
   include Ldable
-  include PragmaticContext::Contextualizable
   include ActiveModel::Serialization
   include ActiveModel::Model
   include ActionDispatch::Routing
@@ -17,11 +16,6 @@ class Collection
 
   alias pundit_user user_context
 
-  contextualize_as_type 'argu:Collection'
-  contextualize_with_id(&:id)
-  contextualize :title, as: 'schema:name'
-  contextualize :total_count, as: 'argu:totalCount'
-
   # prevents a `stack level too deep`
   def as_json(options = {})
     super(options.merge(except: %w[association_class user_context]))
@@ -34,6 +28,7 @@ class Collection
   def id
     uri(query_opts)
   end
+  alias_attribute :iri, :id
 
   def first
     return unless pagination
@@ -174,6 +169,6 @@ class Collection
            else
              url_for([parent, association_class, protocol: :https])
            end
-    [base, query_values.to_param].reject(&:empty?).join('?')
+    RDF::IRI.new [base, query_values.to_param].reject(&:empty?).join('?')
   end
 end

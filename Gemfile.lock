@@ -81,6 +81,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    hamster (3.0.0)
+      concurrent-ruby (~> 1.0)
     hashdiff (0.3.2)
     i18n (0.8.0)
     jsonapi (0.1.1.beta6)
@@ -89,6 +91,7 @@ GEM
     jsonapi-parser (0.1.1.beta3)
     jsonapi-renderer (0.1.1.beta1)
     jwt (1.5.6)
+    link_header (0.0.8)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.4)
@@ -150,6 +153,9 @@ GEM
     rainbow (2.2.2)
       rake
     rake (12.0.0)
+    rdf (2.2.11)
+      hamster (~> 3.0)
+      link_header (~> 0.0, >= 0.0.8)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -212,6 +218,7 @@ DEPENDENCIES
   pundit
   rails
   rake
+  rdf
   rspec-rails
   rubocop
   rubocop-rspec
