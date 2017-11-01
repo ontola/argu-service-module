@@ -5,7 +5,7 @@ class Email < ActiveResourceModel
     'email/emails'
   end
 
-  %w[opened accepted rejected delivered failed clicked unsubscribed complained stored].each do |event|
+  %w[opened delivered clicked bounced dropped].each do |event|
     define_method "#{event}?" do
       email_tracking_events.any? { |e| e.event == event }
     end
@@ -13,6 +13,7 @@ class Email < ActiveResourceModel
 
   def status
     return 'delivered' if delivered?
-    'failed' if failed?
+    'failed' if dropped?
+    'pending'
   end
 end
