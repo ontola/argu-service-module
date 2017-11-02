@@ -21,62 +21,134 @@ describe Collection do
     end
     col
   end
+  let(:paginated_collection) do
+    col = collection
+    col.type = :paginated
+    col
+  end
+  let(:infinite_collection) do
+    col = collection
+    col.type = :infinite
+    col
+  end
 
   describe '#id' do
-    subject { collection.id }
+    context 'paginated' do
+      subject { paginated_collection.id }
 
-    it { is_expected.to eq('https://argu.test/resources') }
+      it { is_expected.to eq('https://argu.test/resources?type=paginated') }
 
-    context 'with parent' do
-      let(:parent) { Record.new({}) }
+      context 'with parent' do
+        let(:parent) { Record.new({}) }
 
-      it { is_expected.to eq('https://argu.test/resources/record_id') }
+        it { is_expected.to eq('https://argu.test/resources/record_id?type=paginated') }
+      end
+
+      context 'with page' do
+        let(:page) { 2 }
+
+        it { is_expected.to eq('https://argu.test/resources?page=2&type=paginated') }
+      end
     end
 
-    context 'with page' do
-      let(:page) { 2 }
+    context 'infinite' do
+      subject { infinite_collection.id }
 
-      it { is_expected.to eq('https://argu.test/resources?page=2') }
+      it { is_expected.to eq('https://argu.test/resources?type=infinite') }
+
+      context 'with parent' do
+        let(:parent) { Record.new({}) }
+
+        it { is_expected.to eq('https://argu.test/resources/record_id?type=infinite') }
+      end
+
+      context 'with page' do
+        let(:page) { 2 }
+
+        it { is_expected.to eq('https://argu.test/resources?page=2&type=infinite') }
+      end
     end
   end
 
   describe '#parent_view_iri' do
-    subject { collection.parent_view_iri }
-
     let(:filter) { {key: :value} }
 
-    it { is_expected.to be_nil }
-
-    context 'with parent' do
-      let(:parent) { Record.new({}) }
+    context 'paginated' do
+      subject { paginated_collection.parent_view_iri }
 
       it { is_expected.to be_nil }
+
+      context 'with parent' do
+        let(:parent) { Record.new({}) }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'with page' do
+        let(:page) { 2 }
+        let(:url) { 'https://argu.test/resources?filter%5Bkey%5D=value&type=paginated' }
+
+        it { is_expected.to eq(url) }
+      end
     end
 
-    context 'with page' do
-      let(:page) { 2 }
-      let(:url) { 'https://argu.test/resources?filter%5Bkey%5D=value' }
+    context 'infinite' do
+      subject { infinite_collection.parent_view_iri }
 
-      it { is_expected.to eq(url) }
+      it { is_expected.to be_nil }
+
+      context 'with parent' do
+        let(:parent) { Record.new({}) }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'with page' do
+        let(:page) { 2 }
+        let(:url) { 'https://argu.test/resources?filter%5Bkey%5D=value&type=infinite' }
+
+        it { is_expected.to eq(url) }
+      end
     end
   end
 
   describe '#filter_query' do
-    subject { collection.send(:filter_query) }
+    context 'paginated' do
+      subject { paginated_collection.send(:filter_query) }
 
-    it { is_expected.to be_nil }
+      it { is_expected.to be_nil }
 
-    context 'with filters' do
-      let(:filter) { {key: :value, key2: 'value2', key3: 'empty'} }
-      let(:result) do
-        [
-          'actual_key = ? AND key2 = ? AND key3 IS NULL',
-          'actual_value',
-          'value2'
-        ]
+      context 'with filters' do
+        let(:filter) { {key: :value, key2: 'value2', key3: 'empty'} }
+        let(:result) do
+          [
+            'actual_key = ? AND key2 = ? AND key3 IS NULL',
+            'actual_value',
+            'value2'
+          ]
+        end
+
+        it { is_expected.to eq(result) }
       end
+    end
 
-      it { is_expected.to eq(result) }
+    context 'infinite' do
+      subject { infinite_collection.send(:filter_query) }
+
+      it { is_expected.to be_nil }
+
+      context 'with filters' do
+        let(:filter) { {key: :value, key2: 'value2', key3: 'empty'} }
+        let(:result) do
+          [
+            'actual_key = ? AND key2 = ? AND key3 IS NULL',
+            'actual_value',
+            'value2'
+          ]
+        end
+
+        it { is_expected.to eq(result) }
+      end
     end
   end
 end
