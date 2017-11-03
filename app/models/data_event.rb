@@ -84,7 +84,7 @@ class DataEvent
 
   def parse_resource(attrs)
     self.resource = attrs
-    self.resource_id = resource.try(:context_id) || resource.id
+    self.resource_id = resource.try(:iri) || resource.id
     self.resource_type = resource.class.name.pluralize.camelize(:lower)
     self.event = event_from_resource
     self.changes = changes_from_resource
