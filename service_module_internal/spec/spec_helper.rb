@@ -37,7 +37,10 @@ $LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 require 'active_support/core_ext/hash'
 require 'action_controller'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
+require_relative '../../lib/ns'
+require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
+require_relative '../../app/serializers/base/base_serializer'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
                    '{models/concerns,models,resources,serializers}', '*.rb'),
          &method(:require))
