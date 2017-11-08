@@ -10,7 +10,7 @@ class Collection
 
   attr_accessor :association, :association_class, :association_scope, :filter,
                 :includes, :joins, :name, :page, :pagination, :parent, :parent_view_iri,
-                :title, :url_constructor, :user_context
+                :title, :url_constructor, :url_constructor_opts, :user_context
 
   EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
@@ -101,7 +101,9 @@ class Collection
       user_context: user_context,
       filter: filter,
       page: page,
-      parent_view_iri: id
+      parent_view_iri: id,
+      url_constructor: url_constructor,
+      url_constructor_opts: url_constructor_opts
     }.merge(options)
     parent&.collection_for(name, options) || new_child(options)
   end
@@ -169,7 +171,7 @@ class Collection
 
   def uri(query_values = '')
     base = if url_constructor.present?
-             send(url_constructor, parent.id, protocol: :https)
+             send(url_constructor, url_constructor_opts || parent.id, protocol: :https)
            else
              url_for([parent, association_class, protocol: :https])
            end
