@@ -23,7 +23,7 @@ class Action
     {
       parent_iri: base_iri,
       type: type,
-      only_path: true
+      path_only: true
     }
   end
 
