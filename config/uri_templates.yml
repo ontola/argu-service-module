@@ -44,6 +44,7 @@ user_confirmation: "/users/confirmation{?confirmation_token}"
 user_confirm: "/users/confirm"
 user_registration: "/users"
 user_set_password: "/users/password/edit{?reset_password_token}"
+user_unlock: "/users/unlock{?unlock_token}"
 spi_authorize: "/spi/authorize{?resource_type,resource_id,resource_iri,authorize_action}"
 # Token Service
 bearer_token: "/tokens/{access_token}"
