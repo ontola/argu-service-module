@@ -10,7 +10,7 @@ class Record
     @new_record_before_save = new_record
   end
 
-  def context_id
+  def iri
     id
   end
 
