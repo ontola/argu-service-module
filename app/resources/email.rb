@@ -13,7 +13,7 @@ class Email < ActiveResourceModel
 
   def status
     return 'delivered' if delivered?
-    'failed' if dropped?
+    return 'failed' if dropped?
     'pending'
   end
 end
