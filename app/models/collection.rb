@@ -30,6 +30,10 @@ class Collection
   end
   alias_attribute :iri, :id
 
+  def items_per_page
+    association_class.default_per_page
+  end
+
   def first
     return unless pagination
     uri(query_opts.merge(page: 1))
@@ -160,7 +164,7 @@ class Collection
   end
 
   def total_page_count
-    (association_base.count / association_class.default_per_page).ceil
+    (association_base.count / items_per_page).ceil
   end
 
   def uri(query_values = '')
