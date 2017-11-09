@@ -42,7 +42,7 @@ require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
 require_relative '../../app/serializers/base/base_serializer'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
-                   '{models/concerns,models,resources,serializers}', '*.rb'),
+                   '{models/concerns,models/collection,models,resources,serializers}', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
 require_relative 'fixtures/resource'

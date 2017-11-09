@@ -7,10 +7,11 @@ class Collection
   include ActiveModel::Model
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
+  include Collection::Filtering
+  include Collection::Pagination
 
-  attr_accessor :association, :association_class, :association_scope, :before, :filter,
-                :includes, :joins, :name, :page, :pagination, :parent, :parent_view_iri,
-                :title, :type, :url_constructor, :url_constructor_opts, :user_context
+  attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :parent,
+                :parent_view_iri, :title, :type, :url_constructor, :url_constructor_opts, :user_context
 
   EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
@@ -18,10 +19,6 @@ class Collection
 
   def initialize(attrs = {})
     attrs[:type] = attrs[:type]&.to_sym || :paginated
-    unless %i[paginated infinite].include?(attrs[:type])
-      raise ActionController::BadRequest.new("'#{attrs[:type]}' is not a valid collection type")
-    end
-    attrs[:before] = DateTime.parse(attrs[:before]).utc.to_s(:db) if attrs[:before].present?
     super
   end
 
@@ -39,25 +36,6 @@ class Collection
   end
   alias_attribute :iri, :id
 
-  def page_size
-    association_class.default_per_page
-  end
-
-  def first
-    case type
-    when :paginated
-      return unless pagination
-      uri(query_opts.merge(page: 1))
-    when :infinite
-      uri(query_opts.merge(before: DateTime.current.utc.to_s(:db)))
-    end
-  end
-
-  def last
-    return unless paginated? && pagination
-    uri(query_opts.merge(page: [total_page_count, 1].max))
-  end
-
   def members
     return if include_before? || include_pages? || filter?
     @members ||=
@@ -69,23 +47,9 @@ class Collection
       end
   end
 
-  def next
-    case type
-    when :paginated
-      next_paginated
-    when :infinite
-      next_infinite
-    end
-  end
-
   def parent_view_iri
     return @parent_view_iri if @parent_view_iri
     uri(query_opts.except(:page)) if page
-  end
-
-  def previous
-    return if !pagination || page.nil? || page.to_i <= 1
-    uri(query_opts.merge(page: page.to_i - 1))
   end
 
   def views
@@ -133,72 +97,6 @@ class Collection
     parent&.collection_for(name, options) || new_child(options.merge(pagination: pagination))
   end
 
-  def filter?
-    association_class.filter_options.present? && filter.blank? && association_class.filter_options.any? do |_k, v|
-      v.present?
-    end
-  end
-
-  def filter_query
-    return if filter.blank?
-    queries, values = filter_query_with_values
-    [queries.join(' AND '), *values]
-  end
-
-  def filter_query_with_values
-    queries = []
-    values = []
-    filter.map do |k, v|
-      options = association_class.filter_options.fetch(k)
-      value = filter_single_value(options, v)
-      values << value unless value.is_a?(String) && value.include?('NULL')
-      queries << filter_single_query(options, k, value)
-    end
-    [queries, values]
-  end
-
-  def filter_single_query(options, key, value)
-    key = options[:key] || key
-    if value.is_a?(String) && value.include?('NULL')
-      [key, value].join(' IS ')
-    else
-      [key, '?'].join(' = ')
-    end
-  end
-
-  def filter_single_value(options, value)
-    options[:values].try(:[], value.try(:to_sym)) || value
-  end
-
-  def filter_views
-    association_class.filter_options.map do |key, values|
-      values[:values].map { |value| child_with_options(filter: {key => value[0]}) }
-    end.flatten
-  end
-
-  def include_before?
-    infinite? && pagination && before.nil?
-  end
-
-  def include_pages?
-    paginated? && pagination && page.nil?
-  end
-
-  def infinite?
-    type == :infinite
-  end
-
-  def members_infinite
-    policy_scope(association_base)
-      .includes(includes)
-      .where('created_at < ?', before)
-      .limit(association_class.default_per_page)
-  end
-
-  def members_paginated
-    policy_scope(association_base).includes(includes).page(page)
-  end
-
   def new_child(options)
     Collection.new(
       options.merge(
@@ -208,30 +106,12 @@ class Collection
     )
   end
 
-  def next_infinite
-    return if !pagination || before.nil?
-    uri(query_opts.merge(before: members.last.created_at.utc.to_s(:db)))
-  end
-
-  def next_paginated
-    return if !pagination || page.nil? || page.to_i >= total_page_count
-    uri(query_opts.merge(page: page.to_i + 1))
-  end
-
-  def paginated?
-    type == :paginated
-  end
-
   def query_opts
     opts = {type: type}
     opts[:before] = before if before.present?
     opts[:page] = page if page.present?
     opts[:filter] = filter if filter.present?
     opts
-  end
-
-  def total_page_count
-    (association_base.count / page_size).ceil
   end
 
   def uri(query_values = '')
