@@ -39,7 +39,7 @@ class Collection
   end
   alias_attribute :iri, :id
 
-  def items_per_page
+  def page_size
     association_class.default_per_page
   end
 
@@ -231,7 +231,7 @@ class Collection
   end
 
   def total_page_count
-    (association_base.count / items_per_page).ceil
+    (association_base.count / page_size).ceil
   end
 
   def uri(query_values = '')

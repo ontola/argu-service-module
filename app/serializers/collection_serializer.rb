@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CollectionSerializer < BaseSerializer
-  attribute :items_per_page, predicate: NS::ARGU[:pageSize]
+  attribute :page_size, predicate: NS::ARGU[:pageSize]
   attribute :title, predicate: NS::SCHEMA[:name]
   attribute :total_count, predicate: NS::ARGU[:totalCount]
   attribute :parent_view_iri, predicate: NS::ARGU[:parentView]
