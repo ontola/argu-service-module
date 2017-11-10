@@ -10,8 +10,9 @@ class Collection
   include Collection::Filtering
   include Collection::Pagination
 
-  attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :parent,
-                :parent_view_iri, :title, :type, :url_constructor, :url_constructor_opts, :user_context
+  attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
+                :parent, :parent_view_iri, :title, :type, :url_constructor, :url_constructor_opts,
+                :user_context
 
   EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
@@ -19,6 +20,7 @@ class Collection
 
   def initialize(attrs = {})
     attrs[:type] = attrs[:type]&.to_sym || :paginated
+    attrs[:order] = attrs[:order]&.to_sym || {created_at: :desc}
     super
   end
 
@@ -49,7 +51,8 @@ class Collection
 
   def parent_view_iri
     return @parent_view_iri if @parent_view_iri
-    uri(query_opts.except(:page)) if page
+    return uri(query_opts.except(:page)) if page
+    uri(query_opts.except(:before)) if before
   end
 
   def views

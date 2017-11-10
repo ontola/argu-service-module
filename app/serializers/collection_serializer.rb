@@ -15,4 +15,9 @@ class CollectionSerializer < BaseSerializer
 
   has_many :members, predicate: NS::ARGU[:members]
   has_many :views, predicate: NS::ARGU[:views]
+
+  def type
+    return NS::ARGU[:InfiniteCollection] if object.infinite?
+    super
+  end
 end

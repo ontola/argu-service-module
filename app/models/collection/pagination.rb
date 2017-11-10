@@ -31,6 +31,10 @@ class Collection
       uri(query_opts.merge(page: [total_page_count, 1].max))
     end
 
+    def infinite?
+      type == :infinite
+    end
+
     def next
       case type
       when :paginated
@@ -50,6 +54,10 @@ class Collection
       uri(query_opts.merge(page: page.to_i + 1))
     end
 
+    def paginated?
+      type == :paginated
+    end
+
     def previous
       return if !pagination || page.nil? || page.to_i <= 1
       uri(query_opts.merge(page: page.to_i - 1))
@@ -65,23 +73,19 @@ class Collection
       paginated? && pagination && page.nil?
     end
 
-    def infinite?
-      type == :infinite
-    end
-
     def members_infinite
       policy_scope(association_base)
         .includes(includes)
         .where('created_at < ?', before)
+        .order(order)
         .limit(association_class.default_per_page)
     end
 
     def members_paginated
-      policy_scope(association_base).includes(includes).page(page)
-    end
-
-    def paginated?
-      type == :paginated
+      policy_scope(association_base)
+        .includes(includes)
+        .order(order)
+        .page(page)
     end
 
     def total_page_count
