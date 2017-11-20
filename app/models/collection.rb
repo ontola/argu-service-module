@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class Collection
-  include Pundit
-  include Ldable
   include ActiveModel::Serialization
   include ActiveModel::Model
   include ActionDispatch::Routing
+  include Pundit
   include Rails.application.routes.url_helpers
+
+  include ApplicationModel
+  include Ldable
   include Collection::Filtering
   include Collection::Pagination
 
