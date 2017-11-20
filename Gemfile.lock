@@ -8,6 +8,14 @@ GIT
       activemodel-serializers-xml (~> 1.0)
       activesupport (> 4.2, < 6)
 
+GIT
+  remote: https://github.com/thoughtbot/shoulda-matchers
+  revision: 5d9f8da8c6611c591813a57417edff4bcaf9bc24
+  branch: master
+  specs:
+    shoulda-matchers (3.1.2)
+      activesupport (>= 4.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -222,6 +230,7 @@ DEPENDENCIES
   rspec-rails
   rubocop
   rubocop-rspec
+  shoulda-matchers!
   uri_template
   webmock
 

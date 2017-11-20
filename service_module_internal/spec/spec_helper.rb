@@ -42,7 +42,7 @@ require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
 require_relative '../../app/serializers/base/base_serializer'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
-                   '{models/concerns,models/collection,models,resources,serializers}', '*.rb'),
+                   '{models/concerns,models/collection,models,models/actions,resources,serializers}', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
 require_relative 'fixtures/resource'
@@ -134,4 +134,13 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   # Kernel.srand config.seed
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+
+    with.library :active_record
+    with.library :active_model
+  end
 end

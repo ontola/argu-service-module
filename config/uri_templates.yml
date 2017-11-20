@@ -1,6 +1,7 @@
 # General IRI's
 activities_iri: "/activities{/id}"
 actions_iri: "{+parent_iri}{#type}"
+action_lists_iri: "{+parent_iri}/actions"
 announcements_iri: "/announcements{/id}"
 arguments_iri: "/a{/id}"
 banners_iri: "/banners{/id}"
