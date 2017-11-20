@@ -7,6 +7,7 @@ class Collection
   include Pundit
   include Rails.application.routes.url_helpers
 
+  include Actionable
   include ApplicationModel
   include Ldable
   include Collection::Filtering
@@ -29,10 +30,6 @@ class Collection
   # prevents a `stack level too deep`
   def as_json(options = {})
     super(options.merge(except: %w[association_class user_context]))
-  end
-
-  def create_action
-    Action.new(base_iri: uri, filter: query_opts[:filter], type: :create, resource_type: name)
   end
 
   def id
