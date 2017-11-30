@@ -14,14 +14,10 @@ class ActionsController < AuthorizedController
 
   private
 
-  def authenticated_tree
-    parent_resource.try(:edge)&.self_and_ancestors
-  end
-
   def authorize_action
     skip_verify_policy_scoped(true)
-    if parent_resource.present?
-      authorize parent_resource, :show?
+    if parent_id_from_params.present?
+      authorize parent_resource!, :show?
     else
       skip_verify_policy_authorized(true)
     end
@@ -38,8 +34,8 @@ class ActionsController < AuthorizedController
   end
 
   def index_response_association
-    if parent_resource.present?
-      parent_resource.actions(user_context)
+    if parent_id_from_params.present?
+      parent_resource!.actions(user_context)
     else
       ApplicationActions.new(user_context: user_context).actions
     end
@@ -56,5 +52,9 @@ class ActionsController < AuthorizedController
 
   def parent_resource
     super if parent_id_from_params.present?
+  end
+
+  def tree_root_id
+    parent_resource.try(:edge)&.root_id
   end
 end
