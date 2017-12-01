@@ -8,8 +8,11 @@ describe Resource do
 
     it { expect(resource.id).to eq('resource_id') }
     it { expect(resource.attr1).to eq('attribute 1') }
-    it { expect(resource.parent.id).to eq('record_id') }
-    it { expect(resource.parent.attr_one).to eq('attribute one') }
+    it { expect(resource.parent.id).to eq('ping') }
+    it { expect(resource.parent.attr_one).to eq('I am ping') }
+    it { expect(resource.parent.parent.id).to eq('pong') }
+    it { expect(resource.parent.parent.attr_one).to eq('I am pong') }
+    it { expect(resource.parent.parent.parent.id).to eq('ping') }
   end
 
   before do
@@ -27,7 +30,7 @@ describe Resource do
             relationships: {
               parent: {
                 data: {
-                  id: 'record_id',
+                  id: 'ping',
                   type: 'records'
                 }
               }
@@ -35,10 +38,33 @@ describe Resource do
           },
           included: [
             {
-              id: 'record_id',
+              id: 'ping',
               type: 'records',
               attributes: {
-                attrOne: 'attribute one'
+                attrOne: 'I am ping'
+              },
+              relationships: {
+                parent: {
+                  data: {
+                    id: 'pong',
+                    type: 'records'
+                  }
+                }
+              }
+            },
+            {
+              id: 'pong',
+              type: 'records',
+              attributes: {
+                attrOne: 'I am pong'
+              },
+              relationships: {
+                parent: {
+                  data: {
+                    id: 'ping',
+                    type: 'records'
+                  }
+                }
               }
             }
           ]
