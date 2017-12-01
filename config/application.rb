@@ -21,6 +21,9 @@ require_relative '../../config/initializers/build'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require_relative '../app/serializers/base/base_serializer'
+require_relative '../lib/ns'
+
 module Service
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
