@@ -122,6 +122,6 @@ class Collection
            else
              url_for([parent, association_class, protocol: :https])
            end
-    RDF::IRI.new [base, query_values.to_param].reject(&:empty?).join('?')
+    RDF::URI([base, query_values.to_param].reject(&:empty?).join('?'))
   end
 end

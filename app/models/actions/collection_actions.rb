@@ -26,6 +26,6 @@ class CollectionActions < ActionList
   def new_url
     u = URI.parse(resource.iri)
     u.path += '/new'
-    RDF::IRI.new u.to_s
+    RDF::URI(u.to_s)
   end
 end

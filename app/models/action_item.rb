@@ -27,7 +27,7 @@ class ActionItem
     else
       base.fragment = tag
     end
-    RDF::IRI.new base
+    RDF::URI(base)
   end
   alias id iri
 end

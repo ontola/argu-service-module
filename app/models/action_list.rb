@@ -18,7 +18,7 @@ class ActionList
     parent_iri = resource.iri
     query = parent_iri.query
     parent_iri.query = nil
-    i = RDF::IRI.new expand_uri_template('action_lists_iri', parent_iri: parent_iri, path_only: true)
+    i = RDF::URI(expand_uri_template('action_lists_iri', parent_iri: parent_iri, path_only: true))
     i.query = query
     i
   end

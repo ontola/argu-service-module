@@ -7,9 +7,9 @@ module Iriable
     include UriTemplateHelper
 
     # The (canonical) IRI of the object. The used URL may differ.
-    # @return [RDF::IRI] IRI of the object.
+    # @return [RDF::URI] IRI of the object.
     def iri
-      RDF::IRI.new expand_uri_template("#{model_name.route_key}_iri", **iri_opts)
+      RDF::URI(expand_uri_template("#{model_name.route_key}_iri", **iri_opts))
     end
 
     def iri_opts

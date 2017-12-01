@@ -23,7 +23,7 @@ class EntryPoint
       u.fragment = 'entrypoint'
     end
 
-    RDF::IRI.new u.to_s
+    RDF::URI(u.to_s)
   end
   alias id iri
 end
