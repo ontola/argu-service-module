@@ -13,6 +13,8 @@ describe Resource do
     it { expect(resource.parent.parent.id).to eq('pong') }
     it { expect(resource.parent.parent.attr_one).to eq('I am pong') }
     it { expect(resource.parent.parent.parent.id).to eq('ping') }
+    it { expect(resource.parent2.id).to eq('ping') }
+    it { expect(resource.parent2.attr_one).to eq('I am ping') }
   end
 
   before do
@@ -29,6 +31,12 @@ describe Resource do
             },
             relationships: {
               parent: {
+                data: {
+                  id: 'ping',
+                  type: 'records'
+                }
+              },
+              parent2: {
                 data: {
                   id: 'ping',
                   type: 'records'
