@@ -8,6 +8,7 @@ module UriTemplateHelper
     ].with_indifferent_access.freeze
 
   def expand_uri_template(template, args = {})
+    raise "Uri template #{template} is missing" unless uri_template(template)
     if args[:path_only]
       uri_template(template).expand(args)
     else
