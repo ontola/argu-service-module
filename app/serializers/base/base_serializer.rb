@@ -11,6 +11,19 @@ class BaseSerializer < ActiveModel::Serializer
     object.iri
   end
 
+  def serialize_image(obj)
+    return if obj.blank?
+    if obj.is_a?(MediaObject)
+      obj
+    elsif obj.is_a?(String)
+      obj = RDF::URI(obj.gsub(/^fa-/, 'http://fontawesome.io/icon/'))
+      {
+        id: obj,
+        type: NS::ARGU[:FontAwesomeIcon]
+      }
+    end
+  end
+
   def service_scope?
     scope&.doorkeeper_scopes&.include? 'service'
   end

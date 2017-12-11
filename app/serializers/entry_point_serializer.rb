@@ -6,19 +6,10 @@ class EntryPointSerializer < BaseSerializer
   attribute :url_template, predicate: NS::SCHEMA[:urlTemplate]
   attribute :http_method, key: :method, predicate: NS::SCHEMA[:method]
 
-  has_one :image, predicate: NS::SCHEMA[:image] do
-    obj = object.image
-    if obj
-      if defined?(MediaObject) && obj.is_a?(MediaObject)
-        obj
-      elsif obj.is_a?(String)
-        obj = obj.gsub(/^fa-/, 'http://fontawesome.io/icon/')
-        {
-          id: obj,
-          type: NS::ARGU[:FontAwesomeIcon]
-        }
-      end
-    end
+  has_one :image, predicate: NS::SCHEMA[:image]
+
+  def image
+    serialize_image(object.image)
   end
 
   def type
