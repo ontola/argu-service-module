@@ -10,6 +10,7 @@ class Collection
   include Actionable
   include ApplicationModel
   include Ldable
+  include Iriable
   include Collection::Filtering
   include Collection::Pagination
 

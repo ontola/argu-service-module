@@ -33,6 +33,6 @@ class BaseSerializer < ActiveModel::Serializer
   end
 
   def type
-    NS::ARGU[object.class.name]
+    object.class.type_iri
   end
 end

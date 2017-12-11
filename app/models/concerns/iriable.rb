@@ -15,5 +15,9 @@ module Iriable
     def iri_opts
       {id: id, :"#{self.class.name.underscore}_id" => id}
     end
+
+    def self.type_iri
+      NS::ARGU[name.demodulize]
+    end
   end
 end
