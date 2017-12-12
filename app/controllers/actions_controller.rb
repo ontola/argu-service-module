@@ -8,7 +8,7 @@ class ActionsController < AuthorizedController
   def show
     respond_to do |format|
       format.json_api { render json: resource_by_id!, include: include_show }
-      format.n3 { render n3: resource_by_id!, include: include_show }
+      format.nt { render nt: resource_by_id!, include: include_show }
     end
   end
 
