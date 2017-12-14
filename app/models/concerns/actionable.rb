@@ -18,8 +18,8 @@ module Actionable
 
   module Serializer
     extend ActiveSupport::Concern
-
     module ClassMethods
+      # rubocop:disable Rails/HasManyOrHasOneDependent
       def include_actions
         has_many :actions, key: :operation, predicate: NS::HYDRA[:operation] do
           object.actions(scope) if scope.is_a?(UserContext)
@@ -38,6 +38,7 @@ module Actionable
                   predicate: NS::ARGU[method_name.camelize(:lower)]
         end
       end
+      # rubocop:enable Rails/HasManyOrHasOneDependent
     end
   end
 end

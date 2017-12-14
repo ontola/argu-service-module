@@ -33,7 +33,7 @@ describe Collection do
   end
 
   describe '#id' do
-    context 'paginated' do
+    context 'with paginated' do
       subject { paginated_collection.id }
 
       it { is_expected.to eq('https://argu.test/resources?type=paginated') }
@@ -51,7 +51,7 @@ describe Collection do
       end
     end
 
-    context 'infinite' do
+    context 'with infinite' do
       subject { infinite_collection.id }
 
       it { is_expected.to eq('https://argu.test/resources?type=infinite') }
@@ -73,7 +73,7 @@ describe Collection do
   describe '#parent_view_iri' do
     let(:filter) { {key: :value} }
 
-    context 'paginated' do
+    context 'with paginated' do
       subject { paginated_collection.parent_view_iri }
 
       it { is_expected.to be_nil }
@@ -92,7 +92,7 @@ describe Collection do
       end
     end
 
-    context 'infinite' do
+    context 'with infinite' do
       subject { infinite_collection.parent_view_iri }
 
       it { is_expected.to be_nil }
@@ -113,7 +113,7 @@ describe Collection do
   end
 
   describe '#filter_query' do
-    context 'paginated' do
+    context 'with paginated' do
       subject { paginated_collection.send(:filter_query) }
 
       it { is_expected.to be_nil }
@@ -132,7 +132,7 @@ describe Collection do
       end
     end
 
-    context 'infinite' do
+    context 'with infinite' do
       subject { infinite_collection.send(:filter_query) }
 
       it { is_expected.to be_nil }

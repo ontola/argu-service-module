@@ -13,7 +13,7 @@ describe ActionItem, type: :model do
   it { is_expected.to be_valid }
 
   describe '#target' do
-    context 'blank' do
+    context 'when blank' do
       let(:target) { nil }
 
       it { expects_to_raise }

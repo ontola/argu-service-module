@@ -3,7 +3,7 @@
 require_relative '../spec_helper'
 
 describe CurrentUser do
-  context 'user 1' do
+  context 'with user 1' do
     subject { described_class.find('user_token_1') }
 
     it 'has proper attributes' do
@@ -14,7 +14,7 @@ describe CurrentUser do
     end
   end
 
-  context 'user 2' do
+  context 'with user 2' do
     subject { described_class.find('user_token_2') }
 
     it 'has proper attributes' do

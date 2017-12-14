@@ -14,8 +14,9 @@ class Collection
   include Collection::Pagination
 
   attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
-                :parent, :parent_view_iri, :title, :type, :url_constructor, :url_constructor_opts,
+                :parent, :type, :url_constructor, :url_constructor_opts,
                 :user_context
+  attr_writer :parent_view_iri, :title
 
   EDGEABLE_CLASS = 'Edgeable'.safe_constantize
 
@@ -60,7 +61,7 @@ class Collection
     elsif include_pages?
       [child_with_options(page: 1)]
     elsif include_before?
-      [child_with_options(before: DateTime.current.utc.to_s(:db))]
+      [child_with_options(before: Time.current.utc.to_s(:db))]
     end
   end
 

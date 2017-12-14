@@ -8,7 +8,7 @@ class Collection
       unless %i[paginated infinite].include?(attrs[:type])
         raise ActionController::BadRequest.new("'#{attrs[:type]}' is not a valid collection type")
       end
-      attrs[:before] = DateTime.parse(attrs[:before]).utc.to_s(:db) if attrs[:before].present?
+      attrs[:before] = Time.parse(attrs[:before]).utc.to_s(:db) if attrs[:before].present?
       super
     end
 
@@ -22,7 +22,7 @@ class Collection
         return unless pagination
         uri(query_opts.merge(page: 1))
       when :infinite
-        uri(query_opts.merge(before: DateTime.current.utc.to_s(:db)))
+        uri(query_opts.merge(before: Time.current.utc.to_s(:db)))
       end
     end
 
