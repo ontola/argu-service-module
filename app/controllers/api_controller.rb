@@ -17,6 +17,20 @@ class ApiController < ActionController::API
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
   rescue_from OAuth2::Error, with: :handle_oauth_error
 
+  class_attribute :inc_nested_collection
+  self.inc_nested_collection = [
+    member_sequence: :members,
+    operation: :target,
+    view_sequence: [
+      members:
+        [
+          member_sequence: :members,
+          operation: :target,
+          view_sequence: [members: [member_sequence: :members, operation: :target].freeze].freeze
+        ].freeze
+    ].freeze
+  ].freeze
+
   def current_user
     @current_user ||= CurrentUser.find(request.cookie_jar.encrypted['argu_client_token'])
   rescue OAuth2::Error
