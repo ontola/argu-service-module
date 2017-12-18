@@ -27,7 +27,7 @@ class Collection
     end
 
     def last
-      return unless paginated? && pagination
+      return unless paginated? && pagination && total_page_count
       uri(query_opts.merge(page: [total_page_count, 1].max))
     end
 
@@ -50,7 +50,7 @@ class Collection
     end
 
     def next_paginated
-      return if !pagination || page.nil? || page.to_i >= total_page_count
+      return if !pagination || page.nil? || page.to_i >= (total_page_count || 0)
       uri(query_opts.merge(page: page.to_i + 1))
     end
 
@@ -89,7 +89,7 @@ class Collection
     end
 
     def total_page_count
-      (association_base.count / page_size).ceil
+      (association_base.count / page_size).ceil if association_base.count
     end
   end
 end

@@ -79,12 +79,7 @@ class Collection
   private
 
   def association_base
-    policy_scope(
-      (parent&.send(association) || association_class)
-        .send(association_scope || :all)
-        .joins(joins)
-        .where(filter_query)
-    )
+    @association_base ||= policy_scope(filtered_association)
   end
 
   def child_with_options(options)
@@ -100,6 +95,14 @@ class Collection
     parent&.collection_for(name, options) || new_child(options.merge(pagination: pagination))
   end
 
+  def filtered_association
+    scope = parent&.send(association) || association_class
+    scope = scope.send(association_scope) if association_scope
+    scope = scope.joins(joins) if joins
+    scope = scope.where(filter_query) if filter_query
+    scope
+  end
+
   def new_child(options)
     Collection.new(
       options.merge(
@@ -107,6 +110,11 @@ class Collection
         association_scope: association_scope
       )
     )
+  end
+
+  def policy_scope(scope)
+    policy_scope = PolicyFinder.new(scope).scope
+    policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
   end
 
   def query_opts
@@ -118,11 +126,16 @@ class Collection
   end
 
   def uri(query_values = '')
-    base = if url_constructor.present?
-             send(url_constructor, url_constructor_opts || parent.id, protocol: :https)
-           else
-             url_for([parent, association_class, protocol: :https])
-           end
+    base = url_constructor.present? ? uri_from_constructor : url_for([parent, association_class, protocol: :https])
     RDF::URI([base, query_values.to_param].reject(&:empty?).join('?'))
+  end
+
+  def uri_from_constructor
+    send(
+      url_constructor,
+      url_constructor_opts.present? ? nil : parent.id,
+      (url_constructor_opts&.call(parent)&.symbolize_keys || {})
+        .merge(protocol: :https)
+    )
   end
 end

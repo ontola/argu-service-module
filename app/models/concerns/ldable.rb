@@ -20,6 +20,7 @@ module Ldable
       name: name
     ).merge(collection[:options])
     args[:parent] = self
+    args[:url_constructor] = args[:url_constructor].call(self) if args[:url_constructor].respond_to?(:call)
     Collection.new(args)
   end
 
