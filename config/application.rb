@@ -36,6 +36,9 @@ module Service
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
     config.oauth_url = ENV['OAUTH_URL']
+
+    config.autoload_paths += %W[#{config.root}/app/models/actions]
+
     Rails.application.routes.default_url_options[:host] = config.host_name
     ActiveModelSerializers.config.key_transform = :camel_lower
   end
