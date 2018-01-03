@@ -34,6 +34,7 @@ module Ldable
           []
         end
       end
+      collections.delete_if { |c| c[:name] == opts[:name] }
       collections.append(opts)
     end
 
