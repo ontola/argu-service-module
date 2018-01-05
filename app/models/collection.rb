@@ -49,6 +49,10 @@ class Collection
       end
   end
 
+  def member_sequence
+    @member_sequence ||= RDF::Sequence.new(members)
+  end
+
   def parent_view_iri
     return @parent_view_iri if @parent_view_iri
     return uri(query_opts.except(:page)) if page
@@ -63,6 +67,10 @@ class Collection
     elsif include_before?
       [child_with_options(before: Time.current.utc.to_s(:db))]
     end
+  end
+
+  def view_sequence
+    @view_sequence ||= RDF::Sequence.new(views)
   end
 
   def title

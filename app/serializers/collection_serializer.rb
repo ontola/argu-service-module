@@ -15,8 +15,8 @@ class CollectionSerializer < BaseSerializer
 
   has_one :parent, predicate: NS::SCHEMA[:isPartOf]
 
-  has_many :members, predicate: NS::ARGU[:members]
-  has_many :views, predicate: NS::ARGU[:views]
+  has_one :member_sequence, predicate: NS::ARGU[:members], if: :members?
+  has_one :view_sequence, predicate: NS::ARGU[:views], if: :views?
 
   def type
     return NS::ARGU[:InfiniteCollection] if object.infinite?
@@ -25,5 +25,13 @@ class CollectionSerializer < BaseSerializer
 
   def members
     object.association_class == Collection::EDGE_CLASS ? object.members&.map(&:owner) : object.members
+  end
+
+  def members?
+    object.members.present?
+  end
+
+  def views?
+    object.views.present?
   end
 end
