@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'active_model_serializers', '= 0.10.4'
+gem 'active_model_serializers', '= 0.10.7'
 gem 'activeresource',
     git: 'https://github.com/rails/activeresource',
     branch: 'master'
