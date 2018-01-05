@@ -48,6 +48,7 @@ vote_iri: "{+parent_iri}/vote"
 votes_iri: "/v{/id}"
 vote_events_iri: "{+parent_iri}/vote_events{/id}"
 vote_matches_iri: "/vote_matches{/id}"
+widgets_iri: "/widgets{/id}"
 # Argu Service
 new_vote: "{/voteable_path*}/votes/new{?confirm,r,vote%5Bfor%5D}"
 user_confirmation: "/users/confirmation{?confirmation_token}"
