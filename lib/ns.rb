@@ -4,6 +4,9 @@ require 'rdf'
 
 module NS
   ARGU = RDF::Vocabulary.new('https://argu.co/ns/core#')
+  COUNCIL = RDF::Vocabulary.new('https://argu.co/ns/0.1/gov/council#')
+  GOVID = RDF::Vocabulary.new('https://argu.co/ns/0.1/gov/id#')
+
   BIBO = RDF::Vocabulary.new('http://purl.org/ontology/bibo/')
   CC = RDF::Vocabulary.new('http://creativecommons.org/ns#')
   DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
@@ -14,7 +17,11 @@ module NS
   HTTP = RDF::Vocabulary.new('http://www.w3.org/2011/http#')
   HYDRA = RDF::Vocabulary.new('http://www.w3.org/ns/hydra/core#')
   LL = RDF::Vocabulary.new('http://purl.org/link-lib/')
+  NCAL = RDF::Vocabulary.new('http://www.semanticdesktop.org/ontologies/2007/04/02/ncal#')
+  OPENGOV = RDF::Vocabulary.new('http://www.w3.org/ns/opengov#')
+  ORG = RDF::Vocabulary.new('http://www.w3.org/ns/org#')
   P = RDF::Vocabulary.new('http://www.wikidata.org/prop/')
+  PERSON = RDF::Vocabulary.new('http://www.w3.org/ns/person#')
   PROV = RDF::Vocabulary.new('http://www.w3.org/ns/prov#')
   SCHEMA = RDF::Vocabulary.new('http://schema.org/')
   SKOS = RDF::Vocabulary.new('http://www.w3.org/2004/02/skos/core#')
