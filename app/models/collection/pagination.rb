@@ -8,7 +8,9 @@ class Collection
       unless %i[paginated infinite].include?(attrs[:type])
         raise ActionController::BadRequest.new("'#{attrs[:type]}' is not a valid collection type")
       end
-      attrs[:before] = Time.parse(attrs[:before]).utc.to_s(:db) if attrs[:before].present?
+      # rubocop:disable Rails/TimeZone
+      attrs[:before] = Time.parse(attrs[:before]).to_s(:db) if attrs[:before].present?
+      # rubocop:enable Rails/TimeZone
       super
     end
 
