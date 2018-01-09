@@ -4,10 +4,10 @@ class BaseSerializer < ActiveModel::Serializer
   attribute :type, predicate: RDF[:type]
 
   def id
-    ld_id
+    rdf_subject
   end
 
-  def ld_id
+  def rdf_subject
     object.iri
   end
 
