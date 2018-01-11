@@ -24,7 +24,7 @@ module Argu
 
       def expect_included(id)
         if id.is_a?(Array)
-          expect(id).to be_truthy, 'No entries given'
+          expect(id).not_to be_empty, 'No entries given'
           id.each { |single| expect_included(single) }
         else
           included = json_api_included_resource(parsed_body, id: id.to_s)
