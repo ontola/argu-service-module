@@ -22,4 +22,8 @@ class CollectionSerializer < BaseSerializer
     return NS::ARGU[:InfiniteCollection] if object.infinite?
     super
   end
+
+  def members
+    object.association_class == Collection::EDGE_CLASS ? object.members&.map(&:owner) : object.members
+  end
 end

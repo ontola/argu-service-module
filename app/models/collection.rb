@@ -18,7 +18,7 @@ class Collection
                 :user_context
   attr_writer :parent_view_iri, :title
 
-  EDGEABLE_CLASS = 'Edgeable'.safe_constantize
+  EDGE_CLASS = 'Edge'.safe_constantize
 
   alias pundit_user user_context
 
