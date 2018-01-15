@@ -44,7 +44,7 @@ statistics_iri: "{+parent_iri}/statistics"
 users_iri: "/u{/id}"
 vote_iri: "{+parent_iri}/vote"
 votes_iri: "/v{/id}"
-vote_events_iri: "/vote_events{/id}"
+vote_events_iri: "{+parent_iri}/vote_events{/id}"
 vote_matches_iri: "/vote_matches{/id}"
 # Argu Service
 new_vote: "{/voteable_path*}/votes/new{?confirm,r,vote%5Bfor%5D}"
