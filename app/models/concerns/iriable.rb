@@ -13,7 +13,7 @@ module Iriable
     end
 
     def iri_opts
-      {id: id}
+      {id: id, :"#{self.class.name.underscore}_id" => id}
     end
   end
 end
