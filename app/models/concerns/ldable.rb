@@ -29,7 +29,11 @@ module Ldable
     end
 
     def collections_add(opts)
-      cattr_accessor :collections { [] } unless class_variables.include?(:@@collections)
+      unless class_variables.include?(:@@collections)
+        cattr_accessor :collections do
+          []
+        end
+      end
       collections.append(opts)
     end
 
