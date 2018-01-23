@@ -24,6 +24,7 @@ grant_tree_permissions_iri: "/edges{/edge_id}/permissions/g{/group_id}{/resource
 grants_iri: "/grants{/id}"
 groups_iri: "/g{/id}"
 group_memberships_iri: "/group_memberships{/id}"
+guest_users_iri: "/sessions{/id}"
 info_iri: "/i{/id}"
 linked_records_iri: "/lr{/id}"
 list_items_iri: "/items{/id}"
