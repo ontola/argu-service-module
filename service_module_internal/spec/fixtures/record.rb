@@ -10,7 +10,7 @@ class Record
     @new_record_before_save = new_record
   end
 
-  def iri
+  def iri(_opts = {})
     id
   end
 

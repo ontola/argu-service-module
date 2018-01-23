@@ -12,8 +12,8 @@ class EntryPoint
     {}
   end
 
-  def iri
-    u = URI.parse(parent.iri)
+  def iri(path_only: false)
+    u = URI.parse(parent.iri(path_only: path_only))
 
     if parent.is_a?(ActionList)
       u.path += 'entrypoint'

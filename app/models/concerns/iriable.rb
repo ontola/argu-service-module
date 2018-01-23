@@ -19,8 +19,8 @@ module Iriable
 
     # The IRI of the object. The used URL may differ.
     # @return [RDF::URI] IRI of the object.
-    def iri
-      RDF::URI(expand_uri_template("#{model_name.route_key}_iri", **iri_opts))
+    def iri(opts = {})
+      RDF::URI(expand_uri_template("#{model_name.route_key}_iri", **iri_opts.merge(opts)))
     end
 
     def iri_opts

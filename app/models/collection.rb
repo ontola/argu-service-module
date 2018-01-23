@@ -34,10 +34,10 @@ class Collection
     super(options.merge(except: %w[association_class user_context]))
   end
 
-  def id
-    uri(query_opts)
+  def id(path_only = false)
+    uri(query_opts, path_only)
   end
-  alias_attribute :iri, :id
+  alias iri id
 
   def members
     return if include_before? || include_pages? || filter?
@@ -121,6 +121,10 @@ class Collection
     )
   end
 
+  def path_or_url(path)
+    path ? url_constructor.to_s.gsub('_url', '_path') : url_constructor.to_s.gsub('_path', '_url')
+  end
+
   def policy_scope(scope)
     policy_scope = PolicyFinder.new(scope).scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
@@ -134,14 +138,20 @@ class Collection
     opts
   end
 
-  def uri(query_values = '')
-    base = url_constructor.present? ? uri_from_constructor : url_for([parent, association_class, protocol: :https])
+  def uri(query_values = '', path_only = false)
+    base =
+      if url_constructor.present?
+        uri_from_constructor(path_only)
+      else
+        object = [parent, association_class]
+        path_only ? polymorphic_path(object) : polymorphic_url(object, protocol: :https)
+      end
     RDF::URI([base, query_values.to_param].reject(&:empty?).join('?'))
   end
 
-  def uri_from_constructor
+  def uri_from_constructor(path_only = false)
     send(
-      url_constructor,
+      path_or_url(path_only),
       url_constructor_opts.present? ? nil : parent.id,
       (url_constructor_opts&.call(parent)&.symbolize_keys || {})
         .merge(protocol: :https)

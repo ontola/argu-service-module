@@ -17,8 +17,8 @@ class ActionItem
     {}
   end
 
-  def iri
-    base = parent.iri
+  def iri(path_only: false)
+    base = parent.iri(path_only: path_only)
 
     if parent.is_a?(ActionList)
       base.path += "/#{tag}"

@@ -14,11 +14,11 @@ class ActionList
   alias read_attribute_for_serialization send
   alias current_user user_context
 
-  def iri
-    parent_iri = resource.iri
+  def iri(opts = {})
+    parent_iri = resource.iri(path_only: true)
     query = parent_iri.query
     parent_iri.query = nil
-    i = RDF::URI(expand_uri_template('action_lists_iri', parent_iri: parent_iri, path_only: true))
+    i = RDF::URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
     i.query = query
     i
   end
