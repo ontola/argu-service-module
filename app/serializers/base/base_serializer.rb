@@ -2,9 +2,14 @@
 
 class BaseSerializer < ActiveModel::Serializer
   attribute :type, predicate: RDF[:type]
+  attribute :canonical_iri, predicate: NS::DC[:identifier]
 
   def id
     rdf_subject
+  end
+
+  def canonical_iri
+    object.try(:canonical_iri) || rdf_subject
   end
 
   def rdf_subject
