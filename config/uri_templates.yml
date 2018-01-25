@@ -61,6 +61,8 @@ user_registration: "/users"
 user_set_password: "/users/password/edit{?reset_password_token}"
 user_unlock: "/users/unlock{?unlock_token}"
 spi_authorize: "/spi/authorize{?resource_type,resource_id,resource_iri,authorize_action}"
+comments_index: "{/parent_iri*}/c?type=paginated"
+default_vote_event_votes_index: "{/parent_iri*}/vote_events/default"
 # Token Service
 bearer_token: "/tokens/{access_token}"
 verify_token: "/tokens/verify{?jwt}"
