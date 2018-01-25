@@ -34,8 +34,8 @@ class Collection
     super(options.merge(except: %w[association_class user_context]))
   end
 
-  def id(path_only = false)
-    uri(query_opts, path_only)
+  def id(only_path = false)
+    uri(query_opts, only_path)
   end
   alias iri id
 
@@ -138,20 +138,20 @@ class Collection
     opts
   end
 
-  def uri(query_values = '', path_only = false)
+  def uri(query_values = '', only_path = false)
     base =
       if url_constructor.present?
-        uri_from_constructor(path_only)
+        uri_from_constructor(only_path)
       else
         object = [parent, association_class]
-        path_only ? polymorphic_path(object) : polymorphic_url(object, protocol: :https)
+        only_path ? polymorphic_path(object) : polymorphic_url(object, protocol: :https)
       end
     RDF::URI([base, query_values.to_param].reject(&:empty?).join('?'))
   end
 
-  def uri_from_constructor(path_only = false)
+  def uri_from_constructor(only_path = false)
     send(
-      path_or_url(path_only),
+      path_or_url(only_path),
       url_constructor_opts.present? ? nil : parent.id,
       (url_constructor_opts&.call(parent)&.symbolize_keys || {})
         .merge(protocol: :https)

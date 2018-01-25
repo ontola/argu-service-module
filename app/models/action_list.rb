@@ -15,7 +15,7 @@ class ActionList
   alias current_user user_context
 
   def iri(opts = {})
-    parent_iri = resource.iri(path_only: true)
+    parent_iri = resource.iri(only_path: true)
     query = parent_iri.query
     parent_iri.query = nil
     i = RDF::URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
