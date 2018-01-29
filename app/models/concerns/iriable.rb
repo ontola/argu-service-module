@@ -8,9 +8,11 @@ module Iriable
 
     # The canonical IRI of the object. The used URL may differ.
     # @return [RDF::URI] IRI of the object.
-    def canonical_iri
-      return iri if uri_template("#{model_name.route_key}_canonical_iri").blank?
-      RDF::URI(expand_uri_template("#{model_name.route_key}_canonical_iri", **canonical_iri_opts))
+    def canonical_iri(only_path: false)
+      return iri(only_path: only_path) if uri_template("#{model_name.route_key}_canonical_iri").blank?
+      RDF::URI(
+        expand_uri_template("#{model_name.route_key}_canonical_iri", **canonical_iri_opts.merge(only_path: only_path))
+      )
     end
 
     def canonical_iri_opts

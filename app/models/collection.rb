@@ -15,8 +15,7 @@ class Collection
   include Collection::Pagination
 
   attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
-                :parent, :type, :url_constructor, :url_constructor_opts,
-                :user_context
+                :parent, :type, :user_context
   attr_writer :parent_view_iri, :title
 
   EDGE_CLASS = 'Edge'.safe_constantize
@@ -34,8 +33,12 @@ class Collection
     super(options.merge(except: %w[association_class user_context]))
   end
 
+  def canonical_iri(only_path: false)
+    uri(query_opts, canonical: true, only_path: only_path)
+  end
+
   def id(only_path = false)
-    uri(query_opts, only_path)
+    uri(query_opts, only_path: only_path)
   end
   alias iri id
 
@@ -97,9 +100,7 @@ class Collection
       filter: filter,
       page: page,
       parent_view_iri: id,
-      type: type,
-      url_constructor: url_constructor,
-      url_constructor_opts: url_constructor_opts
+      type: type
     }.merge(options)
     parent&.collection_for(name, options) || new_child(options.merge(pagination: pagination))
   end
@@ -121,10 +122,6 @@ class Collection
     )
   end
 
-  def path_or_url(path)
-    path ? url_constructor.to_s.gsub('_url', '_path') : url_constructor.to_s.gsub('_path', '_url')
-  end
-
   def policy_scope(scope)
     policy_scope = PolicyFinder.new(scope).scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
@@ -138,23 +135,20 @@ class Collection
     opts
   end
 
-  def uri(query_values = '', only_path = false)
-    base =
-      if url_constructor.present?
-        uri_from_constructor(only_path)
-      else
-        object = [parent, association_class]
-        only_path ? polymorphic_path(object) : polymorphic_url(object, protocol: :https)
-      end
-    RDF::URI([base, query_values.to_param].reject(&:empty?).join('?'))
+  def uri(query_values, canonical: false, only_path: false)
+    RDF::URI(
+      expand_uri_template(
+        "#{association_class.to_s.tableize}_collection_#{canonical ? 'canonical' : 'iri'}",
+        uri_opts(query_values, canonical).merge(only_path: only_path)
+      )
+    )
   end
 
-  def uri_from_constructor(only_path = false)
-    send(
-      path_or_url(only_path),
-      url_constructor_opts.present? ? nil : parent.id,
-      (url_constructor_opts&.call(parent)&.symbolize_keys || {})
-        .merge(protocol: :https)
-    )
+  def uri_opts(opts, canonical)
+    filters = opts[:filter]&.map { |k, v| [CGI.escape("filter[#{k}]"), v] }
+    opts
+      .except(:filter)
+      .merge(Hash[filters || []])
+      .merge(parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri(only_path: true))
   end
 end

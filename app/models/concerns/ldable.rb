@@ -20,7 +20,6 @@ module Ldable
       name: name
     ).merge(collection[:options])
     args[:parent] = self
-    args[:url_constructor] = args[:url_constructor].call(self) if args[:url_constructor].respond_to?(:call)
     Collection.new(args)
   end
 
@@ -53,7 +52,6 @@ module Ldable
     # @option options [Sym] association the name of the association
     # @option options [Class] association_class the class of the association
     # @option options [Bool] pagination whether to paginate this collection
-    # @option options [Sym] url_constructor the method to use to generate the ids
     # @option options [Sym] joins the associations to join
     # @option options [Sym] includes the associations to include
     # @return [Collection]
