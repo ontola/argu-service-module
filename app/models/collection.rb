@@ -85,7 +85,7 @@ class Collection
   end
 
   def total_count
-    members&.count || association_base.count
+    members&.count || base_count
   end
 
   private

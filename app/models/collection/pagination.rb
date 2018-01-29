@@ -67,6 +67,10 @@ class Collection
 
     private
 
+    def base_count
+      @base_count ||= association_base.count
+    end
+
     def include_before?
       infinite? && pagination && before.nil?
     end
@@ -91,7 +95,7 @@ class Collection
     end
 
     def total_page_count
-      (association_base.count / page_size).ceil if association_base.count
+      (base_count / page_size).ceil if base_count
     end
   end
 end
