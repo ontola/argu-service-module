@@ -23,18 +23,24 @@ Bundler.require :default, :development
 ENV['HOSTNAME'] = 'argu.test'
 ENV['OAUTH_URL'] = 'https://argu.test'
 
+require 'active_support/core_ext/hash'
+
 module ServiceModule
   class Application < Rails::Application
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
     config.oauth_url = ENV['OAUTH_URL']
     config.filter_parameters += [:password]
+    config.uri_templates =
+      Hash[
+        YAML.safe_load(File.read(File.expand_path('../../config/uri_templates.yml', __FILE__)))
+          .map { |k, v| [k, URITemplate.new(v)] }
+      ].with_indifferent_access.freeze
   end
 end
 
 $LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 
-require 'active_support/core_ext/hash'
 require 'action_controller'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
 require_relative '../../lib/ns'
