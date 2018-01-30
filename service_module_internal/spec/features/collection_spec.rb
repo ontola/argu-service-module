@@ -13,12 +13,6 @@ describe Collection do
       page: try(:page),
       parent: try(:parent)
     )
-    col.define_singleton_method(:record_records_url) do |parent, protocol:|
-      "#{protocol}://argu.test/resources/#{parent.try(:id) || parent}"
-    end
-    col.define_singleton_method(:records_url) do |protocol:|
-      "#{protocol}://argu.test/resources"
-    end
     col
   end
   let(:paginated_collection) do
@@ -41,7 +35,7 @@ describe Collection do
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq('https://argu.test/resources/record_id?type=paginated') }
+        it { is_expected.to eq('https://argu.test/r/record_id/resources?type=paginated') }
       end
 
       context 'with page' do
@@ -59,7 +53,7 @@ describe Collection do
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq('https://argu.test/resources/record_id?type=infinite') }
+        it { is_expected.to eq('https://argu.test/r/record_id/resources?type=infinite') }
       end
 
       context 'with page' do

@@ -2,16 +2,13 @@
 
 class Record
   include Ldable
+  include Iriable
   include ActiveModel::Model
   alias read_attribute_for_serialization send
   filterable key: {key: :actual_key, values: {value: 'actual_value'}}, key2: {}, key3: {values: {empty: 'NULL'}}
 
   def initialize(new_record)
     @new_record_before_save = new_record
-  end
-
-  def iri(_opts = {})
-    id
   end
 
   def id

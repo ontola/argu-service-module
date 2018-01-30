@@ -1,1 +1,3 @@
+records_iri: '/r/{id}'
+records_collection_iri: '{/parent_iri*}/resources{?filter%5Bkey%5D,page,type}'
 template: 'test'
