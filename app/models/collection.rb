@@ -15,8 +15,8 @@ class Collection
   include Collection::Pagination
 
   attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
-                :parent, :type, :user_context
-  attr_writer :parent_view_iri, :title
+                :parent, :type, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts
+  attr_writer :parent_view_iri, :title, :parent_uri_template
 
   EDGE_CLASS = 'Edge'.safe_constantize
 
@@ -117,7 +117,10 @@ class Collection
     Collection.new(
       options.merge(
         association_class: association_class,
-        association_scope: association_scope
+        association_scope: association_scope,
+        parent_uri_template_canonical: parent_uri_template_canonical,
+        parent_uri_template_opts: parent_uri_template_opts,
+        parent_uri_template: parent_uri_template
       )
     )
   end
@@ -138,7 +141,7 @@ class Collection
   def uri(query_values, canonical: false, only_path: false)
     RDF::URI(
       expand_uri_template(
-        "#{association_class.to_s.tableize}_collection_#{canonical ? 'canonical' : 'iri'}",
+        parent_uri_template(canonical),
         uri_opts(query_values, canonical).merge(only_path: only_path)
       )
     )
@@ -149,6 +152,15 @@ class Collection
     opts
       .except(:filter)
       .merge(Hash[filters || []])
+      .merge(parent_uri_template_opts || {})
       .merge(parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri(only_path: true))
+  end
+
+  def parent_uri_template(canonical = false)
+    if canonical
+      @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
+    else
+      @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
+    end
   end
 end
