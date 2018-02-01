@@ -21,8 +21,8 @@ require_relative '../../config/initializers/build'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require_relative '../app/serializers/base/base_serializer'
 require_relative '../lib/ns'
+require_relative '../app/serializers/base/base_serializer'
 
 module Service
   class Application < Rails::Application
