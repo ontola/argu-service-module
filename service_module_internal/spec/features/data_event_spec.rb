@@ -17,7 +17,7 @@ describe DataEvent do
     let(:changes) do
       [
         {
-          id: 'https://argu.test/r/record_id',
+          id: 'http://argu.test/r/record_id',
           type: 'records',
           attributes: {'attr1' => %w[was is], 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
         }.with_indifferent_access

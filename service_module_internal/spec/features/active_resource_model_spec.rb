@@ -18,7 +18,7 @@ describe Resource do
   end
 
   before do
-    stub_request(:get, 'https://argu.test/resources/1')
+    stub_request(:get, 'http://argu.test/resources/1')
       .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer'})
       .to_return(
         status: 200,

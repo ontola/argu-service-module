@@ -30,36 +30,36 @@ describe Collection do
     context 'with paginated' do
       subject { paginated_collection.id }
 
-      it { is_expected.to eq('https://argu.test/resources?type=paginated') }
+      it { is_expected.to eq('http://argu.test/resources?type=paginated') }
 
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq('https://argu.test/r/record_id/resources?type=paginated') }
+        it { is_expected.to eq('http://argu.test/r/record_id/resources?type=paginated') }
       end
 
       context 'with page' do
         let(:page) { 2 }
 
-        it { is_expected.to eq('https://argu.test/resources?page=2&type=paginated') }
+        it { is_expected.to eq('http://argu.test/resources?page=2&type=paginated') }
       end
     end
 
     context 'with infinite' do
       subject { infinite_collection.id }
 
-      it { is_expected.to eq('https://argu.test/resources?type=infinite') }
+      it { is_expected.to eq('http://argu.test/resources?type=infinite') }
 
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq('https://argu.test/r/record_id/resources?type=infinite') }
+        it { is_expected.to eq('http://argu.test/r/record_id/resources?type=infinite') }
       end
 
       context 'with page' do
         let(:page) { 2 }
 
-        it { is_expected.to eq('https://argu.test/resources?page=2&type=infinite') }
+        it { is_expected.to eq('http://argu.test/resources?page=2&type=infinite') }
       end
     end
   end
@@ -80,7 +80,7 @@ describe Collection do
 
       context 'with page' do
         let(:page) { 2 }
-        let(:url) { 'https://argu.test/resources?filter%5Bkey%5D=value&type=paginated' }
+        let(:url) { 'http://argu.test/resources?filter%5Bkey%5D=value&type=paginated' }
 
         it { is_expected.to eq(url) }
       end
@@ -99,7 +99,7 @@ describe Collection do
 
       context 'with page' do
         let(:page) { 2 }
-        let(:url) { 'https://argu.test/resources?filter%5Bkey%5D=value&type=infinite' }
+        let(:url) { 'http://argu.test/resources?filter%5Bkey%5D=value&type=infinite' }
 
         it { is_expected.to eq(url) }
       end

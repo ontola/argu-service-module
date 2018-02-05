@@ -35,6 +35,7 @@ module Service
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
+    config.origin = "https://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
 
     config.autoload_paths += %W[#{config.root}/app/models/actions]

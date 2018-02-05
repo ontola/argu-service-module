@@ -6,14 +6,19 @@ module UriTemplateHelper
     raise "Uri template #{template} is missing" unless tmpl
     args[:parent_iri] = split_iri_segments(args[:parent_iri]) if args[:parent_iri].present?
     args[:collection_iri] = split_iri_segments(args[:collection_iri]) if args[:collection_iri].present?
-    args[:only_path] ? tmpl.expand(args) : "https://#{Rails.application.config.host_name}#{tmpl.expand(args)}"
+    path = tmpl.expand(args)
+    args[:only_path] ? path : path_with_hostname(path)
   end
 
-  def uri_template(template)
-    Rails.application.config.uri_templates[template]
+  def path_with_hostname(path)
+    "#{Rails.application.config.origin}#{path}"
   end
 
   def split_iri_segments(iri)
     iri.to_s.split('/').map(&:presence).compact
+  end
+
+  def uri_template(template)
+    Rails.application.config.uri_templates[template]
   end
 end

@@ -21,7 +21,7 @@ require 'bundler'
 Bundler.require :default, :development
 
 ENV['HOSTNAME'] = 'argu.test'
-ENV['OAUTH_URL'] = 'https://argu.test'
+ENV['OAUTH_URL'] = 'http://argu.test'
 
 require 'active_support/core_ext/hash'
 
@@ -29,6 +29,7 @@ module ServiceModule
   class Application < Rails::Application
     config.api_only = true
     config.host_name = ENV['HOSTNAME']
+    config.origin = "http://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
     config.filter_parameters += [:password]
     config.uri_templates =
