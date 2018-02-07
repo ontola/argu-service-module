@@ -102,7 +102,8 @@ class Collection
       parent_view_iri: id,
       type: type
     }.merge(options)
-    parent&.collection_for(name, options) || new_child(options.merge(pagination: pagination))
+    parent&.collection_for(name, options.merge(collection_class: self.class)) ||
+      new_child(options.merge(pagination: pagination))
   end
 
   def filtered_association
@@ -114,7 +115,7 @@ class Collection
   end
 
   def new_child(options)
-    Collection.new(
+    self.class.new(
       options.merge(
         association_class: association_class,
         association_scope: association_scope,
