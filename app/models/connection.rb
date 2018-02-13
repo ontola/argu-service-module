@@ -44,6 +44,9 @@ class Connection
 
   def self.subscribe_to_queue(queue)
     channel = new.connection.create_channel
+    channel.on_uncaught_exception do |e, _consumer|
+      Bugsnag.notify(e)
+    end
     x = channel.fanout('events', durable: true)
     q = channel.queue(queue, durable: true)
     q.bind(x)
