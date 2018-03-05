@@ -15,7 +15,7 @@ class Collection
   include Collection::Pagination
 
   attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
-                :parent, :type, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts
+                :parent, :type, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of
   attr_writer :parent_view_iri, :title, :parent_uri_template
 
   EDGE_CLASS = 'Edge'.safe_constantize

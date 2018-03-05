@@ -9,15 +9,16 @@ module Ldable
   # @param [UserContext] user_context
   # @param [Hash] filter
   # @param [Integer, String] page
+  # @param [ApplicationRecord] part_of
   # @param [Hash] opts Additional options to be passed to the collection.
   # @return [Collection]
   def collection_for(name, collection_class: Collection, **opts)
     collection = collections.detect { |c| c[:name] == name }
-    args = opts.merge(name: name).merge(collection[:options])
+    args = opts.merge(name: name, parent: self, **collection[:options])
     args[:user_context] ||= nil
     args[:filter] ||= {}
     args[:page] ||= nil
-    args[:parent] = self
+    args[:part_of] = args.key?(:part_of) ? send(args[:part_of]) : self
     collection_class.new(args)
   end
 

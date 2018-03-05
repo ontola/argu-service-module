@@ -13,7 +13,7 @@ class CollectionSerializer < BaseSerializer
     attribute attr, predicate: NS::ARGU[attr]
   end
 
-  has_one :parent, predicate: NS::SCHEMA[:isPartOf]
+  has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
 
   has_one :member_sequence, predicate: NS::ARGU[:members], if: :members?
   has_one :view_sequence, predicate: NS::ARGU[:views], if: :views?
