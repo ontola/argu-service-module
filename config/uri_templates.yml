@@ -2,6 +2,8 @@
 activities_iri: "/activities{/id}"
 actions_iri: "{/parent_iri*}{#type}"
 action_lists_iri: "{/parent_iri*}/actions"
+activities_collection_canonical: "{/parent_iri*}/feed{?page,type,before}"
+activities_collection_iri: "{/parent_iri*}/feed{?page,type,before}"
 announcements_iri: "/announcements{/id}"
 arguments_iri: "/a{/id}"
 banners_iri: "/banners{/id}"
