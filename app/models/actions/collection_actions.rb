@@ -17,6 +17,7 @@ class CollectionActions < ActionList
   def new_entrypoint
     entry_point_item(
       :new,
+      label: I18n.t("#{resource.association_class.to_s.tableize}.type_new"),
       image: 'fa-plus',
       url: new_url,
       http_method: :get
