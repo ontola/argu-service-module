@@ -8,6 +8,7 @@ module NS
   GOVID = RDF::Vocabulary.new('https://argu.co/ns/0.1/gov/id#')
   META = RDF::Vocabulary.new('https://argu.co/ns/0.1/meta#')
 
+  AS = RDF::Vocabulary.new('https://www.w3.org/ns/activitystreams#')
   BIBO = RDF::Vocabulary.new('http://purl.org/ontology/bibo/')
   CC = RDF::Vocabulary.new('http://creativecommons.org/ns#')
   DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
