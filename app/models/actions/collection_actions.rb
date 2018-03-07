@@ -13,7 +13,7 @@ class CollectionActions < ActionList
   end
 
   def new_action
-    return unless policy(resource.part_of).try(:create_child?, association)
+    return unless resource.part_of && policy(resource.part_of).try(:create_child?, association)
     action_item(
       :new,
       target: new_entrypoint,
