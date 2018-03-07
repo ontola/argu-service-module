@@ -42,6 +42,10 @@ module Argu
       )
     end
 
+    def create_favorite(iri)
+      user_token.post(expand_uri_template(:favorites_iri), body: {iri: iri}, headers: {accept: 'application/json'})
+    end
+
     def create_membership(token)
       user_token.post(
         "/g/#{token.group_id}/memberships",
