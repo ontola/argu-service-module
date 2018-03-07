@@ -28,7 +28,7 @@ class ActionList
   end
 
   def actions
-    defined_actions.map { |action| send("#{action}_action") }
+    defined_actions.map { |action| send("#{action}_action") }.compact
   end
 
   def action

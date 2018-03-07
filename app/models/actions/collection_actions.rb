@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 class CollectionActions < ActionList
+  include Pundit
+
   cattr_accessor :defined_actions
   define_actions %i[new]
 
   private
 
+  def association
+    @association ||= resource.association_class.to_s.tableize
+  end
+
   def new_action
+    return unless policy(resource.part_of).try(:create_child?, association)
     action_item(
       :new,
       target: new_entrypoint,
@@ -17,7 +24,7 @@ class CollectionActions < ActionList
   def new_entrypoint
     entry_point_item(
       :new,
-      label: I18n.t("#{resource.association_class.to_s.tableize}.type_new"),
+      label: I18n.t("#{association}.type_new"),
       image: 'fa-plus',
       url: new_url,
       http_method: :get

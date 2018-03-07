@@ -12,7 +12,7 @@ module Actionable
     end
 
     def action(user_context, tag)
-      actions(user_context).find { |a| a.tag == tag } || raise("Action '#{tag}' not available for #{self.class.name}")
+      actions(user_context).find { |a| a.tag == tag }
     end
   end
 
