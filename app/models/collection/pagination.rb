@@ -47,7 +47,7 @@ class Collection
     end
 
     def next_infinite
-      return if !pagination || before.nil?
+      return if !pagination || before.nil? || members.blank?
       uri(query_opts.merge(before: members.last.created_at.utc.to_s(:db)))
     end
 
