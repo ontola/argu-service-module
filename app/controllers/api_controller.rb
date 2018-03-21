@@ -32,7 +32,7 @@ class ApiController < ActionController::API
   ].freeze
 
   def current_user
-    @current_user ||= CurrentUser.find(request.cookie_jar.encrypted['argu_client_token'])
+    @current_user ||= CurrentUser.find(user_token)
   rescue OAuth2::Error
     nil
   end
@@ -42,9 +42,13 @@ class ApiController < ActionController::API
   def api
     @api ||= Argu::API.new(
       service_token: ENV['SERVICE_TOKEN'],
-      user_token: request.cookie_jar.encrypted['argu_client_token'],
+      user_token: user_token,
       cookie_jar: request.cookie_jar
     )
+  end
+
+  def authorization_header?
+    request.headers['Authorization'].present?
   end
 
   def authorize_action(resource_type, resource_id, action)
@@ -106,5 +110,17 @@ class ApiController < ActionController::API
   def render_status(status, file_name = nil)
     file_name ||= "status/#{status}"
     send_file lookup_context.find_template(file_name).identifier, disposition: :inline, status: status
+  end
+
+  def token_from_cookie
+    request.cookie_jar.encrypted['argu_client_token']
+  end
+
+  def token_from_header
+    request.headers['Authorization'][7..-1] if request.headers['Authorization'].downcase.start_with?('bearer ')
+  end
+
+  def user_token
+    @user_token ||= authorization_header? ? token_from_header : token_from_cookie
   end
 end
