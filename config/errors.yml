@@ -1,0 +1,33 @@
+Argu::Errors::Forbidden:
+  id: 'NOT_AUTHORIZED'
+  status: 403
+Argu::Errors::Unauthorized:
+  id: 'NOT_A_USER'
+  status: 401
+Argu::Errors::UnknownEmail:
+  id: 'UNKNOWN_EMAIL'
+  status: 422
+Argu::Errors::UnknownUsername:
+  id: 'UNKNOWN_USERNAME'
+  status: 422
+Argu::Errors::WrongPassword:
+  id: 'WRONG_PASSWORD'
+  status: 422
+ActiveRecord::RecordNotFound:
+  id: 'NOT_FOUND'
+  status: 404
+ActionController::RoutingError:
+  id: 'NOT_FOUND'
+  status: 404
+ActiveRecord::RecordNotUnique:
+  id: 'NOT_UNIQUE'
+  status: 304
+ActiveRecord::StaleObjectError:
+  id: 'STALE_OBJECT'
+  status: 409
+ActionController::UnpermittedParameters:
+  id: 'UNPERMITTED_PARAMETERS'
+  status: 422
+ActionController::ParameterMissing:
+  id: 'PARAMETER_MISSING'
+  status: 422

@@ -1,0 +1,8 @@
+en:
+  errors:
+    general: "Something went wrong, reload the page or try again later."
+    unauthorized: "Please sign in to continue"
+    access_denied: "You're not authorized for this action. (%{action})"
+    record_not_unique: "A value in this object has already been entered, please try to edit the existing object."
+    stale_record: 'Another user has made a change to that record since you accessed the edit form.'
+    unknown_format: 'Unknown format'
