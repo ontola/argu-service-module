@@ -24,7 +24,7 @@ class Collection
 
   def initialize(attrs = {})
     attrs[:type] = attrs[:type]&.to_sym || :paginated
-    attrs[:order] = attrs[:order]&.to_sym || {created_at: :desc}
+    attrs[:order] = attrs[:order] || {created_at: :desc}
     super
   end
 
