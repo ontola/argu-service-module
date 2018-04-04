@@ -46,10 +46,14 @@ class ApiController < ActionController::API
     request.headers['Authorization'].present?
   end
 
+  def authorize(resource_iri, action)
+    return true if api.authorize_action(resource_iri: resource_iri, action: action)
+    raise Argu::Errors::Forbidden.new(query: action)
+  end
+
   def authorize_action(resource_type, resource_id, action)
-    api.authorize_action(resource_type, resource_id, action)
-  rescue OAuth2::Error => e
-    [401, 403].include?(e.response.status) ? raise(Argu::Errors::Forbidden.new(query: action)) : handle_oauth_error(e)
+    return true if api.authorize_action(resource_type: resource_type, resource_id: resource_id, action: action)
+    raise Argu::Errors::Forbidden.new(query: action)
   end
 
   def check_if_registered

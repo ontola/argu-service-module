@@ -14,19 +14,15 @@ module Argu
       @cookie_jar = cookie_jar
     end
 
-    def authorize_action(resource_type, resource_id, action)
-      user_token.get(
-        uri_template(:spi_authorize)
-          .expand(resource_type: resource_type, resource_id: resource_id, authorize_action: action)
-      )
+    def authorize_action(opts = {})
+      opts[:authorize_action] = opts.delete(:action)
+      user_token.get(uri_template(:spi_authorize).expand(opts))
+    rescue OAuth2::Error => e
+      [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
     end
 
     def authorize_redirect_resource(token)
-      return unless token&.redirect_url
-      authorize_url = uri_template(:spi_authorize).expand(resource_iri: token.redirect_url, authorize_action: :show)
-      user_token.get(authorize_url).status == 200
-    rescue OAuth2::Error
-      false
+      authorize_action(resource_iri: token.redirect_url, authorize_action: :show) if token&.redirect_url
     end
 
     def confirm_email_address(email)
@@ -72,16 +68,11 @@ module Argu
     end
 
     def user_is_group_member?(group_id)
-      user_token.get(
-        expand_uri_template(
-          :spi_authorize,
-          resource_type: 'Group',
-          resource_id: group_id,
-          authorize_action: 'is_member'
-        )
+      authorize_action(
+        resource_type: 'Group',
+        resource_id: group_id,
+        action: 'is_member'
       )
-    rescue OAuth2::Error => e
-      [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
     end
 
     private
