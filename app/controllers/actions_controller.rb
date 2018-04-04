@@ -5,13 +5,6 @@ class ActionsController < AuthorizedController
   skip_before_action :check_if_registered
   before_action :authorize_action
 
-  def show
-    respond_to do |format|
-      format.json_api { render json: resource_by_id!, include: include_show }
-      format.nt { render nt: resource_by_id!, include: include_show }
-    end
-  end
-
   private
 
   def authorize_action
@@ -26,11 +19,11 @@ class ActionsController < AuthorizedController
   def current_forum; end
 
   def include_index
-    [actions: :target]
+    [:target, actions: :target]
   end
 
   def include_show
-    [actions: :target]
+    [:target, actions: :target]
   end
 
   def index_response_association
