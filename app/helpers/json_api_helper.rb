@@ -44,4 +44,25 @@ module JsonApiHelper
     json_api_response.with_indifferent_access['included']
       &.find { |r| r[:id] == resource[:id] && (resource[:type].nil? || r[:type] == resource[:type]) }
   end
+
+  def json_api_params(params)
+    raise ActionController::UnpermittedParameters.new(%w[type]) if json_api_wrong_type(params)
+    raise ActionController::ParameterMissing.new(:attributes) if params['data']['attributes'].blank?
+    json_api_to_action_parameters(params)
+  end
+
+  private
+
+  def json_api_to_action_parameters(params)
+    ActionController::Parameters.new(
+      params.to_unsafe_h.merge(
+        params.require(:data).require(:type).singularize.underscore =>
+          ActiveModelSerializers::Deserialization.jsonapi_parse!(params, deserialize_params_options)
+      )
+    )
+  end
+
+  def json_api_wrong_type(params)
+    params['data']['type'].present? && params['data']['type'] != controller_name.camelcase(:lower)
+  end
 end
