@@ -29,7 +29,7 @@ module Iriable
       {id: id, :"#{self.class.name.underscore}_id" => id}
     end
 
-    def self.type_iri
+    def self.iri
       NS::ARGU[name.demodulize]
     end
   end

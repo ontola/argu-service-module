@@ -38,6 +38,6 @@ class BaseSerializer < ActiveModel::Serializer
   end
 
   def type
-    object.class.type_iri
+    object.class.iri
   end
 end
