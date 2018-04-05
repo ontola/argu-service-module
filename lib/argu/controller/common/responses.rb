@@ -8,7 +8,7 @@ module Argu
       #   and consistency.
       module Responses
         def meta
-          []
+          respond_to?("meta_#{action_name}", :include_private) ? send("meta_#{action_name}") : []
         end
 
         # Method to determine where the action should redirect to after it fails.
