@@ -5,7 +5,7 @@ class ActionItem
   include ActiveModel::Serialization
   include Ldable
 
-  attr_accessor :label, :type, :target, :parent, :policy, :tag, :resource
+  attr_accessor :label, :type, :target, :parent, :policy, :tag, :resource, :result
 
   def initialize(attributes = {})
     super

@@ -9,7 +9,11 @@ class CollectionActions < ActionList
   private
 
   def association
-    @association ||= resource.association_class.to_s.tableize
+    @association ||= association_class.to_s.tableize
+  end
+
+  def association_class
+    resource.association_class
   end
 
   def new_action
@@ -17,7 +21,8 @@ class CollectionActions < ActionList
     action_item(
       :new,
       target: new_entrypoint,
-      type: [NS::ARGU["New#{resource.association_class}"], NS::SCHEMA[:NewAction]]
+      result: association_class,
+      type: [NS::ARGU["New#{association_class}"], NS::SCHEMA[:NewAction]]
     )
   end
 
@@ -40,7 +45,8 @@ class CollectionActions < ActionList
     action_item(
       :create,
       target: create_entrypoint,
-      type: [NS::ARGU["Create#{resource.association_class}"], NS::ARGU[:CreateAction]]
+      result: association_class,
+      type: [NS::ARGU["Create#{association_class}"], NS::ARGU[:CreateAction]]
     )
   end
 
