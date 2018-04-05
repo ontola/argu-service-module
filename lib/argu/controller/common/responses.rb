@@ -49,8 +49,10 @@ module Argu
 
         def respond_with_204(_, format)
           case format
-          when :json, :json_api, *RDF_CONTENT_TYPES
+          when :json, :json_api
             head :no_content
+          when *RDF_CONTENT_TYPES
+            meta.present? ? render(format => [], meta: meta) : head(:no_content)
           else
             raise_unknown_format
           end
