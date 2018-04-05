@@ -4,7 +4,7 @@ class EntryPointSerializer < BaseSerializer
   attribute :label, predicate: NS::SCHEMA[:name]
   attribute :url, predicate: NS::SCHEMA[:url]
   attribute :url_template, predicate: NS::SCHEMA[:urlTemplate]
-  attribute :http_method, key: :method, predicate: NS::SCHEMA[:method]
+  attribute :http_method, key: :method, predicate: NS::SCHEMA[:httpMethod]
 
   has_one :image, predicate: NS::SCHEMA[:image]
 
@@ -14,5 +14,9 @@ class EntryPointSerializer < BaseSerializer
 
   def type
     NS::SCHEMA[:EntryPoint]
+  end
+
+  def http_method
+    object.http_method.upcase
   end
 end
