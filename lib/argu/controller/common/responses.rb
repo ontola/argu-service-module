@@ -34,7 +34,9 @@ module Argu
           end
         end
 
+        # rubocop:disable Metrics/MethodLength
         def respond_with_201(resource, format, opts = {})
+          response.headers['Location'] = resource.try(:iri)&.value
           case format
           when :json, :json_api
             render json: resource, status: :created, location: resource.iri.to_s
@@ -46,6 +48,7 @@ module Argu
             raise_unknown_format
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def respond_with_204(_, format)
           case format
