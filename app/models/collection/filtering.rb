@@ -7,9 +7,8 @@ class Collection
     private
 
     def filter?
-      association_class.filter_options.present? && filter.blank? && association_class.filter_options.any? do |_k, v|
-        v.present?
-      end
+      return false if filter.present? || association_class.try(:filter_options).blank?
+      association_class.filter_options.any? { |_k, v| v.present? }
     end
 
     def filter_views
