@@ -2,6 +2,10 @@
 
 require 'rdf/serializers/renderers'
 
+RDF::Serializers.configure do |config|
+  config.always_include_named_graphs = false
+end
+
 opts = {
   prefixes: Hash[NS.constants.map { |const| [const.to_s.downcase.to_sym, NS.const_get(const)] }]
 }
