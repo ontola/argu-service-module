@@ -13,13 +13,18 @@ module Ldable
   # @param [Hash] opts Additional options to be passed to the collection.
   # @return [Collection]
   def collection_for(name, collection_class: Collection, **opts)
-    collection = collections.detect { |c| c[:name] == name }
-    args = opts.merge(name: name, parent: self, **collection[:options])
-    args[:user_context] ||= nil
+    raise 'No user context given' if opts[:user_context].nil?
+
+    collection_opts = collections.detect { |c| c[:name] == name }[:options]
+    collection_class.new(collection_args(name, opts, collection_opts))
+  end
+
+  def collection_args(name, opts, collection_opts)
+    args = opts.merge(name: name, parent: self, **collection_opts)
     args[:filter] ||= {}
     args[:page] ||= nil
     args[:part_of] = args.key?(:part_of) ? send(args[:part_of]) : self
-    collection_class.new(args)
+    args
   end
 
   module ClassMethods
@@ -74,6 +79,22 @@ module Ldable
     def filterable(options = {})
       cattr_accessor :filter_options do
         HashWithIndifferentAccess.new(options)
+      end
+    end
+  end
+
+  module Serializer
+    extend ActiveSupport::Concern
+
+    included do
+      def self.with_collection(name, opts = {})
+        collection_name = "#{name.to_s.singularize}_collection"
+
+        has_one collection_name, opts.merge(association: name)
+
+        define_method collection_name do
+          object.send(collection_name, user_context: scope)
+        end
       end
     end
   end

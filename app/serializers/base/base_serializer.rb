@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BaseSerializer < ActiveModel::Serializer
+  include Ldable::Serializer
+
   attribute :type, predicate: RDF[:type]
   attribute :canonical_iri, predicate: NS::DC[:identifier]
 
