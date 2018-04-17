@@ -61,6 +61,20 @@ class CollectionActions < ActionList
   end
 
   def create_url
+    return resource.parent_view_iri if paged_resource?
     resource.iri
+  end
+
+  def paged_resource?
+    resource.is_a?(Collection) && resource.pagination && resource.page.present?
+  end
+
+  def resource_path_iri
+    return super unless paged_resource?
+
+    self_without_page = resource.parent_view_iri
+    self_without_page.host = nil
+    self_without_page.scheme = nil
+    self_without_page
   end
 end

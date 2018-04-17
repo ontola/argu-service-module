@@ -15,7 +15,7 @@ class ActionList
   alias current_user user_context
 
   def iri(opts = {})
-    parent_iri = resource.iri(only_path: true)
+    parent_iri = resource_path_iri
     query = parent_iri.query
     parent_iri.query = nil
     i = RDF::URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
@@ -56,6 +56,10 @@ class ActionList
     options.except!(:policy_resource, :policy, :policy_arguments)
 
     EntryPoint.new(resource: resource, tag: tag, parent: self, **options)
+  end
+
+  def resource_path_iri
+    resource.iri(only_path: true)
   end
 
   def policy_valid?(options)
