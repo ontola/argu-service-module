@@ -15,7 +15,7 @@ class EntryPoint
   def iri(only_path: false)
     u = URI.parse(parent.iri(only_path: only_path))
 
-    if parent.is_a?(ActionList)
+    if parent.is_a?(Actions::Base)
       u.path += 'entrypoint'
     elsif parent.iri.to_s.include?('#')
       u.fragment += 'entrypoint'

@@ -3,7 +3,9 @@
 module ApplicationModel
   extend ActiveSupport::Concern
 
-  included do
+  included do |base|
+    base.include Concernable
+
     def class_name
       self.class.name.tableize
     end

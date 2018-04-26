@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class ApplicationActions < ActionList
-  cattr_accessor :defined_actions
+module Actions
+  class ApplicationActions < Base; end
 end

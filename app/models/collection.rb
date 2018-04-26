@@ -4,11 +4,12 @@ class Collection
   include ActiveModel::Serialization
   include ActiveModel::Model
   include ActionDispatch::Routing
+  include Concernable
   include Pundit
   include Rails.application.routes.url_helpers
 
-  include Actionable
   include ApplicationModel
+  concern Actionable
   include Ldable
   include Iriable
   include Collection::Filtering
@@ -58,8 +59,8 @@ class Collection
   end
 
   def parent_view_iri
+    return uri(query_opts.except(:page)) if page && association_class.present?
     return @parent_view_iri if @parent_view_iri
-    return uri(query_opts.except(:page)) if page
     uri(query_opts.except(:before)) if before
   end
 
@@ -80,6 +81,7 @@ class Collection
   def title
     plural = association_class.name.tableize
     I18n.t("#{plural}.collection.#{filter&.values&.join('.').presence || name}",
+           count: total_count,
            default: I18n.t("#{plural}.plural",
                            default: plural.humanize))
   end

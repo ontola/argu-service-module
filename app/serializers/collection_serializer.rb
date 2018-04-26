@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class CollectionSerializer < BaseSerializer
-  include Actionable::Serializer
-  include_actions
-
   attribute :page_size, predicate: NS::ARGU[:pageSize]
   attribute :title, predicate: NS::SCHEMA[:name]
   attribute :total_count, predicate: NS::ARGU[:totalCount]

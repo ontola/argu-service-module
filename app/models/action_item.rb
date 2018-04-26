@@ -20,7 +20,7 @@ class ActionItem
   def iri(only_path: false)
     base = parent.iri(only_path: only_path)
 
-    if parent.is_a?(ActionList)
+    if parent.is_a?(Actions::Base)
       base.path += "/#{tag}"
     elsif parent.iri.to_s.include?('#')
       base.fragment = "#{base.fragment}.#{tag}"
