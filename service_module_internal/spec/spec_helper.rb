@@ -43,6 +43,23 @@ end
 $LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 
 require 'action_controller'
+require 'active_record'
+ActiveRecord::Base.establish_connection(
+  adapter:  'sqlite3',
+  database: ':memory:'
+)
+
+def create_table
+  ActiveRecord::Base.connection.create_table :records do |t|
+    t.integer :user_id
+    t.timestamps
+  end
+end
+
+def drop_table
+  ActiveRecord::Base.connection.drop_table :records
+end
+
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
 require_relative '../../lib/ns'
 require_relative '../../config/initializers/rdf'
@@ -144,6 +161,11 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   # Kernel.srand config.seed
+
+  # rubocop:disable RSpec/BeforeAfterAll
+  config.before(:all) { create_table }
+  config.after(:all) { drop_table }
+  # rubocop:enable RSpec/BeforeAfterAll
 end
 
 Shoulda::Matchers.configure do |config|

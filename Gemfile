@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'active_model_serializers', '= 0.10.7'
+gem 'activerecord'
 gem 'activeresource',
     git: 'https://github.com/rails/activeresource',
     branch: 'master'
@@ -18,5 +19,6 @@ gem 'rspec-rails'
 gem 'rubocop'
 gem 'rubocop-rspec'
 gem 'shoulda-matchers', branch: :master, git: 'https://github.com/thoughtbot/shoulda-matchers'
+gem 'sqlite3'
 gem 'uri_template'
 gem 'webmock'

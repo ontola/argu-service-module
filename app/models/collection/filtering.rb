@@ -6,6 +6,26 @@ class Collection
 
     private
 
+    def apply_filters(scope)
+      (filter || []).reduce(scope) do |s, f|
+        k = f[0]
+        v = f[1]
+        options = association_class.filter_options.fetch(k)
+        apply_filter(s, options[:key] || k, filter_single_value(options, v))
+      end
+    end
+
+    def apply_filter(scope, key, value)
+      case value
+      when 'NULL'
+        scope.where(key => nil)
+      when 'NOT NULL'
+        scope.where.not(key => nil)
+      else
+        scope.where(key => value)
+      end
+    end
+
     def filter?
       return false if filter.present? || association_class.try(:filter_options).blank?
       association_class.filter_options.any? { |_k, v| v.present? }
@@ -15,33 +35,6 @@ class Collection
       association_class.filter_options.map do |key, values|
         values[:values].map { |value| child_with_options(filter: {key => value[0]}) }
       end.flatten
-    end
-
-    def filter_query
-      return if filter.blank?
-      queries, values = filter_query_with_values
-      [queries.join(' AND '), *values]
-    end
-
-    def filter_query_with_values
-      queries = []
-      values = []
-      filter.map do |k, v|
-        options = association_class.filter_options.fetch(k)
-        value = filter_single_value(options, v)
-        values << value unless value.is_a?(String) && value.include?('NULL')
-        queries << filter_single_query(options, k, value)
-      end
-      [queries, values]
-    end
-
-    def filter_single_query(options, key, value)
-      key = options[:key] || key
-      if value.is_a?(String) && value.include?('NULL')
-        [key, value].join(' IS ')
-      else
-        [key, '?'].join(' = ')
-      end
     end
 
     def filter_single_value(options, value)

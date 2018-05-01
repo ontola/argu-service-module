@@ -112,7 +112,7 @@ class Collection
     scope = parent&.send(association) || association_class
     scope = scope.send(association_scope) if association_scope
     scope = scope.joins(joins) if joins
-    scope = scope.where(filter_query) if filter_query
+    scope = apply_filters(scope) if filter.present?
     scope
   end
 

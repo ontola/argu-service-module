@@ -106,20 +106,19 @@ describe Collection do
     end
   end
 
-  describe '#filter_query' do
-    context 'with paginated' do
-      subject { paginated_collection.send(:filter_query) }
+  describe '#apply_filter' do
+    let(:result) { 'SELECT "records".* FROM "records"' }
 
-      it { is_expected.to be_nil }
+    context 'with paginated' do
+      subject { paginated_collection.send(:apply_filters, Record.all).to_sql }
+
+      it { is_expected.to eq(result) }
 
       context 'with filters' do
         let(:filter) { {key: :value, key2: 'value2', key3: 'empty'} }
         let(:result) do
-          [
-            'actual_key = ? AND key2 = ? AND key3 IS NULL',
-            'actual_value',
-            'value2'
-          ]
+          'SELECT "records".* FROM "records" WHERE '\
+          '"records"."actual_key" = \'actual_value\' AND "records"."key2" = \'value2\' AND "records"."key3" IS NULL'
         end
 
         it { is_expected.to eq(result) }
@@ -127,18 +126,15 @@ describe Collection do
     end
 
     context 'with infinite' do
-      subject { infinite_collection.send(:filter_query) }
+      subject { infinite_collection.send(:apply_filters, Record.all).to_sql }
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq(result) }
 
       context 'with filters' do
         let(:filter) { {key: :value, key2: 'value2', key3: 'empty'} }
         let(:result) do
-          [
-            'actual_key = ? AND key2 = ? AND key3 IS NULL',
-            'actual_value',
-            'value2'
-          ]
+          'SELECT "records".* FROM "records" WHERE '\
+          '"records"."actual_key" = \'actual_value\' AND "records"."key2" = \'value2\' AND "records"."key3" IS NULL'
         end
 
         it { is_expected.to eq(result) }

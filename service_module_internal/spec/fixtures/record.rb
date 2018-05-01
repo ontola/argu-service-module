@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-class Record
+# rubocop:disable Rails/ApplicationRecord:
+class Record < ActiveRecord::Base
+  extend ActiveRecord::Delegation::DelegateCache
+
   include Ldable
   include Iriable
   include ActiveModel::Model
@@ -35,3 +38,4 @@ class Record
     }
   end
 end
+# rubocop:enable Rails/ApplicationRecord:
