@@ -62,7 +62,7 @@ class DataEvent
         adapter: :json_api,
         include: :resource,
         key_transform: :camel_lower,
-        scope: OpenStruct.new(doorkeeper_scopes: %w[service])
+        scope: UserContext.new(doorkeeper_scopes: %w[service])
       )
       .to_json
   end

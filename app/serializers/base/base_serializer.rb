@@ -7,16 +7,16 @@ class BaseSerializer < ActiveModel::Serializer
   attribute :type, predicate: RDF[:type]
   attribute :canonical_iri, predicate: NS::DC[:identifier]
 
+  delegate :export_scope?, :service_scope?, :system_scope?,
+           to: :scope,
+           allow_nil: true
+
   def id
     rdf_subject
   end
 
   def canonical_iri
     object.try(:canonical_iri) || rdf_subject
-  end
-
-  def export_scope?
-    scope&.doorkeeper_scopes&.include? 'export'
   end
 
   def rdf_subject
@@ -34,14 +34,6 @@ class BaseSerializer < ActiveModel::Serializer
         type: NS::ARGU[:FontAwesomeIcon]
       }
     end
-  end
-
-  def service_scope?
-    scope&.doorkeeper_scopes&.include? 'service'
-  end
-
-  def system_scope?
-    service_scope? || export_scope?
   end
 
   def tenant
