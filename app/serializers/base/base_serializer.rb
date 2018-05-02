@@ -15,6 +15,10 @@ class BaseSerializer < ActiveModel::Serializer
     object.try(:canonical_iri) || rdf_subject
   end
 
+  def export_scope?
+    scope&.doorkeeper_scopes&.include? 'export'
+  end
+
   def rdf_subject
     object.iri
   end
@@ -34,6 +38,10 @@ class BaseSerializer < ActiveModel::Serializer
 
   def service_scope?
     scope&.doorkeeper_scopes&.include? 'service'
+  end
+
+  def system_scope?
+    service_scope? || export_scope?
   end
 
   def tenant
