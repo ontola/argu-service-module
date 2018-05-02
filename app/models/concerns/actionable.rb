@@ -53,7 +53,10 @@ module Actionable
     module ClassMethods
       # rubocop:disable Rails/HasManyOrHasOneDependent
       def include_actions
-        has_many :actions, key: :operation, predicate: NS::HYDRA[:operation] do
+        has_many :actions,
+                 key: :operation,
+                 unless: :system_scope?,
+                 predicate: NS::HYDRA[:operation] do
           object.actions(scope) if scope.is_a?(UserContext)
         end
         define_action_methods
@@ -67,7 +70,8 @@ module Actionable
           end
 
           has_one method_name,
-                  predicate: NS::ARGU[method_name.camelize(:lower)]
+                  predicate: NS::ARGU[method_name.camelize(:lower)],
+                  unless: :system_scope?
         end
       end
 

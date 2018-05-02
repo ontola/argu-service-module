@@ -3,11 +3,11 @@
 class CollectionSerializer < BaseSerializer
   attribute :page_size, predicate: NS::ARGU[:pageSize]
   attribute :title, predicate: NS::SCHEMA[:name]
-  attribute :total_count, predicate: NS::ARGU[:totalCount]
+  attribute :total_count, predicate: NS::ARGU[:totalCount], unless: :system_scope?
   attribute :parent_view_iri, predicate: NS::ARGU[:parentView]
 
   %i[first previous next last].each do |attr|
-    attribute attr, predicate: NS::ARGU[attr]
+    attribute attr, predicate: NS::ARGU[attr], unless: :system_scope?
   end
 
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
