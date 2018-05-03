@@ -29,6 +29,11 @@ module Iriable
       {id: id, :"#{self.class.name.underscore}_id" => id}
     end
 
+    # @return [String]
+    def iri_path(opts = {})
+      iri(opts.merge(only_path: true)).to_s
+    end
+
     def self.iri
       NS::ARGU[name.demodulize]
     end
