@@ -3,6 +3,7 @@
 class ActionItem
   include ActiveModel::Model
   include ActiveModel::Serialization
+  include Iriable
   include Ldable
 
   attr_accessor :label, :type, :target, :parent, :policy, :tag, :resource, :result
@@ -29,5 +30,6 @@ class ActionItem
     end
     RDF::URI(base)
   end
+
   alias id iri
 end

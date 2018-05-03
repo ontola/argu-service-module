@@ -31,7 +31,10 @@ module Iriable
 
     # @return [String]
     def iri_path(opts = {})
-      iri(opts.merge(only_path: true)).to_s
+      iri = iri(opts)
+      iri.scheme = nil
+      iri.authority = nil
+      iri.to_s
     end
 
     def self.iri
