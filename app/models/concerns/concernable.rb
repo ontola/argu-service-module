@@ -14,7 +14,7 @@ module Concernable
 
   module ClassMethods
     def actions_class!
-      actions_class || define_actions_class
+      actions_class || define_actions_class || raise("could not find #{name}Actions")
     end
 
     def actions_class
@@ -41,7 +41,7 @@ module Concernable
     end
 
     def serialization_class!
-      serialization_class || define_serialization_class
+      serialization_class || define_serialization_class || raise("could not find #{name}Serializer")
     end
 
     def serialization_class
