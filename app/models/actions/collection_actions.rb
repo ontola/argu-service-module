@@ -3,7 +3,7 @@
 module Actions
   class CollectionActions < Base
     include Pundit
-    include VotesHelper
+    include 'VotesHelper'.constantize if const_defined?('VotesHelper')
 
     define_actions %i[new create]
 
