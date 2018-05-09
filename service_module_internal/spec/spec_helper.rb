@@ -47,9 +47,12 @@ Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &meth
 require_relative '../../lib/ns'
 require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
+Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{models/concerns}', '*.rb'), &method(:require))
+require_relative '../../app/models/actions/base'
 require_relative '../../app/serializers/base/base_serializer'
+Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{resources,serializers}', '*.rb'), &method(:require))
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
-                   '{models/concerns,models/collection,models,models/actions,resources,serializers}', '*.rb'),
+                   '{models/actions,models/collection,models}', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
 require_relative 'fixtures/resource'
