@@ -11,6 +11,10 @@ class BaseSerializer < ActiveModel::Serializer
            to: :scope,
            allow_nil: true
 
+  def afe_request?
+    user_context.doorkeeper_scopes.include?('afe')
+  end
+
   def id
     rdf_subject
   end
