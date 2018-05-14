@@ -62,7 +62,7 @@ module UriTemplateHelper
     new_iri(parent, collection, opts.merge(only_path: true)).to_s
   end
 
-  %i[edit delete trash untrash move settings statistics feeds conversions invites].each do |method|
+  %i[edit delete trash untrash move settings statistics feeds conversions invites exports].each do |method|
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
       iri = parent.try(:iri_path) || parent
