@@ -22,9 +22,6 @@ ActionController::RoutingError:
 ActiveRecord::RecordNotUnique:
   id: 'NOT_UNIQUE'
   status: 304
-ActiveRecord::StaleObjectError:
-  id: 'STALE_OBJECT'
-  status: 409
 ActionController::UnpermittedParameters:
   id: 'UNPERMITTED_PARAMETERS'
   status: 422

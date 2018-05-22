@@ -6,12 +6,6 @@ module Argu
     # classes with inconsistent attributes.
     module ErrorHandling
       module Handlers
-        def correct_stale_record_version
-          resource_by_id.reload.attributes = permit_params.reject do |attrb, _value|
-            attrb.to_sym == :lock_version
-          end
-        end
-
         def error_response_html(e, view: nil)
           flash[:alert] = e.message
           status ||= error_status(e)
@@ -71,11 +65,6 @@ module Argu
           redirect_back(fallback_location: root_path)
         end
 
-        def handle_stale_object_error_html
-          correct_stale_record_version
-          stale_record_recovery_action
-        end
-
         def respond_with(*resources, &_block)
           return super unless respond_with_422?(resources)
           respond_to do |format|
@@ -94,11 +83,6 @@ module Argu
 
         def serializable_error(status, e)
           Argu::Errors::SerializableError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
-        end
-
-        def stale_record_recovery_action
-          flash.now[:error] = t('errors.stale_record')
-          render :edit, status: :conflict
         end
       end
     end

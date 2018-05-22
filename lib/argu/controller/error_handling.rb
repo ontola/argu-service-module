@@ -21,7 +21,6 @@ module Argu
         rescue_from Argu::Errors::Forbidden, with: :handle_error
         rescue_from ActiveRecord::RecordNotFound, with: :handle_error
         rescue_from ActiveRecord::RecordNotUnique, with: :handle_error
-        rescue_from ActiveRecord::StaleObjectError, with: :handle_error
         rescue_from ActionController::BadRequest, with: :handle_error
         rescue_from ActionController::ParameterMissing, with: :handle_error
         rescue_from ActionController::UnpermittedParameters, with: :handle_error
