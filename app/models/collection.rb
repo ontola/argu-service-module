@@ -19,8 +19,6 @@ class Collection
                 :parent, :type, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of
   attr_writer :parent_view_iri, :title, :parent_uri_template
 
-  EDGE_CLASS = 'Edge'.safe_constantize
-
   alias pundit_user user_context
 
   def initialize(attrs = {})
