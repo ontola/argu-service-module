@@ -4,6 +4,7 @@ module ApplicationModel
   extend ActiveSupport::Concern
 
   included do |base|
+    base.include Enhanceable
     base.include Concernable
 
     def class_name

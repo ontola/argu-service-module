@@ -5,9 +5,7 @@ module Actionable
 
   included do
     def actions(user_context)
-      @actions ||= actions_class
-                     .new(resource: self, user_context: user_context)
-                     .actions
+      @actions ||= self.class.actions_class!.new(resource: self, user_context: user_context).actions
     end
 
     def action(user_context, tag)
