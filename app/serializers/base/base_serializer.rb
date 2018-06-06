@@ -7,13 +7,9 @@ class BaseSerializer < ActiveModel::Serializer
   attribute :type, predicate: RDF[:type]
   attribute :canonical_iri, predicate: NS::DC[:identifier]
 
-  delegate :export_scope?, :service_scope?, :system_scope?,
+  delegate :afe_request?, :export_scope?, :service_scope?, :system_scope?,
            to: :scope,
            allow_nil: true
-
-  def afe_request?
-    user_context.doorkeeper_scopes.include?('afe')
-  end
 
   def id
     rdf_subject
