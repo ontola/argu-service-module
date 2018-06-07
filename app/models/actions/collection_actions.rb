@@ -3,7 +3,6 @@
 module Actions
   class CollectionActions < Base
     include Pundit
-    include 'VotesHelper'.constantize if 'VotesHelper'.safe_constantize
 
     define_actions %i[new create]
 
@@ -76,8 +75,7 @@ module Actions
     end
 
     def image
-      return 'fa-plus' unless filtered_resource? && resource.filter['option'].present?
-      "fa-#{icon_for_side(resource.filter['option'])}"
+      'fa-plus'
     end
 
     def label
