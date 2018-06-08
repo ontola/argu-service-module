@@ -4,12 +4,10 @@ class Collection
   include ActiveModel::Serialization
   include ActiveModel::Model
   include ActionDispatch::Routing
-  include Concernable
   include Pundit
   include Rails.application.routes.url_helpers
 
   include ApplicationModel
-  concern Actionable
   include Ldable
   include Iriable
   include Collection::Filtering
@@ -25,6 +23,18 @@ class Collection
     attrs[:type] = attrs[:type]&.to_sym || :paginated
     attrs[:order] = attrs[:order] || {created_at: :desc}
     super
+  end
+
+  def actions
+    return unless user_context.is_a?(UserContext)
+    association_class
+      .try(:actions_class!)
+      &.new(resource: self, user_context: user_context)
+      &.actions
+  end
+
+  def action(tag)
+    actions.find { |a| a.tag == tag }
   end
 
   # prevents a `stack level too deep`

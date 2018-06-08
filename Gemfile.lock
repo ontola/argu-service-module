@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/argu-co/rdf-serializers
+  revision: d477c0968d742242e20a733f8eed303adac04a50
+  branch: master
+  specs:
+    rdf-serializers (0.0.6)
+      active_model_serializers (~> 0.10)
+      railties (>= 4.2.0, < 6)
+      rdf (~> 3.0)
+
+GIT
   remote: https://github.com/rails/activeresource
   revision: e28f907145c34bcad1d354fa9b25fbd4264e52e9
   branch: master
@@ -159,7 +169,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (12.3.0)
-    rdf (2.2.11)
+    rdf (3.0.2)
       hamster (~> 3.0)
       link_header (~> 0.0, >= 0.0.8)
     rspec-core (3.5.4)
@@ -227,6 +237,7 @@ DEPENDENCIES
   rails
   rake
   rdf
+  rdf-serializers!
   rspec-rails
   rubocop
   rubocop-rspec

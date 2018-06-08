@@ -15,6 +15,21 @@ class CollectionSerializer < BaseSerializer
   has_one :member_sequence, predicate: NS::ARGU[:members], if: :members?
   has_one :view_sequence, predicate: NS::ARGU[:views], if: :views?
 
+  has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::HYDRA[:operation]
+
+  triples :action_methods
+
+  def action_methods
+    object.actions&.map do |action|
+      method_name = "#{action.tag}_action"
+      [
+        object.iri,
+        NS::ARGU[method_name.camelize(:lower)],
+        action.iri
+      ]
+    end || []
+  end
+
   def type
     return NS::ARGU[:InfiniteCollection] if object.infinite?
     super
