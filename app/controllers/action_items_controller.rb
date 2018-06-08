@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ActionsController < AuthorizedController
+class ActionItemsController < AuthorizedController
   include NestedResourceHelper
   skip_before_action :check_if_registered
   before_action :authorize_action
@@ -48,6 +48,6 @@ class ActionsController < AuthorizedController
   end
 
   def tree_root_id
-    parent_resource.try(:edge)&.root_id
+    parent_resource.try(:root_id)
   end
 end
