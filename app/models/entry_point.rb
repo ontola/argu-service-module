@@ -5,8 +5,8 @@ class EntryPoint
   include ActiveModel::Serialization
   include Ldable
 
-  attr_accessor :http_method, :image, :label, :label_params, :parent, :tag,
-                :type, :resource, :url, :url_template
+  attr_accessor :parent
+  delegate :label, :url, :http_method, :image, to: :parent
 
   def as_json(_opts = {})
     {}

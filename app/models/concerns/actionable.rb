@@ -9,37 +9,11 @@ module Actionable
     end
 
     def action(user_context, tag)
-      actions(user_context).find { |a| a.tag == tag }
+      actions(user_context).find { |a| a.tag.to_sym == tag.to_sym }
     end
   end
 
-  module Actions
-    extend ActiveSupport::Concern
-
-    included do
-      class_attribute :defined_actions
-      self.defined_actions ||= []
-
-      def actions
-        defined_actions.map { |action| send("#{action}_action") }.compact
-      end
-
-      def action
-        Hash[defined_actions.map { |action| [action, send("#{action}_action")] }]
-      end
-    end
-
-    module ClassMethods
-      def define_action(action)
-        self.defined_actions ||= []
-        self.defined_actions += [action]
-      end
-
-      def define_actions(actions)
-        actions.each { |a| define_action(a) }
-      end
-    end
-  end
+  module Actions; end
 
   module Serializer
     extend ActiveSupport::Concern
@@ -61,10 +35,10 @@ module Actionable
       end
 
       def define_action_methods
-        actions_class.defined_actions.each do |action|
-          method_name = "#{action}_action"
+        actions_class.defined_actions&.each do |tag, _opts|
+          method_name = "#{tag}_action"
           define_method method_name do
-            object.action(scope, action) if scope.is_a?(UserContext)
+            object.action(scope, tag) if scope.is_a?(UserContext)
           end
 
           has_one method_name,

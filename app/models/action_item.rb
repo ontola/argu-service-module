@@ -6,13 +6,9 @@ class ActionItem
   include Iriable
   include Ldable
 
-  attr_accessor :label, :type, :target, :parent, :policy, :tag, :resource, :result
-
-  def initialize(attributes = {})
-    super
-    raise 'A target must be given' if target.blank?
-    target.parent = self
-  end
+  attr_accessor :type, :parent, :policy, :policy_arguments, :policy_resource,
+                :tag, :resource, :result, :image, :url, :http_method, :collection
+  attr_writer :label, :target
 
   def as_json(_opts = {})
     {}
@@ -32,4 +28,27 @@ class ActionItem
   end
 
   alias id iri
+
+  def label
+    @label ||
+      I18n.t("actions.#{resource&.class_name}.#{tag}", default: ["actions.default.#{tag}".to_sym, tag.to_s.humanize])
+  end
+
+  def target
+    return @target if @target.present?
+    return unless policy.blank? || policy_valid?
+    @target = EntryPoint.new(parent: self)
+  end
+
+  private
+
+  def policy_valid?
+    resource_policy(policy_resource).send(policy, *policy_arguments)
+  end
+
+  def resource_policy(policy_resource)
+    policy_resource ||= resource
+    @resource_policy ||= {}
+    @resource_policy[policy_resource.identifier] ||= Pundit.policy(parent.user_context, policy_resource)
+  end
 end

@@ -7,12 +7,8 @@ module Actions
     include Iriable
     include ActionDispatch::Routing
     include Rails.application.routes.url_helpers
-    include Pundit
-    include Concernable::Actions
-    # The model equivalent of this base actions doesn't exist, therefore, it can't
-    # call `concern Actionable` to do this call. Maybe a bootstrapping or design error
-    include Actionable::Actions
 
+    class_attribute :defined_actions
     attr_accessor :resource, :user_context
     delegate :user, to: :user_context
 
@@ -28,41 +24,69 @@ module Actions
       i
     end
 
+    def actions
+      defined_actions
+        &.select { |_tag, opts| opts[:collection] == resource.is_a?(Collection) }
+        &.keys
+        &.map { |tag| action(tag) }
+    end
+
+    def action(tag)
+      @action ||= {}
+      return @action[tag] if @action.key?(tag)
+      opts = defined_actions.select { |_tag, options| options[:collection] == resource.is_a?(Collection) }[tag].dup
+      opts.each do |key, value|
+        opts[key] = instance_exec(&value) if value.respond_to?(:call)
+      end
+      @action[tag] = action_item(tag, opts)
+    end
+
+    def self.define_action(action, opts = {})
+      self.defined_actions ||= {}
+      opts[:collection] ||= false
+      self.defined_actions[action] = opts
+    end
+
+    def self.define_default_create_action(resource_name, image: 'fa-plus')
+      create_action = "create_#{resource_name}".to_sym
+
+      define_action(
+        resource_name,
+        action_tag: create_action,
+        result: resource_name.to_s.classify.safe_constantize,
+        resource: -> { resource_collection(resource_name) },
+        image: image,
+        url: -> { create_url(resource_collection(resource_name)) },
+        http_method: 'POST',
+        policy: :create_child?,
+        type: [
+          NS::ARGU[:CreateAction],
+          NS::ARGU[create_action.to_s.camelize]
+        ]
+      )
+    end
+
     private
 
     def action_item(tag, options)
-      ActionItem.new(resource: resource, tag: tag, parent: self, **options)
+      ActionItem.new(resource: resource, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
     end
 
-    def default_action_label(tag, options)
-      I18n.t("actions.#{resource&.class_name}.#{tag}",
-             options[:label_params]
-               .merge(default: ["actions.default.#{tag}".to_sym, tag.to_s.capitalize]))
+    def create_url(resource)
+      return resource.parent_view_iri if paged_resource?(resource)
+      resource.iri
     end
 
-    def entry_point_item(tag, options)
-      return unless options[:policy].blank? || policy_valid?(options)
+    def paged_resource?(resource)
+      resource.is_a?(Collection) && resource.pagination && resource.page.present?
+    end
 
-      options[:label_params] ||= {}
-      options[:label] ||= default_action_label(tag, options)
-      options[:entrypoints]&.flatten!
-      options.except!(:policy_resource, :policy, :policy_arguments)
-
-      EntryPoint.new(resource: resource, tag: tag, parent: self, **options)
+    def resource_collection(col_name)
+      resource.send("#{col_name}_collection".to_sym, user_context: user_context)
     end
 
     def resource_path_iri
       resource.iri(only_path: true)
-    end
-
-    def policy_valid?(options)
-      resource_policy(options[:policy_resource]).send(options[:policy], *options[:policy_arguments])
-    end
-
-    def resource_policy(policy_resource)
-      policy_resource ||= resource
-      @resource_policy ||= {}
-      @resource_policy[policy_resource.identifier] ||= policy(policy_resource)
     end
   end
 end

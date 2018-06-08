@@ -3,7 +3,6 @@
 class EntryPointSerializer < BaseSerializer
   attribute :label, predicate: NS::SCHEMA[:name]
   attribute :url, predicate: NS::SCHEMA[:url]
-  attribute :url_template, predicate: NS::SCHEMA[:urlTemplate]
   attribute :http_method, key: :method, predicate: NS::SCHEMA[:httpMethod]
 
   has_one :image, predicate: NS::SCHEMA[:image]

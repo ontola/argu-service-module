@@ -17,6 +17,8 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Exclude:
+    - 'service_module/app/models/actions/base.rb'
+    - '../service_module/app/models/actions/base.rb'
     - 'service_module_internal/spec/features/active_resource_model_spec.rb'
     - '../service_module_internal/spec/features/active_resource_model_spec.rb'
 
