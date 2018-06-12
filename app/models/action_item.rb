@@ -7,7 +7,7 @@ class ActionItem
   include Ldable
 
   attr_accessor :type, :parent, :policy, :policy_arguments, :policy_resource,
-                :tag, :resource, :result, :image, :url, :http_method, :collection, :form
+                :tag, :resource, :result, :image, :url, :http_method, :collection, :form, :iri_template
   attr_writer :label, :target
   delegate :user_context, to: :parent
 
@@ -16,16 +16,14 @@ class ActionItem
   end
 
   def iri(only_path: false)
-    base = parent.iri(only_path: only_path)
+    return iri_from_parent(only_path: only_path) unless iri_template
 
-    if parent.is_a?(Actions::Base)
-      base.path += "/#{tag}"
-    elsif parent.iri.to_s.include?('#')
-      base.fragment = "#{base.fragment}.#{tag}"
-    else
-      base.fragment = tag
-    end
-    RDF::URI(base)
+    RDF::URI(
+      [
+        expand_uri_template(iri_template, parent_iri: resource.iri.path, only_path: only_path),
+        iri_query
+      ].compact.join('?')
+    )
   end
 
   alias id iri
@@ -42,6 +40,22 @@ class ActionItem
   end
 
   private
+
+  def iri_from_parent(only_path: false)
+    base = parent.iri(only_path: only_path)
+    if parent.is_a?(Actions::Base)
+      base.path += "/#{tag}"
+    elsif parent.iri.to_s.include?('#')
+      base.fragment = "#{base.fragment}.#{tag}"
+    else
+      base.fragment = tag
+    end
+    RDF::URI(base)
+  end
+
+  def iri_query
+    resource.iri.query&.split('&')&.reject { |query| query.include?('type=') }&.join('&')&.presence
+  end
 
   def policy_valid?
     resource_policy(policy_resource).send(policy, *policy_arguments)
