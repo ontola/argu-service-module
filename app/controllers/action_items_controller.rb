@@ -19,11 +19,11 @@ class ActionItemsController < AuthorizedController
   def current_forum; end
 
   def include_index
-    [:target, actions: :target]
+    [:target, actions: [target: {action_body: :referred_shapes}]]
   end
 
   def include_show
-    [:target, actions: :target]
+    [:object].concat(inc_action_form)
   end
 
   def index_response_association

@@ -3,10 +3,16 @@
 class EntryPoint
   include ActiveModel::Model
   include ActiveModel::Serialization
+  include ChildHelper
   include Ldable
 
   attr_accessor :parent
-  delegate :label, :url, :http_method, :image, to: :parent
+  delegate :form, :label, :url, :http_method, :image, :user_context, :resource, to: :parent
+
+  def action_body
+    target = parent.collection ? child_instance(resource.parent, resource.association_class) : resource
+    form&.new(user_context, target)&.shape
+  end
 
   def as_json(_opts = {})
     {}

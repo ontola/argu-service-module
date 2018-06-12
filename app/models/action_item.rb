@@ -7,8 +7,9 @@ class ActionItem
   include Ldable
 
   attr_accessor :type, :parent, :policy, :policy_arguments, :policy_resource,
-                :tag, :resource, :result, :image, :url, :http_method, :collection
+                :tag, :resource, :result, :image, :url, :http_method, :collection, :form
   attr_writer :label, :target
+  delegate :user_context, to: :parent
 
   def as_json(_opts = {})
     {}
@@ -49,6 +50,6 @@ class ActionItem
   def resource_policy(policy_resource)
     policy_resource ||= resource
     @resource_policy ||= {}
-    @resource_policy[policy_resource.identifier] ||= Pundit.policy(parent.user_context, policy_resource)
+    @resource_policy[policy_resource.identifier] ||= Pundit.policy(user_context, policy_resource)
   end
 end
