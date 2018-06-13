@@ -15,12 +15,9 @@ module Concernable
       self.concerns ||= []
       self.concerns += [c]
       include c
-      actions_class!.include c::Actions
       serializer_class!.include c::Serializer
     end
   end
-
-  module Actions; end
 
   module Serializer; end
 end

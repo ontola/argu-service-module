@@ -13,8 +13,6 @@ module Actionable
     end
   end
 
-  module Actions; end
-
   module Serializer
     extend ActiveSupport::Concern
 
