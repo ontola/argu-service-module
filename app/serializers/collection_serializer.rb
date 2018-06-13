@@ -20,14 +20,9 @@ class CollectionSerializer < BaseSerializer
   triples :action_methods
 
   def action_methods
-    object.actions&.map do |action|
-      method_name = "#{action.tag}_action"
-      [
-        object.iri,
-        NS::ARGU[method_name.camelize(:lower)],
-        action.iri
-      ]
-    end || []
+    triples = []
+    object.actions&.each { |action| triples.concat(action_triples(action)) }
+    triples
   end
 
   def type
@@ -41,5 +36,19 @@ class CollectionSerializer < BaseSerializer
 
   def views?
     object.views.present?
+  end
+
+  private
+
+  def action_triples(action)
+    iri = action.iri
+    [
+      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri),
+      object.parent ? action_triple(object.parent, NS::HYDRA[:operation], iri) : nil
+    ].compact
+  end
+
+  def action_triple(subject, predicate, iri)
+    [subject.iri, predicate, iri]
   end
 end

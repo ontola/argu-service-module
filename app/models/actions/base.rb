@@ -47,25 +47,6 @@ module Actions
       self.defined_actions[action] = opts
     end
 
-    def self.define_default_create_action(resource_name, image: 'fa-plus')
-      create_action = "create_#{resource_name}".to_sym
-
-      define_action(
-        resource_name,
-        action_tag: create_action,
-        result: resource_name.to_s.classify.safe_constantize,
-        resource: -> { resource_collection(resource_name) },
-        image: image,
-        url: -> { create_url(resource_collection(resource_name)) },
-        http_method: 'POST',
-        policy: :create_child?,
-        type: [
-          NS::ARGU[:CreateAction],
-          NS::ARGU[create_action.to_s.camelize]
-        ]
-      )
-    end
-
     private
 
     def action_item(tag, options)
