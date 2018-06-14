@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class BaseSerializer < ActiveModel::Serializer
-  include Concernable::Serializer
   include Ldable::Serializer
 
   attribute :type, predicate: RDF[:type]
