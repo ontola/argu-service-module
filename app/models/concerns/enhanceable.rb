@@ -22,6 +22,7 @@ module Enhanceable
       self.enhancements += [enhancement]
       enhancers = enhancement.constants
       enhancers &= only if only.present?
+      enhancers -= [:ActiveRecordExtension]
       enhancers.each do |enhancer|
         Enhancer.const_get(enhancer).enhance(self, enhancement.const_get(enhancer))
       end
