@@ -21,7 +21,7 @@ class CollectionSerializer < BaseSerializer
 
   def action_methods
     triples = []
-    object.actions&.each { |action| triples.concat(action_triples(action)) }
+    object.actions&.each { |action| triples.concat(action_triples(action)) } if object.page.blank?
     triples
   end
 
