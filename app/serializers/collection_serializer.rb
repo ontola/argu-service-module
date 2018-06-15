@@ -44,11 +44,11 @@ class CollectionSerializer < BaseSerializer
     iri = action.iri
     [
       action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri),
-      object.parent ? action_triple(object.parent, NS::HYDRA[:operation], iri) : nil
+      object.parent ? action_triple(object.parent, NS::HYDRA[:operation], iri, NS::LL[:add]) : nil
     ].compact
   end
 
-  def action_triple(subject, predicate, iri)
-    [subject.iri, predicate, iri]
+  def action_triple(subject, predicate, iri, graph = nil)
+    [subject.iri, predicate, iri, graph]
   end
 end
