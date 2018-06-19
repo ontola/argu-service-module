@@ -8,6 +8,15 @@ class Collection
       filter.present?
     end
 
+    def filters
+      @filters ||= filter&.map do |key, value|
+        CollectionFilter.new(
+          key: key,
+          value: value
+        )
+      end
+    end
+
     private
 
     def apply_filters(scope)

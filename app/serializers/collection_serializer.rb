@@ -11,6 +11,7 @@ class CollectionSerializer < BaseSerializer
   has_many :default_filtered_collections, predicate: NS::ARGU[:filteredCollections]
 
   has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::HYDRA[:operation]
+  has_many :filters, predicate: NS::ARGU[:collectionFilter]
 
   triples :action_methods
 
