@@ -7,6 +7,8 @@ class Record < ActiveRecord::Base
   include Ldable
   include Iriable
   include ActiveModel::Model
+  with_collection :records
+
   alias read_attribute_for_serialization send
   filterable key: {key: :actual_key, values: {value: 'actual_value'}}, key2: {}, key3: {values: {empty: 'NULL'}}
 
@@ -36,6 +38,10 @@ class Record < ActiveRecord::Base
       attr_2: [nil, 'new'],
       password: %w[old_pass new_pass]
     }
+  end
+
+  def self.default_per_page
+    11
   end
 end
 # rubocop:enable Rails/ApplicationRecord:

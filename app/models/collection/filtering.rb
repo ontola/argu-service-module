@@ -4,6 +4,10 @@ class Collection
   module Filtering
     attr_accessor :filter
 
+    def filtered?
+      filter.present?
+    end
+
     private
 
     def apply_filters(scope)
@@ -24,17 +28,6 @@ class Collection
       else
         scope.where(key => value)
       end
-    end
-
-    def filter?
-      return false if filter.present? || association_class.try(:filter_options).blank?
-      association_class.filter_options.any? { |_k, v| v.present? }
-    end
-
-    def filter_views
-      association_class.filter_options.map do |key, values|
-        values[:values].map { |value| child_with_options(filter: {key => value[0]}) }
-      end.flatten
     end
 
     def filter_single_value(options, value)

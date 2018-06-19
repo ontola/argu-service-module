@@ -22,7 +22,6 @@ module Ldable
   def collection_args(name, opts, collection_opts)
     args = opts.merge(name: name, parent: self, **collection_opts)
     args[:filter] ||= {}
-    args[:page] ||= nil
     args[:part_of] = args.key?(:part_of) ? send(args[:part_of]) : self
     args
   end
@@ -56,9 +55,7 @@ module Ldable
     # @param [Hash] options
     # @option options [Sym] association the name of the association
     # @option options [Class] association_class the class of the association
-    # @option options [Bool] pagination whether to paginate this collection
     # @option options [Sym] joins the associations to join
-    # @option options [Sym] includes the associations to include
     # @return [Collection]
     def with_collection(name, options = {})
       collection_class = options.delete(:collection_class) || Collection

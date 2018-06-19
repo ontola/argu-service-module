@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
 class CollectionSerializer < BaseSerializer
-  attribute :page_size, predicate: NS::ARGU[:pageSize]
   attribute :title, predicate: NS::SCHEMA[:name]
   attribute :total_count, predicate: NS::ARGU[:totalCount], unless: :system_scope?
-  attribute :parent_view_iri, predicate: NS::ARGU[:parentView]
+  attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
 
-  %i[first previous next last].each do |attr|
-    attribute attr, predicate: NS::ARGU[attr], unless: :system_scope?
-  end
-
+  has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf]
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
-
-  has_one :member_sequence, predicate: NS::ARGU[:members], if: :members?
-  has_one :view_sequence, predicate: NS::ARGU[:views], if: :views?
+  has_one :default_view, predicate: NS::ARGU[:views]
+  has_many :default_filtered_collections, predicate: NS::ARGU[:filteredCollections]
 
   has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::HYDRA[:operation]
 
@@ -21,21 +16,13 @@ class CollectionSerializer < BaseSerializer
 
   def action_methods
     triples = []
-    object.actions&.each { |action| triples.concat(action_triples(action)) } if object.page.blank?
+    object.actions&.each { |action| triples.concat(action_triples(action)) }
     triples
   end
 
   def type
-    return NS::ARGU[:InfiniteCollection] if object.infinite?
-    super
-  end
-
-  def members?
-    object.members.present?
-  end
-
-  def views?
-    object.views.present?
+    return object.class.iri unless object.filtered?
+    NS::ARGU[:filteredCollection]
   end
 
   private

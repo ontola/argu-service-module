@@ -3,27 +3,19 @@
 class Collection
   include ActiveModel::Serialization
   include ActiveModel::Model
-  include ActionDispatch::Routing
   include Pundit
-  include Rails.application.routes.url_helpers
 
   include ApplicationModel
   include Ldable
   include Iriable
   include Collection::Filtering
-  include Collection::Pagination
 
-  attr_accessor :association, :association_class, :association_scope, :includes, :joins, :name, :order,
-                :parent, :type, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of
-  attr_writer :parent_view_iri, :title, :parent_uri_template
+  attr_accessor :association, :association_class, :association_scope, :joins, :name,
+                :parent, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of,
+                :default_filters
+  attr_writer :title, :parent_uri_template, :views, :default_type, :unfiltered_collection
 
   alias pundit_user user_context
-
-  def initialize(attrs = {})
-    attrs[:type] = attrs[:type]&.to_sym || :paginated
-    attrs[:order] = attrs[:order] || {created_at: :desc}
-    super
-  end
 
   def actions
     return unless user_context.is_a?(UserContext)
@@ -42,129 +34,130 @@ class Collection
     super(options.merge(except: %w[association_class user_context]))
   end
 
+  def association_base
+    @association_base ||= policy_scope(filtered_association)
+  end
+
   def canonical_iri(only_path: false)
-    uri(query_opts, canonical: true, only_path: only_path)
+    iri(canonical: true, only_path: only_path)
   end
 
-  def id(only_path = false)
-    uri(query_opts, only_path: only_path)
-  end
-  alias iri id
-
-  def members
-    return if include_before? || include_pages? || filter?
-    @members ||=
-      case type
-      when :paginated
-        members_paginated
-      when :infinite
-        members_infinite
-      end
+  def default_filtered_collections
+    return if filtered? || default_filters.blank?
+    @default_filtered_collections ||= default_filters.map { |filter| unfiltered.new_child(filter: filter) }
   end
 
-  def member_sequence
-    @member_sequence ||= RDF::Sequence.new(members)
+  def default_view
+    @default_view ||= view_with_opts(default_view_opts)
   end
 
-  def parent_view_iri
-    return uri(query_opts.except(:page)) if page && association_class.present?
-    return @parent_view_iri if @parent_view_iri
-    uri(query_opts.except(:before)) if before
+  def inspect
+    "#<#{association_class}Collection #{iri} filters=#{filter || []}>"
   end
 
-  def views
-    if filter?
-      filter_views
-    elsif include_pages?
-      [child_with_options(page: 1)]
-    elsif include_before?
-      [child_with_options(before: Time.current.utc.to_s(:db))]
-    end
+  def iri(canonical: false, only_path: false)
+    RDF::URI(
+      expand_uri_template(
+        parent_uri_template(canonical),
+        iri_opts(canonical).merge(only_path: only_path)
+      )
+    )
+  end
+  alias id iri
+
+  def iri_opts(canonical = false)
+    opts = {
+      parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
+    }
+    opts['filter%5B%5D'] = filter.map { |key, value| "#{key}=#{value}" } if filtered?
+    opts.merge(parent_uri_template_opts || {})
   end
 
-  def view_sequence
-    @view_sequence ||= RDF::Sequence.new(views)
+  def iri_template
+    @iri_template ||= URITemplate.new("#{iri}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
+  end
+
+  def new_child(options)
+    slice = %w[association association_class association_scope parent_uri_template_canonical
+               parent_uri_template_opts user_context parent default_filters]
+    attrs =
+      options
+        .merge(instance_values.slice(*slice))
+        .merge(
+          parent_uri_template: parent_uri_template,
+          unfiltered_collection: filtered? ? @unfiltered_collection : self
+        )
+    self.class.new(attrs)
   end
 
   def title
     plural = association_class.name.tableize
     I18n.t("#{plural}.collection.#{filter&.values&.join('.').presence || name}",
-           count: total_count,
+           count: ->(_opts) { total_count },
            default: I18n.t("#{plural}.plural",
                            default: plural.humanize))
   end
 
   def total_count
-    members&.count || base_count
+    @total_count ||= count_from_cache_column || association_base.count
+  end
+
+  def unfiltered
+    filtered? ? unfiltered_collection : self
+  end
+
+  def unfiltered_collection
+    @unfiltered_collection ||= new_child(filter: [])
+  end
+
+  def views
+    @views || [default_view]
+  end
+
+  def view_with_opts(opts)
+    CollectionView.new(opts.merge(collection: self))
   end
 
   private
 
-  def association_base
-    @association_base ||= policy_scope(filtered_association)
+  def count_from_cache_column
+    return if filtered?
+    parent.children_count(counter_cache_column) if counter_cache_column
   end
 
-  def child_with_options(options)
-    options = {
-      user_context: user_context,
+  def counter_cache_column
+    key = association.to_s.starts_with?('active_') && association.to_s[7..-1]
+    opts = association_class.try(:counter_cache_options)
+    @counter_cache_column ||= key if key && opts && (opts == true || opts.keys.map(&:to_s).include?(key))
+  end
+
+  def default_type
+    @default_type || :paginated
+  end
+
+  def default_view_opts
+    opts = {
+      type: default_type,
+      page_size: association_class.default_per_page,
       filter: filter,
-      page: page,
-      parent_view_iri: id,
-      type: type
-    }.merge(options)
-    parent&.collection_for(name, options.merge(collection_class: self.class)) ||
-      new_child(options.merge(pagination: pagination))
+      sort: [{predicate: NS::SCHEMA[:dateCreated], direction: :desc}]
+    }
+    opts[:page] = 1 if default_type == :paginated
+    opts[:before] = Time.current.utc.to_s(:db) if default_type == :infinite
+    opts
   end
 
   def filtered_association
     scope = parent&.send(association) || association_class
     scope = scope.send(association_scope) if association_scope
     scope = scope.joins(joins) if joins
-    scope = apply_filters(scope) if filter.present?
+    scope = apply_filters(scope) if filtered?
     scope
-  end
-
-  def new_child(options)
-    self.class.new(
-      options.merge(
-        association_class: association_class,
-        association_scope: association_scope,
-        parent_uri_template_canonical: parent_uri_template_canonical,
-        parent_uri_template_opts: parent_uri_template_opts,
-        parent_uri_template: parent_uri_template
-      )
-    )
   end
 
   def policy_scope(scope)
     policy_scope = PolicyFinder.new(scope).scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
-  end
-
-  def query_opts
-    opts = {type: type}
-    opts[:before] = before if before.present?
-    opts[:page] = page if page.present?
-    opts[:filter] = filter if filter.present?
-    opts
-  end
-
-  def uri(query_values, canonical: false, only_path: false)
-    RDF::URI(
-      expand_uri_template(
-        parent_uri_template(canonical),
-        uri_opts(query_values, canonical).merge(only_path: only_path)
-      )
-    )
-  end
-
-  def uri_opts(opts, canonical)
-    filters = opts[:filter]&.map { |k, v| [CGI.escape("filter[#{k}]"), v] }
-    opts
-      .except(:filter)
-      .merge(Hash[filters || []])
-      .merge(parent_uri_template_opts || {})
-      .merge(parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri(only_path: true))
   end
 
   def parent_uri_template(canonical = false)

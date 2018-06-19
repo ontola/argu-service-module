@@ -2,9 +2,10 @@
 
 class Collection
   module Pagination
-    attr_accessor :before, :page, :pagination
+    attr_accessor :before, :page
 
     def initialize(attrs = {})
+      attrs[:type] = attrs[:type]&.to_sym
       unless %i[paginated infinite].include?(attrs[:type])
         raise ActionController::BadRequest.new("'#{attrs[:type]}' is not a valid collection type")
       end
@@ -15,22 +16,20 @@ class Collection
     end
 
     def page_size
-      association_class.default_per_page
+      @page_size&.to_i || association_class.default_per_page
     end
 
     def first
       case type
       when :paginated
-        return unless pagination
-        uri(query_opts.merge(page: 1))
+        iri(iri_opts.merge(page: 1))
       when :infinite
-        uri(query_opts.merge(before: Time.current.utc.to_s(:db)))
+        iri(iri_opts.merge(before: Time.current.utc.to_s(:db)))
       end
     end
 
     def last
-      return unless paginated? && pagination && total_page_count
-      uri(query_opts.merge(page: [total_page_count, 1].max))
+      iri(iri_opts.merge(page: [total_page_count, 1].max)) if paginated? && total_page_count
     end
 
     def infinite?
@@ -47,13 +46,13 @@ class Collection
     end
 
     def next_infinite
-      return if !pagination || before.nil? || members.blank?
-      uri(query_opts.merge(before: members.last.created_at.utc.to_s(:db)))
+      return if before.nil? || members.blank?
+      iri(iri_opts.merge(before: members.last.created_at.utc.to_s(:db)))
     end
 
     def next_paginated
-      return if !pagination || page.nil? || page.to_i >= (total_page_count || 0)
-      uri(query_opts.merge(page: page.to_i + 1))
+      return if page.nil? || page.to_i >= (total_page_count || 0)
+      iri(iri_opts.merge(page: page.to_i + 1))
     end
 
     def paginated?
@@ -61,37 +60,38 @@ class Collection
     end
 
     def previous
-      return if !pagination || page.nil? || page.to_i <= 1
-      uri(query_opts.merge(page: page.to_i - 1))
+      return if !paginated? || page.nil? || page.to_i <= 1
+      iri(iri_opts.merge(page: page.to_i - 1))
     end
 
     private
+
+    def parsed_sort_values
+      {created_at: :desc}
+    end
 
     def base_count
       @base_count ||= association_base.count
     end
 
     def include_before?
-      infinite? && pagination && before.nil?
-    end
-
-    def include_pages?
-      paginated? && pagination && page.nil?
+      infinite? && before.nil?
     end
 
     def members_infinite
-      policy_scope(association_base)
-        .includes(includes)
+      association_base
+        .includes(association_class.includes_for_serializer)
         .where('created_at < ?', before)
-        .order(order)
-        .limit(association_class.default_per_page)
+        .order(parsed_sort_values)
+        .limit(page_size)
     end
 
     def members_paginated
-      policy_scope(association_base)
-        .includes(includes)
-        .order(order)
+      association_base
+        .includes(association_class.includes_for_serializer)
+        .order(parsed_sort_values)
         .page(page)
+        .per(page_size)
     end
 
     def total_page_count
