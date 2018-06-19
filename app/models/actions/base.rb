@@ -53,19 +53,6 @@ module Actions
       ActionItem.new(resource: resource, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
     end
 
-    def create_url(resource)
-      return resource.parent_view_iri if paged_resource?(resource)
-      resource.iri
-    end
-
-    def paged_resource?(resource)
-      resource.is_a?(Collection) && resource.pagination && resource.page.present?
-    end
-
-    def resource_collection(col_name)
-      resource.send("#{col_name}_collection".to_sym, user_context: user_context)
-    end
-
     def resource_path_iri
       resource.iri(only_path: true)
     end
