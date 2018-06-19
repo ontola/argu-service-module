@@ -9,10 +9,12 @@ class CollectionView
   include Ldable
   include Iriable
   include Collection::Pagination
+  include Collection::Preloading
 
-  attr_accessor :collection, :type, :page, :filter, :sort
+  attr_accessor :collection, :type, :page, :filter, :sort, :include_map
   attr_writer :members, :page_size
   delegate :association_base, :association_class, :canonical_iri, :parent, :user_context, to: :collection
+  delegate :count, to: :raw_members
 
   alias pundit_user user_context
 
@@ -22,6 +24,10 @@ class CollectionView
   alias id iri
 
   def members
+    @members ||= preload_included_associations(raw_members.to_a)
+  end
+
+  def raw_members
     case type
     when :paginated
       members_paginated

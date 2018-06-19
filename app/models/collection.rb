@@ -12,7 +12,7 @@ class Collection
 
   attr_accessor :association, :association_class, :association_scope, :joins, :name,
                 :parent, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of,
-                :default_filters
+                :default_filters, :include_map
   attr_writer :title, :parent_uri_template, :views, :default_type, :unfiltered_collection
 
   alias pundit_user user_context
@@ -137,6 +137,7 @@ class Collection
 
   def default_view_opts
     opts = {
+      include_map: (include_map || {}).dig(:default_view, :members),
       type: default_type,
       page_size: association_class.default_per_page,
       filter: filter,

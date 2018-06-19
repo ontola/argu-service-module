@@ -15,15 +15,27 @@ module Ldable
   def collection_for(name, collection_class: Collection, **opts)
     raise 'No user context given' if opts[:user_context].nil?
 
-    collection_opts = collections.detect { |c| c[:name] == name }[:options]
-    collection_class.new(collection_args(name, opts, collection_opts))
+    collection_opts = collections.detect { |c| c[:name] == name }.try(:[], :options)
+    return if collection_opts.blank?
+    cached_collection(name, opts[:filter]) ||
+      cache_collection(name, collection_class, opts.merge(**collection_opts))
   end
 
-  def collection_args(name, opts, collection_opts)
-    args = opts.merge(name: name, parent: self, **collection_opts)
-    args[:filter] ||= {}
-    args[:part_of] = args.key?(:part_of) ? send(args[:part_of]) : self
-    args
+  private
+
+  def cache_collection(name, collection_class, opts)
+    opts[:name] = name
+    opts[:parent] = self
+    opts[:filter] ||= {}
+    opts[:part_of] = opts.key?(:part_of) ? send(opts[:part_of]) : self
+    collection = collection_class.new(opts)
+    @collection_instances[name] = collection if opts[:filter].blank?
+    collection
+  end
+
+  def cached_collection(name, filter)
+    @collection_instances ||= {}
+    @collection_instances[name] if filter.blank?
   end
 
   module ClassMethods
@@ -79,6 +91,10 @@ module Ldable
       end
 
       options.map { |k, filter| define_filter_method(k, filter) }
+    end
+
+    def includes_for_serializer
+      {}
     end
 
     private
