@@ -16,13 +16,13 @@ module Ldable
   # @param [ApplicationRecord] part_of
   # @param [Hash] opts Additional options to be passed to the collection.
   # @return [Collection]
-  def collection_for(name, collection_class: Collection, **opts)
+  def collection_for(name, opts = {})
     raise 'No user context given' if opts[:user_context].nil?
 
     collection_opts = collections.detect { |c| c[:name] == name }.try(:[], :options)
     return if collection_opts.blank?
     cached_collection(name, opts[:filter]) ||
-      cache_collection(name, collection_class, opts.merge(**collection_opts))
+      cache_collection(name, (opts.delete(:collection_class) || Collection), opts.merge(**collection_opts))
   end
 
   private
