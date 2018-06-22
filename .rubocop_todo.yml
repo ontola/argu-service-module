@@ -6,6 +6,10 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+Metrics/AbcSize:
+  Exclude:
+    - '../service_module/lib/argu/test_helpers/request_helpers.rb'
+
 Metrics/BlockLength:
   Exclude:
     - 'service_module_internal/spec/features/active_resource_model_spec.rb'
