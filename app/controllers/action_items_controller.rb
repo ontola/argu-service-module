@@ -18,7 +18,7 @@ class ActionItemsController < AuthorizedController
 
   def current_forum; end
 
-  def include_index
+  def include_index_collection
     [:target, actions: [target: {action_body: :referred_shapes}]]
   end
 

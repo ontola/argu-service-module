@@ -3,6 +3,10 @@
 module Ldable
   extend ActiveSupport::Concern
 
+  def applicable_filters
+    Hash[self.class.filter_options.keys.map { |k| [k, send(k)] }]
+  end
+
   # Initialises a {Collection} for one of the collections defined by {has_collection}
   # @see Ldable#has_collection
   # @param [Hash] name as defined with {has_collection}

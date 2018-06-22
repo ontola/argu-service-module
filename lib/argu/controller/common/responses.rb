@@ -167,6 +167,11 @@ module Argu
             t("type_#{action}_success", type: type_for(r)).capitalize
           end
         end
+
+        def meta_replace_collection_count(data, collection)
+          data.push [collection.iri, NS::ARGU[:members], nil, NS::LL[:remove]]
+          data.push [collection.iri, NS::ARGU[:totalCount], collection.total_count, NS::LL[:replace]]
+        end
       end
     end
   end
