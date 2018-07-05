@@ -5,7 +5,7 @@ class CollectionSerializer < BaseSerializer
   attribute :total_count, predicate: NS::ARGU[:totalCount], unless: :system_scope?
   attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
 
-  has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf]
+  has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf], if: :filtered?
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
   has_one :default_view, predicate: NS::ARGU[:views]
   has_many :default_filtered_collections, predicate: NS::ARGU[:filteredCollections]
@@ -23,7 +23,7 @@ class CollectionSerializer < BaseSerializer
 
   def type
     return object.class.iri unless object.filtered?
-    NS::ARGU[:filteredCollection]
+    NS::ARGU[:FilteredCollection]
   end
 
   private
@@ -39,4 +39,6 @@ class CollectionSerializer < BaseSerializer
   def action_triple(subject, predicate, iri, graph = nil)
     [subject.iri, predicate, iri, graph]
   end
+
+  delegate :filtered?, to: :object
 end
