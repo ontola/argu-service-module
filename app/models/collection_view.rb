@@ -8,10 +8,9 @@ class CollectionView
   include ApplicationModel
   include Ldable
   include Iriable
-  include Collection::Pagination
   include Collection::Preloading
 
-  attr_accessor :collection, :type, :page, :filter, :sort, :include_map
+  attr_accessor :collection, :filter, :sort, :include_map
   attr_writer :members, :page_size
   delegate :association_base, :association_class, :canonical_iri, :parent, :user_context, to: :collection
   delegate :count, to: :raw_members
@@ -27,13 +26,8 @@ class CollectionView
     @members ||= preload_included_associations(raw_members.to_a)
   end
 
-  def raw_members
-    case type
-    when :paginated
-      members_paginated
-    when :infinite
-      members_infinite
-    end
+  def page_size
+    @page_size&.to_i || association_class.default_per_page
   end
 
   def title
@@ -46,12 +40,15 @@ class CollectionView
 
   private
 
-  def iri_opts
-    {
-      before: before,
-      page: page,
-      pageSize: page_size,
-      type: type
-    }.merge(collection.iri_opts)
+  def base_count
+    @base_count ||= association_base.count
+  end
+
+  def parsed_sort_values
+    {created_at: :desc}
+  end
+
+  def total_page_count
+    (base_count / page_size.to_f).ceil if base_count
   end
 end

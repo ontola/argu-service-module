@@ -115,10 +115,21 @@ class Collection
   end
 
   def view_with_opts(opts)
-    CollectionView.new(opts.merge(collection: self))
+    collection_view_class(opts).new(opts.except(:type).merge(collection: self))
   end
 
   private
+
+  def collection_view_class(opts)
+    case opts[:type]&.to_sym
+    when :paginated, nil
+      PaginatedCollectionView
+    when :infinite
+      InfiniteCollectionView
+    else
+      raise ActionController::BadRequest.new("'#{opts[:type]}' is not a valid collection type")
+    end
+  end
 
   def count_from_cache_column
     return if filtered?
