@@ -31,7 +31,7 @@ class CollectionSerializer < BaseSerializer
   def action_triples(action)
     iri = action.iri
     [
-      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri),
+      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri, NS::LL[:add]),
       object.parent ? action_triple(object.parent, NS::HYDRA[:operation], iri, NS::LL[:add]) : nil
     ].compact
   end
