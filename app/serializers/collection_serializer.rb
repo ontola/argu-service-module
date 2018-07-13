@@ -10,7 +10,7 @@ class CollectionSerializer < BaseSerializer
   has_one :default_view, predicate: NS::ARGU[:views]
   has_many :default_filtered_collections, predicate: NS::ARGU[:filteredCollections]
 
-  has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::HYDRA[:operation]
+  has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::SCHEMA[:potentialAction]
   has_many :filters, predicate: NS::ARGU[:collectionFilter]
 
   triples :action_methods
@@ -32,7 +32,7 @@ class CollectionSerializer < BaseSerializer
     iri = action.iri
     [
       action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri, NS::LL[:add]),
-      object.parent ? action_triple(object.parent, NS::HYDRA[:operation], iri, NS::LL[:add]) : nil
+      object.parent ? action_triple(object.parent, NS::SCHEMA[:potentialAction], iri, NS::LL[:add]) : nil
     ].compact
   end
 

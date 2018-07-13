@@ -26,7 +26,7 @@ module Actionable
         has_many :actions,
                  key: :operation,
                  unless: :system_scope?,
-                 predicate: NS::HYDRA[:operation] do
+                 predicate: NS::SCHEMA[:potentialAction] do
           object.actions(scope) if scope.is_a?(UserContext)
         end
         define_action_methods
