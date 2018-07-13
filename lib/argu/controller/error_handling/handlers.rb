@@ -9,7 +9,7 @@ module Argu
     module ErrorHandling
       module Handlers
         def error_response_html(e, view: nil)
-          flash[:alert] = e.message
+          respond_to?(:flash) && flash[:alert] = e.message
           status ||= error_status(e)
           view ||= "status/#{status}"
           send_file lookup_context.find_template(view).identifier, disposition: :inline, status: status
