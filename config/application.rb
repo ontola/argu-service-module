@@ -22,7 +22,6 @@ require_relative '../../config/initializers/build'
 Bundler.require(*Rails.groups)
 
 require_relative '../lib/ns'
-require_relative '../app/serializers/base/base_serializer'
 
 module Service
   class Application < Rails::Application
@@ -38,6 +37,7 @@ module Service
     config.origin = "https://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
 
+    config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]
 
     Rails.application.routes.default_url_options[:host] = config.host_name
