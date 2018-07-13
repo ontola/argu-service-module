@@ -10,15 +10,6 @@ Metrics/AbcSize:
   Exclude:
     - '../service_module/lib/argu/test_helpers/request_helpers.rb'
 
-Metrics/BlockLength:
-  Exclude:
-    - 'service_module_internal/spec/features/active_resource_model_spec.rb'
-    - '../service_module_internal/spec/features/active_resource_model_spec.rb'
-    - 'service_module_internal/spec/features/data_event_spec.rb'
-    - '../service_module_internal/spec/features/data_event_spec.rb'
-    - 'service_module_internal/spec/features/*.rb'
-    - '../service_module_internal/spec/features/*.rb'
-
 Metrics/MethodLength:
   Exclude:
     - '../service_module/lib/argu/controller/common/responses.rb'
