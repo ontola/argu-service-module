@@ -4,6 +4,7 @@ class CollectionSerializer < BaseSerializer
   attribute :title, predicate: NS::SCHEMA[:name]
   attribute :total_count, predicate: NS::ARGU[:totalCount], unless: :system_scope?
   attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
+  attribute :default_type, predicate: NS::ARGU[:defaultType]
 
   has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf], if: :filtered?
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
