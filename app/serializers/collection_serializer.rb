@@ -28,11 +28,14 @@ class CollectionSerializer < BaseSerializer
 
   private
 
+  def action_for_parent(action)
+    action_triple(object.parent, NS::SCHEMA[:potentialAction], action.iri, NS::LL[:add]) if object.parent
+  end
+
   def action_triples(action)
-    iri = action.iri
     [
-      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], iri, NS::LL[:add]),
-      object.parent ? action_triple(object.parent, NS::SCHEMA[:potentialAction], iri, NS::LL[:add]) : nil
+      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], action.iri, NS::LL[:add]),
+      action_for_parent(action)
     ].compact
   end
 
