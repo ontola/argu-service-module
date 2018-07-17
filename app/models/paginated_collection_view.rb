@@ -16,7 +16,7 @@ class PaginatedCollectionView < CollectionView
     iri(iri_opts.merge(page: page.to_i + 1))
   end
 
-  def previous
+  def prev
     return if page.nil? || page.to_i <= 1
     iri(iri_opts.merge(page: page.to_i - 1))
   end

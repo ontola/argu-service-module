@@ -36,8 +36,10 @@ module Iriable
       iri.authority = nil
       iri.to_s
     end
+  end
 
-    def self.iri
+  module ClassMethods
+    def iri
       NS::ARGU[name.demodulize]
     end
   end

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class CollectionSerializer < BaseSerializer
-  attribute :title, predicate: NS::SCHEMA[:name]
-  attribute :total_count, predicate: NS::ARGU[:totalCount], unless: :system_scope?
+  attribute :title, predicate: NS::AS[:name]
+  attribute :total_count, predicate: NS::AS[:totalItems], unless: :system_scope?
   attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
   attribute :default_type, predicate: NS::ARGU[:defaultType]
 
   has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf], if: :filtered?
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
-  has_one :default_view, predicate: NS::ARGU[:views]
+  has_one :default_view, predicate: NS::AS[:pages]
   has_many :default_filtered_collections, predicate: NS::ARGU[:filteredCollections]
 
   has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::SCHEMA[:potentialAction]

@@ -17,6 +17,10 @@ class CollectionView
 
   alias pundit_user user_context
 
+  def self.iri
+    [super, NS::AS['CollectionPage']]
+  end
+
   def iri(opts = {})
     RDF::URI(collection.unfiltered.iri_template.expand(iri_opts.merge(opts)))
   end

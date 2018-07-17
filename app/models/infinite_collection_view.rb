@@ -21,7 +21,7 @@ class InfiniteCollectionView < CollectionView
     iri(iri_opts.merge(before: members.last.created_at.utc.to_s(:db)))
   end
 
-  def previous; end
+  def prev; end
 
   def type
     :infinite

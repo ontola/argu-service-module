@@ -169,8 +169,8 @@ module Argu
         end
 
         def meta_replace_collection_count(data, collection)
-          data.push [collection.iri, NS::ARGU[:members], nil, NS::LL[:remove]]
-          data.push [collection.iri, NS::ARGU[:totalCount], collection.total_count, NS::LL[:replace]]
+          data.push [collection.iri, NS::AS[:items], nil, NS::LL[:remove]]
+          data.push [collection.iri, NS::AS[:totalItems], collection.total_count, NS::LL[:replace]]
         end
       end
     end

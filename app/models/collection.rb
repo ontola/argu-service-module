@@ -17,6 +17,10 @@ class Collection
 
   alias pundit_user user_context
 
+  def self.iri
+    [super, NS::AS['Collection']]
+  end
+
   def actions
     return unless user_context.is_a?(UserContext)
     association_class
