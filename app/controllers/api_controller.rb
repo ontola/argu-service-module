@@ -14,16 +14,12 @@ class ApiController < ActionController::API
 
   class_attribute :inc_nested_collection
   self.inc_nested_collection = [
-    member_sequence: :members,
-    operation: :target,
-    view_sequence: [
-      members:
-        [
-          member_sequence: :members,
-          operation: :target,
-          view_sequence: [members: [member_sequence: :members, operation: :target].freeze].freeze
-        ].freeze
-    ].freeze
+    default_view: {member_sequence: :members},
+    filters: []
+  ].freeze
+  class_attribute :inc_shallow_collection
+  self.inc_shallow_collection = [
+    filters: []
   ].freeze
 
   def current_user
