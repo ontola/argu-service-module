@@ -8,5 +8,5 @@ class CollectionViewSerializer < BaseSerializer
   end
 
   has_one :collection, predicate: NS::AS[:partOf]
-  has_many :members, predicate: NS::AS[:items]
+  has_one :member_sequence, predicate: NS::AS[:items]
 end

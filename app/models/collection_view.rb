@@ -30,6 +30,10 @@ class CollectionView
     @members ||= preload_included_associations(raw_members.to_a)
   end
 
+  def member_sequence
+    @member_sequence ||= RDF::Sequence.new(members)
+  end
+
   def page_size
     @page_size&.to_i || association_class.default_per_page
   end
