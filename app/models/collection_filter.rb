@@ -8,6 +8,6 @@ class CollectionFilter < RDF::Node
   attr_accessor :key, :value
 
   def iri(_opts = {})
-    RDF::URI("_:#{id}")
+    RDF::Resource("_:#{id}")
   end
 end
