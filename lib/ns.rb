@@ -7,6 +7,7 @@ module NS
   COUNCIL = RDF::Vocabulary.new('https://argu.co/ns/0.1/gov/council#')
   GOVID = RDF::Vocabulary.new('https://argu.co/ns/0.1/gov/id#')
   META = RDF::Vocabulary.new('https://argu.co/ns/0.1/meta#')
+  ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/')
 
   AS = RDF::Vocabulary.new('https://www.w3.org/ns/activitystreams#')
   BIBO = RDF::Vocabulary.new('http://purl.org/ontology/bibo/')
