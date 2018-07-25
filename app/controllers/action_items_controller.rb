@@ -18,15 +18,15 @@ class ActionItemsController < AuthorizedController
 
   def current_forum; end
 
-  def include_index_collection
+  def index_includes
     [:target, actions: [target: {action_body: :referred_shapes}]]
   end
 
-  def include_show
-    [:object].concat(inc_action_form)
+  def show_includes
+    [:object].concat(ACTION_FORM_INCLUDES)
   end
 
-  def index_response_association
+  def index_association
     if parent_id_from_params.present?
       parent_resource!.actions(user_context)
     else

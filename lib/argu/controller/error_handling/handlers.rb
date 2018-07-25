@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_response/errors/serializable_error'
+
 module Argu
   module Controller
     # The generic Argu error handling code. Currently a mess from different error
@@ -82,7 +84,8 @@ module Argu
         end
 
         def serializable_error(status, e)
-          Argu::Errors::SerializableError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
+          ActiveResponse::Errors::SerializableError
+            .new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
         end
       end
     end

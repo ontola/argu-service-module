@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'argu/errors/forbidden'
-require 'argu/errors/serializable_error'
 require 'argu/errors/unauthorized'
 
 module Argu

@@ -152,7 +152,7 @@ class Collection
 
   def default_view_opts
     opts = {
-      include_map: (include_map || {}).dig(:default_view, :members),
+      include_map: (include_map || {}),
       type: default_type,
       page_size: association_class.default_per_page,
       filter: filter,
