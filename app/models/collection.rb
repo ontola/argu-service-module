@@ -21,16 +21,15 @@ class Collection
     [super, NS::AS['Collection']]
   end
 
-  def actions
-    return unless user_context.is_a?(UserContext)
+  def actions(user_context)
     association_class
       .try(:actions_class!)
       &.new(resource: self, user_context: user_context)
       &.actions
   end
 
-  def action(tag)
-    actions.find { |a| a.tag == tag }
+  def action(user_context, tag)
+    actions(user_context).find { |a| a.tag == tag }
   end
 
   # prevents a `stack level too deep`

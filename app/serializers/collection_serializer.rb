@@ -16,9 +16,13 @@ class CollectionSerializer < BaseSerializer
 
   triples :action_methods
 
+  def actions
+    object.actions(scope)
+  end
+
   def action_methods
     triples = []
-    object.actions&.each { |action| triples.concat(action_triples(action)) }
+    actions&.each { |action| triples.concat(action_triples(action)) }
     triples
   end
 
