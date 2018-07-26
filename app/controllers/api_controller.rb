@@ -4,23 +4,13 @@ require 'uri_template'
 require 'argu'
 
 class ApiController < ActionController::API
+  include ActiveResponse::Controller
   include Argu::Controller::ErrorHandling
-  include Argu::Controller::Common::Responses
 
   include ActionController::MimeResponds
   include JsonApiHelper
   include UrlHelper
   serialization_scope :nil
-
-  class_attribute :inc_nested_collection
-  self.inc_nested_collection = [
-    default_view: {member_sequence: :members},
-    filters: []
-  ].freeze
-  class_attribute :inc_shallow_collection
-  self.inc_shallow_collection = [
-    filters: []
-  ].freeze
 
   def current_user
     @current_user ||= CurrentUser.find(user_token)
