@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_response/errors/serializable_error'
+require 'active_response/rdf/error'
 
 module Argu
   module Controller
@@ -30,7 +30,7 @@ module Argu
 
         def error_response_serializer(e, type, status: nil)
           status ||= error_status(e)
-          render type => serializable_error(status, e), status: status
+          render type => error_graph(status, e), status: status
         end
 
         def handle_and_report_error(e)
@@ -50,6 +50,10 @@ module Argu
               format.send(type) { error_response_serializer(e, type) }
             end
           end
+        end
+
+        def error_graph(status, e)
+          ActiveResponse::RDF::Error.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new).graph
         end
 
         def error_response(e, format)
@@ -81,11 +85,6 @@ module Argu
         def respond_with_422?(resources)
           ![:html, nil].include?(request.format.symbol) &&
             !resources.all? { |r| r.respond_to?(:valid?) ? r.valid? : true }
-        end
-
-        def serializable_error(status, e)
-          ActiveResponse::Errors::SerializableError
-            .new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
         end
       end
     end
