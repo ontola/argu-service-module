@@ -72,6 +72,7 @@ class Collection
     opts = {
       parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
     }
+    opts.delete(:parent_iri) if opts[:parent_iri].blank?
     opts['filter%5B%5D'] = filter.map { |key, value| "#{key}=#{value}" } if filtered?
     opts.merge(parent_uri_template_opts || {})
   end
