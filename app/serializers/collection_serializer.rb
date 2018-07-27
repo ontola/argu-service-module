@@ -45,7 +45,9 @@ class CollectionSerializer < BaseSerializer
   end
 
   def action_triple(subject, predicate, iri, graph = nil)
-    [subject.iri, predicate, iri, graph]
+    subject_iri = subject.iri
+    subject_iri = RDF::URI(subject_iri.to_s.sub('/lr/', '/od/'))
+    [subject_iri, predicate, iri, graph]
   end
 
   delegate :filtered?, to: :object
