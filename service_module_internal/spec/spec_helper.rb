@@ -71,6 +71,13 @@ Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{resources,serializer
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
                    '{models/actions,models/collection}', '*.rb'),
          &method(:require))
+
+require_relative '../../lib/rails_ld'
+require_relative '../../lib/rails_ld/collection_view/preloading'
+require_relative '../../lib/rails_ld/collection/filtering'
+require_relative '../../lib/rails_ld/collection_view'
+Dir.glob(File.join(File.dirname(__FILE__) + '/../../lib/rails_ld', '*.rb'), &method(:require))
+
 require_relative '../../app/models/collection_view'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/models', '*.rb'),
          &method(:require))

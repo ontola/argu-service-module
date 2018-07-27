@@ -1,13 +1,3 @@
 # frozen_string_literal: true
 
-class CollectionFilter < RDF::Node
-  include ActiveModel::Serialization
-  include ActiveModel::Model
-  include Iriable
-
-  attr_accessor :key, :value
-
-  def iri(_opts = {})
-    RDF::Resource("_:#{id}")
-  end
-end
+class CollectionFilter < RailsLD::CollectionFilter; end

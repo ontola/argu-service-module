@@ -1,25 +1,15 @@
 # frozen_string_literal: true
 
-class Collection
-  include ActiveModel::Serialization
-  include ActiveModel::Model
-  include Pundit
-
+class Collection < RailsLD::Collection
   include ApplicationModel
+  include Pundit
   include Ldable
   include Iriable
-  include Collection::Filtering
 
-  attr_accessor :association, :association_class, :association_scope, :joins, :name,
-                :parent, :user_context, :parent_uri_template_canonical, :parent_uri_template_opts, :part_of,
-                :default_filters, :include_map
-  attr_writer :title, :parent_uri_template, :views, :default_type, :unfiltered_collection
+  attr_accessor :user_context, :parent_uri_template_canonical, :parent_uri_template_opts
+  attr_writer :title, :parent_uri_template
 
   alias pundit_user user_context
-
-  def self.iri
-    [super, NS::AS['Collection']]
-  end
 
   def actions(user_context)
     association_class
@@ -32,11 +22,6 @@ class Collection
     actions(user_context).find { |a| a.tag == tag }
   end
 
-  # prevents a `stack level too deep`
-  def as_json(options = {})
-    super(options.merge(except: %w[association_class user_context]))
-  end
-
   def association_base
     @association_base ||= policy_scope(filtered_association)
   end
@@ -45,17 +30,12 @@ class Collection
     iri(canonical: true, only_path: only_path)
   end
 
-  def default_filtered_collections
-    return if filtered? || default_filters.blank?
-    @default_filtered_collections ||= default_filters.map { |filter| unfiltered.new_child(filter: filter) }
-  end
-
-  def default_view
-    @default_view ||= view_with_opts(default_view_opts)
-  end
-
   def inspect
     "#<#{association_class}Collection #{iri} filters=#{filter || []}>"
+  end
+
+  def self.iri
+    [super, NS::AS['Collection']]
   end
 
   def iri(canonical: false, only_path: false)
@@ -81,59 +61,11 @@ class Collection
     @iri_template ||= URITemplate.new("#{iri}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
-  def new_child(options)
-    slice = %w[association association_class association_scope parent_uri_template_canonical
-               parent_uri_template_opts user_context parent default_filters]
-    attrs =
-      options
-        .merge(instance_values.slice(*slice))
-        .merge(
-          parent_uri_template: parent_uri_template,
-          unfiltered_collection: filtered? ? @unfiltered_collection : self
-        )
-    self.class.new(attrs)
-  end
-
-  def title
-    plural = association_class.name.tableize
-    I18n.t("#{plural}.collection.#{filter&.values&.join('.').presence || name}",
-           count: ->(_opts) { total_count },
-           default: I18n.t("#{plural}.plural",
-                           default: plural.humanize))
-  end
-
   def total_count
-    @total_count ||= count_from_cache_column || association_base.count
-  end
-
-  def unfiltered
-    filtered? ? unfiltered_collection : self
-  end
-
-  def unfiltered_collection
-    @unfiltered_collection ||= new_child(filter: [])
-  end
-
-  def views
-    @views || [default_view]
-  end
-
-  def view_with_opts(opts)
-    collection_view_class(opts).new(opts.except(:type).merge(collection: self))
+    @total_count ||= count_from_cache_column || super
   end
 
   private
-
-  def collection_view_class(opts)
-    case opts[:type]&.to_sym
-    when :paginated, nil
-      PaginatedCollectionView
-    when :infinite
-      InfiniteCollectionView
-    else
-      raise ActionController::BadRequest.new("'#{opts[:type]}' is not a valid collection type")
-    end
-  end
 
   def count_from_cache_column
     return if filtered?
@@ -146,34 +78,13 @@ class Collection
     @counter_cache_column ||= key if key && opts && (opts == true || opts.keys.map(&:to_s).include?(key))
   end
 
-  def default_type
-    @default_type || :paginated
-  end
-
-  def default_view_opts
-    opts = {
-      include_map: (include_map || {}),
-      type: default_type,
-      page_size: association_class.default_per_page,
-      filter: filter,
-      sort: [{predicate: NS::SCHEMA[:dateCreated], direction: :desc}]
-    }
-    opts[:page] = 1 if default_type == :paginated
-    opts[:before] = Time.current.utc.to_s(:db) if default_type == :infinite
-    opts
-  end
-
-  def filtered_association
-    scope = parent&.send(association) || association_class
-    scope = scope.send(association_scope) if association_scope
-    scope = scope.joins(joins) if joins
-    scope = apply_filters(scope) if filtered?
-    scope
-  end
-
-  def policy_scope(scope)
-    policy_scope = PolicyFinder.new(scope).scope
-    policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
+  def new_child_values
+    super.merge(
+      parent_uri_template_canonical: parent_uri_template_canonical,
+      parent_uri_template_opts: parent_uri_template_opts,
+      user_context: user_context,
+      parent_uri_template: parent_uri_template
+    )
   end
 
   def parent_uri_template(canonical = false)
@@ -182,5 +93,10 @@ class Collection
     else
       @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
     end
+  end
+
+  def policy_scope(scope)
+    policy_scope = PolicyFinder.new(scope).scope
+    policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
   end
 end
