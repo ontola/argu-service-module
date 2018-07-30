@@ -49,3 +49,6 @@ Metrics/BlockLength:
     - shared_examples_for
     - test
     - setup
+Rails/SkipsModelValidations:
+  Exclude:
+    - app/models/concerns/iriable.rb
