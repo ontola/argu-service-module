@@ -37,8 +37,12 @@ module Service
     config.origin = "https://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
 
+    config.autoload_paths += %w[lib]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]
+    config.autoload_paths += %W[#{config.root}/app/responders]
+
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = config.host_name
     ActiveModelSerializers.config.key_transform = :camel_lower

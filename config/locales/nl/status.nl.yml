@@ -1,0 +1,7 @@
+nl:
+  status:
+    400: "Fout in de aanvraag"
+    401: "Je moet ingelogd zijn voor deze actie."
+    404: "Het item is niet gevonden, probeer de pagina te verversen."
+    429: "Je maakt te veel verzoeken, probeer het over halve minuut nog eens."
+    500: "Er ging iets aan onze kant fout, probeer het later nog eens."
