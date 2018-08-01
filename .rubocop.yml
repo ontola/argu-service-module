@@ -52,3 +52,4 @@ Metrics/BlockLength:
 Rails/SkipsModelValidations:
   Exclude:
     - app/models/concerns/iriable.rb
+    - ../app/models/concerns/iriable.rb

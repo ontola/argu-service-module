@@ -8,15 +8,8 @@
 
 Metrics/AbcSize:
   Exclude:
-    - '../service_module/lib/argu/test_helpers/request_helpers.rb'
-
-Metrics/MethodLength:
-  Exclude:
-    - '../service_module/lib/argu/controller/common/responses.rb'
-    - 'service_module/app/models/actions/base.rb'
-    - '../service_module/app/models/actions/base.rb'
-    - 'service_module_internal/spec/features/active_resource_model_spec.rb'
-    - '../service_module_internal/spec/features/active_resource_model_spec.rb'
+    - 'lib/argu/test_helpers/request_helpers.rb'
+    - '../lib/argu/test_helpers/request_helpers.rb'
 
 Metrics/ClassLength:
   Exclude:
