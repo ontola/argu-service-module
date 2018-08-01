@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../lib/rails_ld/collection.rb'
+
 class Collection < RailsLD::Collection
   include ApplicationModel
   include Pundit
