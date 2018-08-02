@@ -7,6 +7,6 @@ class CurrentUser < ActiveResourceModel
   end
 
   def self.connection
-    OAuth2::AccessToken.new(argu_client, @token)
+    OauthConnection.new(OAuth2::AccessToken.new(argu_client, @token))
   end
 end
