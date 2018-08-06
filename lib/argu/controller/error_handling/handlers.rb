@@ -36,6 +36,7 @@ module Argu
         def handle_and_report_error(e)
           raise if Rails.env.development? || Rails.env.test?
           Bugsnag.notify(e)
+          raise if response_body
           handle_error(e)
         end
 
