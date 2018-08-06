@@ -14,18 +14,27 @@ module Enhanceable
     end
   end
 
+  def enhanced_with?(enhancement)
+    self.class.enhancements.include?(enhancement)
+  end
+
   module ClassMethods
     # Adds enhancements to a model and initializers their dependent modules.
-    def enhance(enhancement, only: [])
+    def enhance(enhancement, only: [], except: [])
       self.enhancements ||= []
       return if enhancements.include?(enhancement)
       self.enhancements += [enhancement]
       enhancers = enhancement.constants
       enhancers &= only if only.present?
+      enhancers -= except if except.present?
       enhancers -= [:ActiveRecordExtension]
       enhancers.each do |enhancer|
         Enhancer.const_get(enhancer).enhance(self, enhancement.const_get(enhancer))
       end
+    end
+
+    def enhanced_with?(enhancement)
+      self.enhancements.include?(enhancement)
     end
   end
 end
