@@ -2,6 +2,7 @@
 
 class ActionItemSerializer < BaseSerializer
   attribute :label, predicate: NS::SCHEMA[:name]
+  attribute :description, predicate: NS::SCHEMA[:text]
   attribute :result, predicate: NS::SCHEMA[:result]
 
   has_one :resource, predicate: NS::SCHEMA[:object]

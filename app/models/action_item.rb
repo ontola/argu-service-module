@@ -8,7 +8,7 @@ class ActionItem
 
   attr_accessor :type, :parent, :policy, :policy_arguments, :policy_resource,
                 :tag, :resource, :result, :image, :url, :http_method, :collection, :form, :iri_template
-  attr_writer :label, :target
+  attr_writer :label, :target, :description
   delegate :user_context, to: :parent
 
   def as_json(_opts = {})
@@ -28,9 +28,15 @@ class ActionItem
 
   alias id iri
 
+  def description
+    @description ||
+      I18n.t("actions.#{resource&.class_name}.#{tag}.description", default: [:"actions.default.#{tag}.description", ''])
+  end
+
   def label
     @label ||
-      I18n.t("actions.#{resource&.class_name}.#{tag}", default: ["actions.default.#{tag}".to_sym, tag.to_s.humanize])
+      I18n.t("actions.#{resource&.class_name}.#{tag}.label",
+             default: [:"actions.default.#{tag}.label", tag.to_s.humanize])
   end
 
   def target

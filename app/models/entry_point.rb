@@ -7,7 +7,7 @@ class EntryPoint
   include Ldable
 
   attr_accessor :parent
-  delegate :form, :label, :url, :http_method, :image, :user_context, :resource, to: :parent
+  delegate :form, :label, :description, :url, :http_method, :image, :user_context, :resource, to: :parent
 
   def action_body
     target = parent.collection ? child_instance(resource.parent, resource.association_class) : resource
