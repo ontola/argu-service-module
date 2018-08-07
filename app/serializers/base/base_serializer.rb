@@ -23,14 +23,15 @@ class BaseSerializer < ActiveModel::Serializer
   end
 
   def serialize_image(obj)
-    return if obj.blank?
     if obj.is_a?(String) || obj.is_a?(Symbol)
       {
         id: RDF::URI(obj.to_s.gsub(/^fa-/, 'http://fontawesome.io/icon/')),
         type: NS::ARGU[:FontAwesomeIcon]
       }
+    elsif obj.is_a?(RDF::URI)
+      {id: obj}
     else
-      obj
+      obj.presence
     end
   end
 
