@@ -26,7 +26,7 @@ module Actions
 
     def actions
       defined_actions
-        &.select { |_tag, opts| opts[:collection] == resource.is_a?(Collection) }
+        &.select { |_tag, opts| collection_filter(opts) }
         &.keys
         &.map { |tag| action(tag) }
     end
@@ -34,7 +34,7 @@ module Actions
     def action(tag)
       @action ||= {}
       return @action[tag] if @action.key?(tag)
-      opts = defined_actions.select { |_tag, options| options[:collection] == resource.is_a?(Collection) }[tag].dup
+      opts = defined_actions.select { |_tag, options| collection_filter(options) }[tag].dup
       opts.each do |key, value|
         opts[key] = instance_exec(&value) if value.respond_to?(:call)
       end
@@ -51,6 +51,14 @@ module Actions
 
     def action_item(tag, options)
       ActionItem.new(resource: resource, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
+    end
+
+    def call_option(option)
+      option.respond_to?(:call) ? instance_exec(&option) : option
+    end
+
+    def collection_filter(opts)
+      call_option(opts[:collection]) == resource.is_a?(Collection)
     end
 
     def resource_path_iri
