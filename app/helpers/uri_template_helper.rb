@@ -70,7 +70,8 @@ module UriTemplateHelper
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
       iri = parent.try(:iri_path) || parent
-      RDF::URI(expand_uri_template("#{method}_iri", opts.merge(parent_iri: iri)))
+      opts[:parent_iri] ||= iri if iri
+      RDF::URI(expand_uri_template("#{method}_iri", opts))
     end
 
     # @return [String]
