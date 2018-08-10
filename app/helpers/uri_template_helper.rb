@@ -38,6 +38,10 @@ module UriTemplateHelper
     "#{Rails.application.config.origin}#{path}"
   end
 
+  def root_iri(opts = {})
+    RDF::URI(opts[:only_path] ? '' : Rails.application.config.origin)
+  end
+
   # @return [Array<String>]
   def split_iri_segments(iri)
     iri.to_s.split('/').map(&:presence).compact
