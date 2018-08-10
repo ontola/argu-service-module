@@ -8,7 +8,7 @@ class ActionItem
 
   attr_accessor :type, :parent, :policy, :policy_arguments, :policy_resource,
                 :tag, :resource, :result, :image, :url, :http_method, :collection, :form, :iri_template
-  attr_writer :label, :target, :description
+  attr_writer :label, :target, :description, :iri_template_opts
   delegate :user_context, to: :parent
 
   def as_json(_opts = {})
@@ -20,7 +20,7 @@ class ActionItem
 
     RDF::URI(
       [
-        expand_uri_template(iri_template, parent_iri: resource.iri.path, only_path: only_path),
+        expand_uri_template(iri_template, iri_template_opts(parent_iri: resource.iri.path, only_path: only_path)),
         iri_query
       ].compact.join('?')
     )
@@ -61,6 +61,10 @@ class ActionItem
 
   def iri_query
     resource.iri.query&.split('&')&.reject { |query| query.include?('type=') }&.join('&')&.presence
+  end
+
+  def iri_template_opts(opts = {})
+    (@iri_template_opts || {}).merge(opts)
   end
 
   def policy_valid?
