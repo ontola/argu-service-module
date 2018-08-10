@@ -5,8 +5,6 @@ module Actions
     include ActiveModel::Model
     include Ldable
     include Iriable
-    include ActionDispatch::Routing
-    include Rails.application.routes.url_helpers
 
     class_attribute :defined_actions
     attr_accessor :resource, :user_context
