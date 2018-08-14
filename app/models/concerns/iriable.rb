@@ -35,7 +35,7 @@ module Iriable
   end
 
   def iri_opts
-    {id: id, :"#{self.class.name.underscore}_id" => id}
+    {id: to_param, :"#{self.class.name.underscore}_id" => to_param}
   end
 
   # @return [String]
