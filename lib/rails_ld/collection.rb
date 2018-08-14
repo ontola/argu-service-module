@@ -7,7 +7,7 @@ module RailsLD
     include RailsLD::Collection::Filtering
 
     attr_accessor :association, :association_class, :association_scope, :joins, :name,
-                  :parent, :part_of, :default_filters, :include_map, :type
+                  :parent, :part_of, :default_filters, :include_map, :page_size, :type
     attr_writer :title, :views, :default_type, :unfiltered_collection
 
     # prevents a `stack level too deep`
@@ -71,7 +71,7 @@ module RailsLD
       opts = {
         include_map: (include_map || {}),
         type: default_type,
-        page_size: association_class.default_per_page,
+        page_size: page_size || association_class.default_per_page,
         filter: filter,
         sort: [{predicate: NS::SCHEMA[:dateCreated], direction: :desc}]
       }
