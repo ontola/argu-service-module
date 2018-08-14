@@ -31,7 +31,7 @@ module Iriable
   end
 
   def iri_from_template(opts)
-    RDF::URI(expand_uri_template("#{model_name.route_key}_iri", **iri_opts.merge(opts)))
+    RDF::URI(expand_uri_template(iri_template_name, **iri_opts.merge(opts)))
   end
 
   def iri_opts
@@ -44,6 +44,10 @@ module Iriable
     iri.scheme = nil
     iri.authority = nil
     iri.to_s
+  end
+
+  def iri_template_name
+    "#{model_name.route_key}_iri"
   end
 
   def cache_iri!
