@@ -50,7 +50,11 @@ module RailsLD
     private
 
     def arel_table
-      @arel_table ||= Arel::Table.new(association_class.to_s.tableize)
+      @arel_table ||= Arel::Table.new(association_table)
+    end
+
+    def association_table
+      parent&.class&.reflect_on_association(collection.association)&.table_name || association_class.to_s.tableize
     end
 
     def base_count
