@@ -84,8 +84,11 @@ module RailsLD
       # @return [Hash] A hash of attributes, empty if no statements were given.
       def params_from_graph(request)
         graph = graph_from_request(request)
-        target_class = graph && target_class_from_graph(graph)
-        return if target_class.blank?
+        target_class = graph && target_class_from_path(request.path)
+        if target_class.blank?
+          logger.info("No class found for #{request.path}") if graph
+          return
+        end
 
         request.update_param(
           target_class.to_s.underscore,
@@ -129,13 +132,11 @@ module RailsLD
         logger.info("#{statement.predicate} not found in #{model_serializer(klass)}")
       end
 
-      def target_class_from_graph(graph)
-        type_triple = graph.query([nil, RDF[:type]]).first
-        return if type_triple.blank?
-        iri = type_triple.object.to_s
-        target_class = self.class.classes_by_iri[iri]
-        logger.info("No class found for #{iri}") if target_class.blank?
-        target_class
+      def target_class_from_path(path)
+        opts = Rails.application.routes.recognize_path(path)
+        opts[:controller]&.classify&.safe_constantize
+      rescue ActionController::RoutingError
+        nil
       end
     end
   end
