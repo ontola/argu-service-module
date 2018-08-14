@@ -7,7 +7,7 @@ module RailsLD
     include RailsLD::Collection::Filtering
 
     attr_accessor :association, :association_class, :association_scope, :joins, :name,
-                  :parent, :part_of, :default_filters, :include_map
+                  :parent, :part_of, :default_filters, :include_map, :type
     attr_writer :title, :views, :default_type, :unfiltered_collection
 
     # prevents a `stack level too deep`
@@ -64,7 +64,7 @@ module RailsLD
     private
 
     def default_type
-      @default_type || :paginated
+      type&.to_sym || @default_type || :paginated
     end
 
     def default_view_opts

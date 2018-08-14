@@ -56,12 +56,14 @@ class Collection < RailsLD::Collection
       parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
     }
     opts.delete(:parent_iri) if opts[:parent_iri].blank?
+    opts[:type] = type if type.present?
     opts['filter%5B%5D'] = filter.map { |key, value| "#{key}=#{value}" } if filtered?
     opts.merge(parent_uri_template_opts || {})
   end
 
   def iri_template
-    @iri_template ||= URITemplate.new("#{iri}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
+    @iri_template ||=
+      URITemplate.new("#{iri.to_s.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
   def total_count
