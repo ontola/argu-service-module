@@ -28,7 +28,7 @@ class JSResponder < ActiveResponse::Responders::JS
     if view.to_s.include?('/')
       resolve_template(view, format)
     else
-      resolve_template("#{controller.controller_name}/#{view}", format) ||
+      resolve_template("#{controller.controller_path}/#{view}", format) ||
         resolve_template("application/#{view}", format)
     end
   end
