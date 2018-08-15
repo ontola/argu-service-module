@@ -29,6 +29,7 @@ module NS
   SCHEMA = RDF::Vocabulary.new('http://schema.org/')
   SH = RDF::Vocabulary.new('http://www.w3.org/ns/shacl#')
   SKOS = RDF::Vocabulary.new('http://www.w3.org/2004/02/skos/core#')
+  TIME = RDF::Vocabulary.new('http://www.w3.org/2006/time#')
   WDATA = RDF::Vocabulary.new('https://www.wikidata.org/wiki/Special:EntityData/')
   WD = RDF::Vocabulary.new('http://www.wikidata.org/entity/')
   WDS = RDF::Vocabulary.new('http://www.wikidata.org/entity/statement/')
