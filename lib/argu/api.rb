@@ -10,7 +10,7 @@ module Argu
 
     def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
       @service_token = OAuth2::AccessToken.new(argu_client, service_token)
-      @user_token = OAuth2::AccessToken.new(argu_client, user_token)
+      @user_token = OAuth2::AccessToken.new(argu_client, user_token || generate_guest_token)
       @cookie_jar = cookie_jar
     end
 
@@ -51,13 +51,13 @@ module Argu
     end
 
     def create_user(email)
-      response = user_token.post(
+      response = (user_token || generate_guest_token).post(
         expand_uri_template(:user_registration),
         body: {user: {email: email}},
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
-      self.user_token = OAuth2::AccessToken.new(user_token.client, cookie_jar.encrypted[:argu_client_token])
+      self.user_token = OAuth2::AccessToken.new(argu_client, cookie_jar.encrypted[:argu_client_token])
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
@@ -81,6 +81,14 @@ module Argu
       @argu_client ||= OAuth2::Client.new(ENV['ARGU_APP_ID'], ENV['ARGU_APP_SECRET'], site: ENV['OAUTH_URL'])
     end
 
+    def generate_guest_token
+      result = service_token.post(
+        expand_uri_template(:spi_oauth_token),
+        body: {scope: :guest}
+      )
+      JSON.parse(result.body)['access_token']
+    end
+
     def parsed_cookies(response)
       cookies = {}
       response.headers['set-cookie']&.split(',')&.each do |cookie|
@@ -91,7 +99,7 @@ module Argu
     end
 
     def user_from_response(response, email)
-      user = CurrentUser.instantiate_record(JSON.parse(response.body))
+      user = CurrentUser.send(:instantiate_record, JSON.parse(response.body))
       user.attributes['email'] = email
       user.attributes['email_addresses'] = [
         OpenStruct.new(attributes: {email: email, primary: true}.with_indifferent_access)

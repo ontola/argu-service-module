@@ -37,3 +37,12 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 end
+
+def service_headers(accept: nil, bearer: @bearer_token)
+  headers = {}
+  if accept
+    headers['Accept'] = accept.is_a?(Symbol) ? Mime::Type.lookup_by_extension(accept).to_s : accept
+  end
+  headers['Authorization'] = "Bearer #{bearer}" if bearer
+  headers
+end
