@@ -3,6 +3,8 @@
 module RailsLD
   module Middleware
     class LinkedDataParams
+      ParamCtx = Struct.new(:base_params, :env, :request)
+
       def self.classes_by_iri
         @classes_by_iri ||=
           Hash[
@@ -19,7 +21,7 @@ module RailsLD
 
       def call(env)
         request = Rack::Request.new(env)
-        params_from_graph(request)
+        params_from_graph(ParamCtx.new(request.params, env, request))
         @app.call(env)
       end
 
@@ -82,52 +84,74 @@ module RailsLD
       # resource to be created, updated, or deleted).
       #
       # @return [Hash] A hash of attributes, empty if no statements were given.
-      def params_from_graph(request)
-        graph = graph_from_request(request)
-        target_class = graph && target_class_from_path(request.path)
+      def params_from_graph(ctx)
+        graph = graph_from_request(ctx.request)
+        target_class = graph && target_class_from_path(ctx.request.path)
         if target_class.blank?
-          logger.info("No class found for #{request.path}") if graph
+          logger.info("No class found for #{ctx.request.path}") if graph
           return
         end
 
-        request.update_param(
+        parse_graph_into_params(graph, target_class, ctx)
+      end
+
+      def parse_graph_into_params(graph, target_class, ctx)
+        ctx.request.update_param(
           target_class.to_s.underscore,
-          parse_resource(graph, NS::LL[:targetResource], target_class, request.params)
+          parse_resource(graph, NS::LL[:targetResource], target_class, ctx)
         )
       end
 
       # Recursively parses a resource from graph
-      def parse_resource(graph, subject, klass, base_params)
+      def parse_resource(graph, subject, klass, ctx)
         HashWithIndifferentAccess[
           graph
             .query([subject])
-            .map { |statement| parse_statement(graph, statement, klass, base_params) }
+            .map { |statement| parse_statement(graph, statement, klass, ctx) }
             .compact
         ]
       end
 
-      def parsed_association(graph, object, klass, association, base_params)
+      def parsed_association(graph, object, klass, association, ctx)
         association_klass = klass.reflect_on_association(association).klass
         nested_resources =
           if graph.query([object, NS::RDFV[:first], nil]).present?
             RDF::List.new(subject: object, graph: graph)
-              .map { |nested| parse_resource(graph, nested, association_klass, base_params) }
+              .map { |nested| parse_resource(graph, nested, association_klass, ctx) }
           else
-            parse_resource(graph, object, association_klass, base_params)
+            parse_resource(graph, object, association_klass, ctx)
           end
         ["#{association}_attributes", nested_resources]
       end
 
-      def parsed_attribute(key, value, base_params)
-        [key, value.starts_with?(NS::LL['blobs/']) ? base_params["<#{value}>"] : value]
+      def parsed_attribute(key, object, ctx)
+        value =
+          if object.value.starts_with?(NS::LL['blobs/'])
+            ctx.base_params["<#{value}>"]
+          elsif object.try(:datatype) == NS::XSD[:base64Binary]
+            parsed_file(object, ctx)
+          else
+            object.value
+          end
+
+        [key, value]
       end
 
-      def parse_statement(graph, statement, klass, base_params)
+      def parsed_file(object, ctx)
+        f = Tempfile.new(encoding: Encoding::BINARY)
+        ctx.env[::Rack::RACK_TEMPFILES] << f
+        f.binmode
+        f << Base64.decode64(object.value)
+        f.close
+        f
+      end
+
+      def parse_statement(graph, statement, klass, ctx)
         attribute = attribute_by_predicate(klass, statement.predicate)
-        return parsed_attribute(attribute.name, statement.object.value, base_params) if attribute
+        return parsed_attribute(attribute.name, statement.object, ctx) if attribute
 
         association = association_by_predicate(klass, statement.predicate)
-        return parsed_association(graph, statement.object, klass, association, base_params) if association
+        return parsed_association(graph, statement.object, klass, association, ctx) if association
 
         logger.info("#{statement.predicate} not found in #{model_serializer(klass)}")
       end
