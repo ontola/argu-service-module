@@ -17,14 +17,6 @@ module ActiveResponseHelper
     action_resource.action(user_context, ACTION_MAP[form.to_sym] || form.to_sym)
   end
 
-  def active_response_success_message
-    if action_name == 'create' && current_resource.try(:argu_publication)&.publish_time_lapsed?
-      t('type_publish_success', type: type_for(current_resource)).capitalize
-    else
-      t("type_#{action_name}_success", type: type_for(current_resource)).capitalize
-    end
-  end
-
   def create_meta
     data = []
     return data if index_collection.blank?
@@ -92,9 +84,9 @@ module ActiveResponseHelper
 
   def redirect_message
     if action_name == 'create' && current_resource.try(:argu_publication)&.publish_time_lapsed?
-      t('type_publish_success', type: type_for(current_resource)).capitalize
+      I18n.t('type_publish_success', type: type_for(current_resource)).capitalize
     else
-      t("type_#{action_name}_success", type: type_for(current_resource)).capitalize
+      I18n.t("type_#{action_name}_success", type: type_for(current_resource)).capitalize
     end
   end
 
