@@ -22,7 +22,7 @@ module Argu
     end
 
     def authorize_redirect_resource(token)
-      authorize_action(resource_iri: token.redirect_url, authorize_action: :show) if token&.redirect_url
+      authorize_action(resource_iri: token.redirect_url, action: :show) if token&.redirect_url
     end
 
     def confirm_email_address(email)
