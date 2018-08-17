@@ -42,7 +42,7 @@ module RailsLD
       association_base
         .includes(association_class.includes_for_serializer)
         .where(arel_table[:created_at].lt(before))
-        .order(parsed_sort_values)
+        .reorder(parsed_sort_values)
         .limit(page_size)
         .to_a
     end
