@@ -3,7 +3,13 @@
 module RailsLD
   class Collection
     module Filtering
-      attr_accessor :filter
+      attr_accessor :default_filters, :filter
+      attr_writer :unfiltered_collection
+
+      def default_filtered_collections
+        return if filtered? || default_filters.blank?
+        @default_filtered_collections ||= default_filters.map { |filter| unfiltered.new_child(filter: filter) }
+      end
 
       def filtered?
         filter.present?
@@ -16,6 +22,14 @@ module RailsLD
             value: value
           )
         end
+      end
+
+      def unfiltered
+        filtered? ? unfiltered_collection : self
+      end
+
+      def unfiltered_collection
+        @unfiltered_collection ||= new_child(filter: [])
       end
 
       private
@@ -38,6 +52,14 @@ module RailsLD
         else
           scope.where(key => value)
         end
+      end
+
+      def filtered_association
+        scope = parent&.send(association) || association_class
+        scope = scope.send(association_scope) if association_scope
+        scope = scope.joins(joins) if joins
+        scope = apply_filters(scope) if filtered?
+        scope
       end
 
       def filter_single_value(options, value)

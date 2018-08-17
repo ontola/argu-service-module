@@ -7,8 +7,8 @@ module RailsLD
     include RailsLD::Collection::Filtering
 
     attr_accessor :association, :association_class, :association_scope, :joins, :name,
-                  :parent, :part_of, :default_filters, :include_map, :page_size, :type
-    attr_writer :title, :views, :default_type, :unfiltered_collection
+                  :parent, :part_of, :include_map, :page_size, :type
+    attr_writer :title, :views, :default_type
 
     # prevents a `stack level too deep`
     def as_json(options = {})
@@ -17,11 +17,6 @@ module RailsLD
 
     def association_base
       filtered_association
-    end
-
-    def default_filtered_collections
-      return if filtered? || default_filters.blank?
-      @default_filtered_collections ||= default_filters.map { |filter| unfiltered.new_child(filter: filter) }
     end
 
     def default_view
@@ -43,14 +38,6 @@ module RailsLD
 
     def total_count
       @total_count ||= association_base.count
-    end
-
-    def unfiltered
-      filtered? ? unfiltered_collection : self
-    end
-
-    def unfiltered_collection
-      @unfiltered_collection ||= new_child(filter: [])
     end
 
     def views
@@ -78,14 +65,6 @@ module RailsLD
       opts[:page] = 1 if default_type == :paginated
       opts[:before] = Time.current.utc.to_s(:db) if default_type == :infinite
       opts
-    end
-
-    def filtered_association
-      scope = parent&.send(association) || association_class
-      scope = scope.send(association_scope) if association_scope
-      scope = scope.joins(joins) if joins
-      scope = apply_filters(scope) if filtered?
-      scope
     end
 
     def new_child_values
