@@ -25,15 +25,6 @@ module RailsLD
 
       private
 
-      def association_by_predicate(klass, predicate)
-        association = model_reflections_map(klass).find { |opt| opt.options[:predicate] == predicate }
-        association.options[:association] || association.name
-      end
-
-      def attribute_by_predicate(klass, predicate)
-        model_attribute_map(klass).find { |opt| opt.options[:predicate] == predicate }
-      end
-
       def graph_from_request(request)
         request_graph = request.delete_param("<#{NS::LL[:graph].value}>")
         RDF::Graph.load(request_graph[:tempfile].path, content_type: request_graph[:type]) if request_graph.present?
@@ -41,36 +32,6 @@ module RailsLD
 
       def logger
         Rails.logger
-      end
-
-      # Retrieves the attribute-predicate mapping from the serializer.
-      #
-      # Used to convert incoming predicates back to their respective attributes.
-      def model_attribute_map(klass)
-        @model_attribute_map ||= {}
-        @model_attribute_map[klass] ||=
-          model_serializer(klass)
-            ._attributes_data
-            .values
-      end
-
-      # Retrieves the reflections-predicate mapping from the serializer.
-      #
-      # Used to convert incoming predicates back to their respective reflections.
-      def model_reflections_map(klass)
-        @model_reflections_map ||= {}
-        @model_reflections_map[klass] ||=
-          model_serializer(klass)
-            ._reflections
-            .values
-      end
-
-      def model_serializer(klass)
-        @model_serializer ||= {}
-        @model_serializer[klass] ||=
-          "#{klass.name.underscore}_serializer"
-            .classify
-            .constantize
       end
 
       # Converts a serialized graph from a multipart request body to a nested
@@ -106,6 +67,15 @@ module RailsLD
         ]
       end
 
+      def parse_statement(graph, statement, klass, base_params)
+        field = serializer_field(klass, statement.predicate)
+        if field.is_a?(ActiveModel::Serializer::Attribute)
+          parsed_attribute(field.name, statement.object.value, base_params)
+        elsif field.is_a?(ActiveModel::Serializer::Reflection)
+          parsed_association(graph, statement.object, klass, field.options[:association] || field.name, base_params)
+        end
+      end
+
       def parsed_association(graph, object, klass, association, base_params)
         association_klass = klass.reflect_on_association(association).klass
         nested_resources =
@@ -122,14 +92,10 @@ module RailsLD
         [key, value.starts_with?(NS::LL['blobs/']) ? base_params["<#{value}>"] : value]
       end
 
-      def parse_statement(graph, statement, klass, base_params)
-        attribute = attribute_by_predicate(klass, statement.predicate)
-        return parsed_attribute(attribute.name, statement.object.value, base_params) if attribute
-
-        association = association_by_predicate(klass, statement.predicate)
-        return parsed_association(graph, statement.object, klass, association, base_params) if association
-
-        logger.info("#{statement.predicate} not found in #{model_serializer(klass)}")
+      def serializer_field(klass, predicate)
+        field = klass.try(:predicate_mapping).try(:[], predicate)
+        logger.info("#{predicate} not found for #{klass}") if field.blank?
+        field
       end
 
       def target_class_from_path(path)

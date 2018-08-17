@@ -99,7 +99,19 @@ module Ldable
       {}
     end
 
+    def predicate_mapping
+      @predicate_mapping ||= Hash[attribute_mapping + reflection_mapping]
+    end
+
     private
+
+    def attribute_mapping
+      ActiveModel::Serializer.serializer_for(self)
+        ._attributes_data
+        .values
+        .select { |value| value.options[:predicate].present? }
+        .map { |value| [value.options[:predicate], value] }
+    end
 
     def define_filter_method(k, filter)
       return if method_defined?(k) || filter[:attr].blank?
@@ -131,6 +143,14 @@ module Ldable
       define_method "#{k}=" do |value|
         send("#{filter[:attr]}=", filter[:values].key(value))
       end
+    end
+
+    def reflection_mapping
+      ActiveModel::Serializer.serializer_for(self)
+        ._reflections
+        .values
+        .select { |value| value.options[:predicate].present? }
+        .map { |value| [value.options[:predicate], value] }
     end
   end
 
