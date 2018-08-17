@@ -10,7 +10,7 @@ module RailsLD
     include Iriable
     include RailsLD::CollectionView::Preloading
 
-    attr_accessor :collection, :filter, :sort, :include_map
+    attr_accessor :collection, :filter, :include_map
     attr_writer :page_size
     delegate :association_base, :association_class, :canonical_iri, :parent, :user_context, to: :collection
     delegate :count, to: :members
@@ -54,7 +54,7 @@ module RailsLD
     end
 
     def association_table
-      parent&.class&.reflect_on_association(collection.association)&.table_name || association_class.to_s.tableize
+      parent&.class.try(:reflect_on_association, collection.association)&.table_name || association_class.to_s.tableize
     end
 
     def base_count
@@ -62,7 +62,7 @@ module RailsLD
     end
 
     def parsed_sort_values
-      {created_at: :desc}
+      collection.sortings.map(&:sort_value)
     end
 
     def total_page_count

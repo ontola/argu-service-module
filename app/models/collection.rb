@@ -59,6 +59,7 @@ class Collection < RailsLD::Collection
     opts[:type] = type if type.present?
     opts[:page_size] = page_size if page_size.present?
     opts['filter%5B%5D'] = filter.map { |key, value| "#{key}=#{value}" } if filtered?
+    opts['sort%5B%5D'] = sort.map { |key, value| "#{key}=#{value}" } if sorted?
     opts.merge(parent_uri_template_opts || {})
   end
 

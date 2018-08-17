@@ -5,6 +5,7 @@ module RailsLD
     include ActiveModel::Serialization
     include ActiveModel::Model
     include RailsLD::Collection::Filtering
+    include RailsLD::Collection::Sorting
 
     attr_accessor :association, :association_class, :association_scope, :joins, :name,
                   :parent, :part_of, :include_map, :page_size, :type
@@ -59,8 +60,7 @@ module RailsLD
         include_map: (include_map || {}),
         type: default_type,
         page_size: page_size || association_class.default_per_page,
-        filter: filter,
-        sort: [{predicate: NS::SCHEMA[:dateCreated], direction: :desc}]
+        filter: filter
       }
       opts[:page] = 1 if default_type == :paginated
       opts[:before] = Time.current.utc.to_s(:db) if default_type == :infinite

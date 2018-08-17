@@ -13,6 +13,7 @@ class CollectionSerializer < BaseSerializer
 
   has_many :actions, key: :operation, unless: :system_scope?, predicate: NS::SCHEMA[:potentialAction]
   has_many :filters, predicate: NS::ARGU[:collectionFilter]
+  has_many :sortings, predicate: NS::ARGU[:collectionSorting]
 
   triples :action_methods
 

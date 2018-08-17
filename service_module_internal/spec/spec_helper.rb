@@ -75,6 +75,7 @@ Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
 require_relative '../../lib/rails_ld'
 require_relative '../../lib/rails_ld/collection_view/preloading'
 require_relative '../../lib/rails_ld/collection/filtering'
+require_relative '../../lib/rails_ld/collection/sorting'
 require_relative '../../lib/rails_ld/collection_view'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../lib/rails_ld', '*.rb'), &method(:require))
 
