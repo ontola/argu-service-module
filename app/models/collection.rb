@@ -52,14 +52,12 @@ class Collection < RailsLD::Collection
   alias id iri
 
   def iri_opts(canonical = false)
-    opts = {
-      parent_iri: canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
-    }
-    opts.delete(:parent_iri) if opts[:parent_iri].blank?
-    opts[:type] = type if type.present?
-    opts[:page_size] = page_size if page_size.present?
-    opts['filter%5B%5D'] = filter.map { |key, value| "#{key}=#{value}" } if filtered?
-    opts['sort%5B%5D'] = sort.map { |key, value| "#{key}=#{value}" } if sorted?
+    opts = {}
+    iri_opts_add(opts, :parent_iri, parent_iri_opts(canonical))
+    iri_opts_add(opts, :type, type)
+    iri_opts_add(opts, :page_size, page_size)
+    iri_opts_add(opts, :'filter%5B%5D', filter_iri_opts)
+    iri_opts_add(opts, :'sort%5B%5D', sort_iri_opts)
     opts.merge(parent_uri_template_opts || {})
   end
 
@@ -85,6 +83,14 @@ class Collection < RailsLD::Collection
     @counter_cache_column ||= key if key && opts && (opts == true || opts.keys.map(&:to_s).include?(key))
   end
 
+  def filter_iri_opts
+    filter&.map { |key, value| "#{key}=#{value}" }
+  end
+
+  def iri_opts_add(opts, key, value)
+    opts[key] = value if value
+  end
+
   def new_child_values
     super.merge(
       parent_uri_template_canonical: parent_uri_template_canonical,
@@ -102,8 +108,16 @@ class Collection < RailsLD::Collection
     end
   end
 
+  def parent_iri_opts(canonical)
+    canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
+  end
+
   def policy_scope(scope)
     policy_scope = PolicyFinder.new(scope).scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
+  end
+
+  def sort_iri_opts
+    sort&.map { |key, value| "#{key}=#{value}" }
   end
 end
