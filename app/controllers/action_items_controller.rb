@@ -23,7 +23,7 @@ class ActionItemsController < AuthorizedController
   end
 
   def show_includes
-    [:object].concat(ACTION_FORM_INCLUDES)
+    [:object].concat(action_form_includes)
   end
 
   def index_association

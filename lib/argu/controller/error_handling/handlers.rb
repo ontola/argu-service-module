@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_response/rdf/error'
+require 'rails_ld/active_response/rdf_error'
 
 module Argu
   module Controller
@@ -54,7 +54,7 @@ module Argu
         end
 
         def error_graph(status, e)
-          ActiveResponse::RDF::Error.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new).graph
+          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new).graph
         end
 
         def error_response(e, format)

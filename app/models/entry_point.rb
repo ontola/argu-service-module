@@ -11,7 +11,7 @@ class EntryPoint
 
   def action_body
     target = parent.collection ? child_instance(resource.parent, resource.association_class) : resource
-    form&.new(user_context, target)&.shape
+    @action_body ||= form&.new(user_context, target)&.shape
   end
 
   def as_json(_opts = {})
