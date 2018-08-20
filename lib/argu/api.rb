@@ -3,14 +3,13 @@
 require 'oauth2'
 
 module Argu
-  class API
+  class API # rubocop:disable Metrics/ClassLength
     include UriTemplateHelper
-    attr_accessor :service_token, :user_token
     attr_reader :cookie_jar
 
     def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
-      @service_token = OAuth2::AccessToken.new(argu_client, service_token)
-      @user_token = OAuth2::AccessToken.new(argu_client, user_token || generate_guest_token)
+      @raw_service_token = service_token
+      @raw_user_token = user_token
       @cookie_jar = cookie_jar
     end
 
@@ -57,7 +56,7 @@ module Argu
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
-      self.user_token = OAuth2::AccessToken.new(argu_client, cookie_jar.encrypted[:argu_client_token])
+      @user_token = OAuth2::AccessToken.new(argu_client, cookie_jar.encrypted[:argu_client_token])
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
@@ -105,6 +104,14 @@ module Argu
         OpenStruct.new(attributes: {email: email, primary: true}.with_indifferent_access)
       ]
       user
+    end
+
+    def user_token
+      @user_token = OAuth2::AccessToken.new(argu_client, @raw_user_token || generate_guest_token)
+    end
+
+    def service_token
+      @service_token = OAuth2::AccessToken.new(argu_client, @raw_service_token)
     end
 
     def set_argu_client_token_cookie(token, expires = nil)
