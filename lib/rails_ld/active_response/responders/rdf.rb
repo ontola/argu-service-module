@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../rdf_error'
+require 'active_response/responders/html'
 
 module RailsLD
   module ActiveResponse
