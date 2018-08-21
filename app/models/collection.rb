@@ -9,9 +9,10 @@ class Collection < RailsLD::Collection
   include Ldable
   include Iriable
 
-  attr_accessor :user_context, :parent_uri_template_canonical, :parent_uri_template_opts
-  attr_writer :title, :parent_uri_template
+  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :parent_uri_template_opts
+  attr_writer :title
 
+  alias id iri
   alias pundit_user user_context
 
   def actions(user_context)
@@ -29,10 +30,6 @@ class Collection < RailsLD::Collection
     @association_base ||= policy_scope(filtered_association)
   end
 
-  def canonical_iri(only_path: false)
-    iri(canonical: true, only_path: only_path)
-  end
-
   def inspect
     "#<#{association_class}Collection #{iri} filters=#{filter || []}>"
   end
@@ -41,19 +38,9 @@ class Collection < RailsLD::Collection
     [super, NS::AS['Collection']]
   end
 
-  def iri(canonical: false, only_path: false)
-    RDF::URI(
-      expand_uri_template(
-        parent_uri_template(canonical),
-        iri_opts(canonical).merge(only_path: only_path)
-      )
-    )
-  end
-  alias id iri
-
-  def iri_opts(canonical = false)
+  def iri_opts
     opts = {}
-    iri_opts_add(opts, :parent_iri, parent_iri_opts(canonical))
+    iri_opts_add(opts, :parent_iri, parent&.iri_path)
     iri_opts_add(opts, :type, type)
     iri_opts_add(opts, :page_size, page_size)
     iri_opts_add(opts, :'filter%5B%5D', filter_iri_opts)
@@ -71,6 +58,16 @@ class Collection < RailsLD::Collection
   end
 
   private
+
+  def canonical_iri_opts
+    opts = iri_opts
+    opts[:parent_iri] = parent&.canonical_iri(only_path: true)
+    opts
+  end
+
+  def canonical_iri_template_name
+    @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
+  end
 
   def count_from_cache_column
     return if filtered?
@@ -91,6 +88,10 @@ class Collection < RailsLD::Collection
     opts[key] = value if value
   end
 
+  def iri_template_name
+    @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
+  end
+
   def new_child_values
     super.merge(
       parent_uri_template_canonical: parent_uri_template_canonical,
@@ -98,18 +99,6 @@ class Collection < RailsLD::Collection
       user_context: user_context,
       parent_uri_template: parent_uri_template
     )
-  end
-
-  def parent_uri_template(canonical = false)
-    if canonical
-      @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
-    else
-      @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
-    end
-  end
-
-  def parent_iri_opts(canonical)
-    canonical ? parent&.canonical_iri(only_path: true) : parent&.iri_path
   end
 
   def policy_scope(scope)
