@@ -6,6 +6,7 @@ require 'argu'
 class ApiController < ActionController::API
   include ActiveResponse::Controller
   include Argu::Controller::ErrorHandling
+  include RailsLD::ActiveResponse::Controller::CrudDefaults
 
   include ActionController::MimeResponds
   include JsonApiHelper
