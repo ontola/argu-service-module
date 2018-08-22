@@ -130,6 +130,8 @@ vote_matches_iri: "/vote_matches{/id}"
 vote_matches_collection_canonical: "{/parent_iri*}/vote_matches{?filter%5B%5D,page,page_size,type,before}"
 vote_matches_collection_iri: "{/parent_iri*}/vote_matches{?filter%5B%5D,page,page_size,type,before}"
 widgets_iri: "/widgets{/id}"
+widgets_collection_canonical: "{/parent_iri*}/widgets{?filter%5B%5D,page,page_size,type,before}"
+widgets_collection_iri: "{/parent_iri*}/widgets{?filter%5B%5D,page,page_size,type,before}"
 # Argu Service
 new_vote: "{/voteable_path*}/votes/new{?confirm,r,vote%5Bfor%5D}"
 user_confirmation: "/users/confirmation{?confirmation_token}"
