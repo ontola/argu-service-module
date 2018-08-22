@@ -29,6 +29,11 @@ class ActiveResourceModel < ActiveResource::Base
 
   def id_from_response(response); end
 
+  def find_or_create_resource_for(name)
+    resource = super
+    resource < ActiveRecord::Base ? create_resource_for(name.to_s.camelize) : resource
+  end
+
   def load_attributes_from_response(response)
     return unless load_attributes_from_response?(response)
     load(self.class.format.decode(response.body), true, true)
