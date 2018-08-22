@@ -14,7 +14,7 @@ module RailsLD
     private
 
     def attribute_name
-      @attribute_name ||= association_class.predicate_mapping[key].name
+      @attribute_name ||= association_class.try(:predicate_mapping).try(:[], key)&.name || :created_at
     end
 
     class << self
