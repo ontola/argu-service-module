@@ -6,5 +6,6 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'JWT'
   inflect.acronym 'SPI'
   inflect.acronym 'IRI'
+  inflect.acronym 'ORI'
   inflect.acronym 'UUID'
 end
