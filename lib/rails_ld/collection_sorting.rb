@@ -8,8 +8,7 @@ module RailsLD
     attr_accessor :association_class, :direction, :key
 
     def sort_value
-      return {attribute_name => direction} unless attribute_name.to_s.ends_with?('_count')
-      Edge.order_child_count_sql(attribute_name.to_s.gsub('_count', ''), direction: direction)
+      {attribute_name => direction}
     end
 
     private
