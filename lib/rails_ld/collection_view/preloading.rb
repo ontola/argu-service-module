@@ -63,16 +63,28 @@ module RailsLD
       def ranked_query(opts)
         subquery =
           policy_scope(opts[:klass].where(opts[:foreign_key] => raw_members.map(&opts[:primary_key])))
-            .select(ranked_query_sql(opts[:table_name], opts[:foreign_key]))
+            .select(ranked_query_sql(opts))
             .to_sql
         Arel.sql("(#{subquery}) AS #{opts[:table_name]}")
       end
 
-      def ranked_query_sql(table_name, foreign_key)
-        "#{table_name}.*, dense_rank() OVER ("\
-          "PARTITION BY #{table_name}.#{foreign_key} "\
-          "ORDER BY #{table_name}.created_at DESC"\
-        ') AS child_rank'
+      def ranked_query_sorting(opts)
+        opts[:klass]
+          .order(
+            RailsLD
+              .collection_sorting
+              .constantize
+              .from_array(opts[:klass], opts[:klass].default_sortings)
+              .map(&:sort_value)
+          ).order_values
+      end
+
+      def ranked_query_sql(opts)
+        table_name = opts[:table_name]
+        sort = ranked_query_sorting(opts)
+        table = Arel::Table.new(table_name)
+        partition = Arel::Nodes::Window.new.partition(table[opts[:foreign_key]]).order(sort).to_sql
+        "#{table_name}.*, dense_rank() OVER #{partition} AS child_rank"
       end
 
       def reflection_for(key)

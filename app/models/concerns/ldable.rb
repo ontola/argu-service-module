@@ -3,6 +3,11 @@
 module Ldable
   extend ActiveSupport::Concern
 
+  included do
+    class_attribute :default_sortings
+    self.default_sortings = [{key: NS::SCHEMA[:dateCreated], direction: :desc}]
+  end
+
   def applicable_filters
     Hash[self.class.filter_options.keys.map { |k| [k, send(k)] }]
   end

@@ -7,7 +7,7 @@ module RailsLD
       attr_writer :default_sortings
 
       def default_sortings
-        @default_sortings || [{key: NS::SCHEMA[:dateCreated], direction: :desc}]
+        @default_sortings || association_class.default_sortings
       end
 
       def sorted?
@@ -15,13 +15,8 @@ module RailsLD
       end
 
       def sortings
-        @sortings ||= (sort || default_sortings)&.map do |sort|
-          RailsLD.collection_sorting.constantize.new(
-            association_class: association_class,
-            direction: sort[:direction],
-            key: sort[:key]
-          )
-        end
+        @sortings ||=
+          RailsLD.collection_sorting.constantize.from_array(association_class, sort || default_sortings)
       end
     end
   end
