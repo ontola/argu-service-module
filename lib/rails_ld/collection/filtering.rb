@@ -36,10 +36,8 @@ module RailsLD
 
       def apply_filters(scope)
         (filter || []).reduce(scope) do |s, f|
-          k = f[0]
-          v = f[1]
-          options = association_class.filter_options.fetch(k)
-          apply_filter(s, options[:key] || k, filter_single_value(options, v))
+          options = association_class.filter_options.fetch(f[0])
+          apply_filter(s, filter_key(options, f[0]), filter_value(options, f[1]))
         end
       end
 
@@ -62,7 +60,11 @@ module RailsLD
         scope
       end
 
-      def filter_single_value(options, value)
+      def filter_key(options, key)
+        options[:key] || key
+      end
+
+      def filter_value(options, value)
         options[:values].try(:[], value.try(:to_sym)) || value
       end
     end
