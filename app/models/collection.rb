@@ -3,7 +3,7 @@
 require_relative '../../lib/rails_ld.rb'
 require_relative '../../lib/rails_ld/collection.rb'
 
-class Collection < RailsLD::Collection
+class Collection < RailsLD::Collection # rubocop:disable Metrics/ClassLength
   include ApplicationModel
   include Pundit
   include Ldable
@@ -70,14 +70,24 @@ class Collection < RailsLD::Collection
   end
 
   def count_from_cache_column
-    return if filtered?
     parent.children_count(counter_cache_column) if counter_cache_column
   end
 
   def counter_cache_column
-    key = association.to_s.starts_with?('active_') && association.to_s[7..-1]
+    return counter_cache_for_filter if filter&.count == 1
+    return if filtered?
+    @counter_cache_column ||= counter_cache_column_name
+  end
+
+  def counter_cache_column_name
+    key = association.to_s
+    key = key[7..-1] if key.starts_with?('active_')
     opts = association_class.try(:counter_cache_options)
-    @counter_cache_column ||= key if key && opts && (opts == true || opts.keys.map(&:to_s).include?(key))
+    key if opts && (opts == true || opts.keys.include?(key.to_sym))
+  end
+
+  def counter_cache_for_filter
+    association_class.filter_options[filter.keys.first].try(:[], :counter_cache).try(:[], filter.values.first)
   end
 
   def filter_iri_opts

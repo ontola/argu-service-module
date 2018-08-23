@@ -11,11 +11,6 @@ Metrics/AbcSize:
     - 'lib/argu/test_helpers/request_helpers.rb'
     - '../lib/argu/test_helpers/request_helpers.rb'
 
-Metrics/ClassLength:
-  Exclude:
-    - 'app/models/collection.rb'
-    - '../app/models/collection.rb'
-
 Rails/Output:
   Exclude:
     - 'app/models/connection.rb'
