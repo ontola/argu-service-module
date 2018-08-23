@@ -36,5 +36,9 @@ module Enhanceable
     def enhanced_with?(enhancement)
       self.enhancements.include?(enhancement)
     end
+
+    def namespace_class
+      @namespace_class ||= name.deconstantize.presence&.constantize || Kernel
+    end
   end
 end
