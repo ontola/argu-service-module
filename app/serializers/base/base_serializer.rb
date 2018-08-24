@@ -2,6 +2,7 @@
 
 class BaseSerializer < ActiveModel::Serializer
   include Ldable::Serializer
+  class_attribute :_enums
 
   attribute :type, predicate: RDF[:type]
   attribute :canonical_iri, predicate: NS::DC[:identifier]
@@ -45,5 +46,32 @@ class BaseSerializer < ActiveModel::Serializer
 
   def type
     object.class.iri
+  end
+
+  def self.enum(key, opts = nil)
+    self._enums ||= {}
+    self._enums[key] = opts
+
+    define_method(key) do
+      self.class.enum_options(key) && self.class.enum_options(key)[:options][object.send(key).to_sym][:iri]
+    end
+  end
+
+  def self.enum_options(key)
+    _enums && _enums[key] || default_enum_opts(key, serializable_class.try(:defined_enums).try(:[], key.to_s))
+  end
+
+  def self.default_enum_opts(key, enum_opts)
+    return if enum_opts.blank?
+    {
+      type: NS::SCHEMA[:Thing],
+      options: Hash[
+        enum_opts&.map { |k, _v| [k.to_sym, {iri: NS::ARGU["form_option/#{key}/#{k}"]}] }
+      ]
+    }
+  end
+
+  def self.serializable_class
+    @serializable_class ||= name.gsub('Serializer', '').constantize
   end
 end

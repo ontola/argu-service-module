@@ -7,8 +7,8 @@ module RailsLD
         ACTION_FORM_INCLUDES = [
           target: {
             action_body: [
-              referred_shapes: :property,
-              property: [referred_shapes: :property, property: [referred_shapes: :property].freeze].freeze
+              referred_shapes: [property: :sh_in_options],
+              property: [:sh_in_options, referred_shapes: [property: :sh_in_options]].freeze
             ].freeze
           }.freeze
         ].freeze

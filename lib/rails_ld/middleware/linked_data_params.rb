@@ -25,6 +25,16 @@ module RailsLD
 
       private
 
+      def blob_attribute(base_params, value)
+        base_params["<#{value}>"] if value.starts_with?(NS::LL['blobs/'])
+      end
+
+      def enum_attribute(klass, key, value)
+        opts = klass.serializer_class!.try(:_enums).try(:[], key)
+        return if opts.blank?
+        opts[:options].detect { |_k, options| options[:iri] == value }[0]
+      end
+
       def graph_from_request(request)
         request_graph = request.delete_param("<#{NS::LL[:graph].value}>")
         RDF::Graph.load(request_graph[:tempfile].path, content_type: request_graph[:type]) if request_graph.present?
@@ -74,7 +84,7 @@ module RailsLD
       def parse_statement(graph, statement, klass, base_params)
         field = serializer_field(klass, statement.predicate)
         if field.is_a?(ActiveModel::Serializer::Attribute)
-          parsed_attribute(field.name, statement.object.value, base_params)
+          parsed_attribute(klass, field.name, statement.object.value, base_params)
         elsif field.is_a?(ActiveModel::Serializer::Reflection)
           parsed_association(graph, statement.object, klass, field.options[:association] || field.name, base_params)
         end
@@ -92,8 +102,8 @@ module RailsLD
         ["#{association}_attributes", nested_resources]
       end
 
-      def parsed_attribute(key, value, base_params)
-        [key, value.starts_with?(NS::LL['blobs/']) ? base_params["<#{value}>"] : value]
+      def parsed_attribute(klass, key, value, base_params)
+        [key, blob_attribute(base_params, value) || enum_attribute(klass, key, value) || value]
       end
 
       def serializer_field(klass, predicate)
