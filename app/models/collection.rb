@@ -30,6 +30,11 @@ class Collection < RailsLD::Collection # rubocop:disable Metrics/ClassLength
     @association_base ||= policy_scope(filtered_association)
   end
 
+  def clear_total_count
+    parent&.reload
+    @total_count = nil
+  end
+
   def inspect
     "#<#{association_class}Collection #{iri} filters=#{filter || []}>"
   end
