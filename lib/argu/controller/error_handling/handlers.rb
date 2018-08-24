@@ -74,12 +74,8 @@ module Argu
 
         def respond_with(*resources, &_block)
           return super unless respond_with_422?(resources)
-          respond_to do |format|
-            format.json { respond_with_422(resources.first, :json) }
-            format.json_api { respond_with_422(resources.first, :json_api) }
-            RDF_CONTENT_TYPES.each do |type|
-              format.send(type) { respond_with_422(resources.first, type) }
-            end
+          active_response_block do
+            respond_with_invalid_resource resource: resources.first
           end
         end
 
