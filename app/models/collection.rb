@@ -100,7 +100,7 @@ class Collection < RailsLD::Collection
   end
 
   def iri_opts_add(opts, key, value)
-    opts[key] = value if value
+    opts[key] = value if value.present?
   end
 
   def iri_template_name
