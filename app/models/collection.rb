@@ -3,7 +3,7 @@
 require_relative '../../lib/rails_ld.rb'
 require_relative '../../lib/rails_ld/collection.rb'
 
-class Collection < RailsLD::Collection # rubocop:disable Metrics/ClassLength
+class Collection < RailsLD::Collection
   include ApplicationModel
   include Pundit
   include Ldable
