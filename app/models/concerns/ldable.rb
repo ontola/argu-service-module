@@ -28,6 +28,14 @@ module Ldable
       cache_collection(name, (opts.delete(:collection_class) || Collection), opts.merge(**collection_opts))
   end
 
+  def previous_changes_by_predicate
+    Hash[
+      previous_changes
+        .map { |k, v| [self.class.serializer_class!._attributes_data[k.to_sym]&.options.try(:[], :predicate), v] }
+        .select { |k, _v| k.present? }
+    ]
+  end
+
   private
 
   def cache_collection(name, collection_class, opts)
