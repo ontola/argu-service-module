@@ -18,7 +18,7 @@ class ActionItem
   def iri(only_path: false)
     return iri_from_parent(only_path: only_path) unless iri_template
 
-    RDF::URI(
+    RDF::DynamicURI(
       [
         expand_uri_template(iri_template, iri_template_opts(parent_iri: resource.iri.path, only_path: only_path)),
         iri_query
@@ -56,7 +56,7 @@ class ActionItem
     else
       base.fragment = tag
     end
-    RDF::URI(base)
+    RDF::DynamicURI(base)
   end
 
   def iri_query

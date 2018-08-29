@@ -22,7 +22,7 @@ module RailsLD
     end
 
     def iri(opts = {})
-      RDF::URI(collection.unfiltered.iri_template.expand(iri_opts.merge(opts)))
+      RDF::DynamicURI(collection.unfiltered.iri_template.expand(iri_opts.merge(opts)))
     end
     alias id iri
 

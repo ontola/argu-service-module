@@ -30,11 +30,11 @@ module Iriable
   def iri_from_cache(opts)
     return if opts.except(:only_path).present? || !persisted? || !has_attribute?(:iri_cache)
     path = iri_cache || cache_iri!
-    RDF::URI(opts[:only_path] ? path : path_with_hostname(path))
+    RDF::DynamicURI(opts[:only_path] ? path : path_with_hostname(path))
   end
 
   def iri_from_template(opts)
-    RDF::URI(expand_uri_template(iri_template_name, **iri_opts.merge(opts)))
+    RDF::DynamicURI(expand_uri_template(iri_template_name, **iri_opts.merge(opts)))
   end
 
   def iri_opts

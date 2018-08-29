@@ -4,7 +4,7 @@ module UriTemplateHelper
   # @return [RDF::URI]
   def collection_iri(parent, type, opts = {})
     canonical = opts.delete(:canonical)
-    RDF::URI(
+    RDF::DynamicURI(
       expand_uri_template(
         "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
         opts.merge(parent_iri: parent.try(:iri_path) || parent)
@@ -39,7 +39,7 @@ module UriTemplateHelper
   end
 
   def root_iri(opts = {})
-    RDF::URI(opts[:only_path] ? '' : Rails.application.config.origin)
+    RDF::DynamicURI(opts[:only_path] ? '' : Rails.application.config.origin)
   end
 
   # @return [Array<String>]
@@ -56,7 +56,7 @@ module UriTemplateHelper
   def new_iri(parent, collection = nil, opts = {})
     query = opts.delete(:query)
     iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
-    uri = RDF::URI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri)))
+    uri = RDF::DynamicURI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri)))
     uri.query = query.to_param if query
     uri
   end
@@ -71,7 +71,7 @@ module UriTemplateHelper
     define_method "#{method}_iri" do |parent, opts = {}|
       iri = parent.try(:iri_path) || parent
       opts[:parent_iri] ||= iri if iri
-      RDF::URI(expand_uri_template("#{method}_iri", opts))
+      RDF::DynamicURI(expand_uri_template("#{method}_iri", opts))
     end
 
     # @return [String]

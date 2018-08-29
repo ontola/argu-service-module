@@ -25,7 +25,7 @@ class BaseSerializer < ActiveModel::Serializer
   def serialize_image(obj)
     if obj.is_a?(String) || obj.is_a?(Symbol)
       {
-        id: RDF::URI(obj.to_s.gsub(/^fa-/, 'http://fontawesome.io/icon/')),
+        id: RDF::DynamicURI(obj.to_s.gsub(/^fa-/, 'http://fontawesome.io/icon/')),
         type: NS::ARGU[:FontAwesomeIcon]
       }
     elsif obj.is_a?(RDF::URI)

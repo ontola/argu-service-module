@@ -17,7 +17,7 @@ module Actions
       parent_iri = resource_path_iri
       query = parent_iri.query
       parent_iri.query = nil
-      i = RDF::URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
+      i = RDF::DynamicURI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
       i.query = query
       i
     end

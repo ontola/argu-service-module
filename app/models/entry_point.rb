@@ -29,7 +29,7 @@ class EntryPoint
       u.fragment = 'entrypoint'
     end
 
-    RDF::URI(u.to_s)
+    RDF::DynamicURI(u.to_s)
   end
   alias id iri
 end
