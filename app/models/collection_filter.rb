@@ -6,4 +6,5 @@ class CollectionFilter < RailsLD::CollectionFilter
   def iri(_opts = {})
     self
   end
+  alias canonical_iri iri
 end

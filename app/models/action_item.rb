@@ -10,20 +10,15 @@ class ActionItem
                 :tag, :resource, :result, :image, :url, :http_method, :collection, :form, :iri_template
   attr_writer :label, :target, :description, :iri_template_opts
   delegate :user_context, to: :parent
+  alias iri_template_name iri_template
 
   def as_json(_opts = {})
     {}
   end
 
-  def iri(only_path: false)
-    return iri_from_parent(only_path: only_path) unless iri_template
-
-    RDF::DynamicURI(
-      [
-        expand_uri_template(iri_template, iri_template_opts(parent_iri: resource.iri.path, only_path: only_path)),
-        iri_query
-      ].compact.join('?')
-    )
+  def iri_path(_opts = {})
+    return iri_path_from_parent unless iri_template
+    [iri_path_from_template(parent_iri: resource.iri.path), iri_query].compact.join('?')
   end
 
   alias id iri
@@ -47,23 +42,23 @@ class ActionItem
 
   private
 
-  def iri_from_parent(only_path: false)
-    base = parent.iri(only_path: only_path)
+  def iri_path_from_parent
+    base = URI(parent.iri_path)
     if parent.is_a?(Actions::Base)
       base.path += "/#{tag}"
-    elsif parent.iri.to_s.include?('#')
+    elsif base.include?('#')
       base.fragment = "#{base.fragment}.#{tag}"
     else
       base.fragment = tag
     end
-    RDF::DynamicURI(base)
+    base.to_s
   end
 
   def iri_query
     resource.iri.query&.split('&')&.reject { |query| query.include?('type=') }&.join('&')&.presence
   end
 
-  def iri_template_opts(opts = {})
+  def iri_opts(opts = {})
     (@iri_template_opts || {}).merge(opts)
   end
 

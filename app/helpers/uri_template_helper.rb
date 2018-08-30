@@ -3,18 +3,16 @@
 module UriTemplateHelper
   # @return [RDF::URI]
   def collection_iri(parent, type, opts = {})
-    canonical = opts.delete(:canonical)
-    RDF::DynamicURI(
-      expand_uri_template(
-        "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
-        opts.merge(parent_iri: parent.try(:iri_path) || parent)
-      )
-    )
+    RDF::DynamicURI(path_with_hostname(collection_iri_path(parent, type, opts)))
   end
 
   # @return [String]
   def collection_iri_path(parent, type, opts = {})
-    collection_iri(parent, type, opts.merge(only_path: true)).to_s
+    canonical = opts.delete(:canonical)
+    expand_uri_template(
+      "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
+      opts.merge(parent_iri: parent.try(:iri_path) || parent, only_path: true)
+    )
   end
 
   # @return [String]
@@ -38,10 +36,6 @@ module UriTemplateHelper
     "#{Rails.application.config.origin}#{path}"
   end
 
-  def root_iri(opts = {})
-    RDF::DynamicURI(opts[:only_path] ? '' : Rails.application.config.origin)
-  end
-
   # @return [Array<String>]
   def split_iri_segments(iri)
     iri.to_s.split('/').map(&:presence).compact
@@ -54,29 +48,30 @@ module UriTemplateHelper
 
   # @return [RDF::URI]
   def new_iri(parent, collection = nil, opts = {})
-    query = opts.delete(:query)
-    iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
-    uri = RDF::DynamicURI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri)))
-    uri.query = query.to_param if query
-    uri
+    RDF::DynamicURI(path_with_hostname(new_iri_path(parent, collection, opts)))
   end
 
   # @return [String]
   def new_iri_path(parent, collection = nil, opts = {})
-    new_iri(parent, collection, opts.merge(only_path: true)).to_s
+    query = opts.delete(:query)
+    iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
+    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri, only_path: true)))
+    uri.query = query.to_param if query
+    uri.to_s
   end
 
   %i[edit delete trash untrash move settings statistics feeds conversions invites export logs].each do |method|
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
-      iri = parent.try(:iri_path) || parent
-      opts[:parent_iri] ||= iri if iri
-      RDF::DynamicURI(expand_uri_template("#{method}_iri", opts))
+      RDF::DynamicURI(path_with_hostname(send("#{method}_iri_path", parent, opts)))
     end
 
     # @return [String]
     define_method "#{method}_iri_path" do |parent, opts = {}|
-      send("#{method}_iri", parent, opts.merge(only_path: true)).to_s
+      iri = parent.try(:iri_path) || parent
+      opts[:parent_iri] ||= iri if iri
+      opts[:only_path] = true
+      expand_uri_template("#{method}_iri", opts.merge(only_path: true))
     end
   end
 end

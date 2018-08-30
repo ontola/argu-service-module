@@ -5,6 +5,7 @@ class EntryPoint
   include ActiveModel::Serialization
   include ChildHelper
   include Ldable
+  include Iriable
 
   attr_accessor :parent
   delegate :form, :label, :description, :url, :http_method, :image, :user_context, :resource, to: :parent
@@ -18,8 +19,8 @@ class EntryPoint
     {}
   end
 
-  def iri(only_path: false)
-    u = URI.parse(parent.iri(only_path: only_path))
+  def iri_path(_opts = {})
+    u = URI.parse(parent.iri_path)
 
     if parent.is_a?(Actions::Base)
       u.path += 'entrypoint'
@@ -29,7 +30,7 @@ class EntryPoint
       u.fragment = 'entrypoint'
     end
 
-    RDF::DynamicURI(u.to_s)
+    u.to_s
   end
   alias id iri
 end

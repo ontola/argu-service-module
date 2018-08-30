@@ -8,12 +8,17 @@ module Iriable
   # The canonical IRI of the object. The used URL may differ.
   # @return [RDF::URI] IRI of the object.
   def canonical_iri(opts = {})
-    return iri(opts) if canonical_iri_template_name.nil?
-    RDF::URI(expand_uri_template(canonical_iri_template_name, **canonical_iri_opts.merge(opts)))
+    RDF::URI(path_with_hostname(canonical_iri_path(opts)))
   end
 
   def canonical_iri_opts
     {id: id, :"#{self.class.name.underscore}_id" => id}
+  end
+
+  # @return [String]
+  def canonical_iri_path(opts = {})
+    return iri_path(opts) if canonical_iri_template_name.nil?
+    expand_uri_template(canonical_iri_template_name, **canonical_iri_opts.merge(opts).merge(only_path: true))
   end
 
   def canonical_iri_template_name
@@ -24,17 +29,16 @@ module Iriable
   # The IRI of the object. The used URL may differ.
   # @return [RDF::URI] IRI of the object.
   def iri(opts = {})
-    iri_from_cache(opts) || iri_from_template(opts)
+    RDF::DynamicURI(path_with_hostname(iri_path(opts)))
   end
 
-  def iri_from_cache(opts)
-    return if opts.except(:only_path).present? || !persisted? || !has_attribute?(:iri_cache)
-    path = iri_cache || cache_iri!
-    RDF::DynamicURI(opts[:only_path] ? path : path_with_hostname(path))
+  def iri_path_from_cache(opts = {})
+    return if opts.present? || !persisted? || !has_attribute?(:iri_cache)
+    iri_cache || cache_iri_path!
   end
 
-  def iri_from_template(opts)
-    RDF::DynamicURI(expand_uri_template(iri_template_name, **iri_opts.merge(opts)))
+  def iri_path_from_template(opts = {})
+    expand_uri_template(iri_template_name, **iri_opts.merge(opts).merge(only_path: true))
   end
 
   def iri_opts
@@ -43,20 +47,17 @@ module Iriable
 
   # @return [String]
   def iri_path(opts = {})
-    iri = iri(opts)
-    iri.scheme = nil
-    iri.authority = nil
-    iri.to_s
+    iri_path_from_cache(opts) || iri_path_from_template(opts)
   end
 
   def iri_template_name
     "#{model_name.route_key}_iri"
   end
 
-  def cache_iri!
+  def cache_iri_path!
     return unless has_attribute?(:iri_cache) && persisted?
-    update_column(:iri_cache, iri_from_template(only_path: true).to_s)
-    iri_from_template(only_path: true)
+    update_column(:iri_cache, iri_path_from_template)
+    iri_path_from_template
   end
 
   module ClassMethods

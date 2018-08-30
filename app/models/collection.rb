@@ -55,7 +55,7 @@ class Collection < RailsLD::Collection
 
   def iri_template
     @iri_template ||=
-      URITemplate.new("#{iri.to_s.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
+      URITemplate.new("#{iri_path.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
   def total_count
@@ -66,7 +66,7 @@ class Collection < RailsLD::Collection
 
   def canonical_iri_opts
     opts = iri_opts
-    opts[:parent_iri] = parent&.canonical_iri(only_path: true)
+    opts[:parent_iri] = parent&.canonical_iri_path
     opts
   end
 

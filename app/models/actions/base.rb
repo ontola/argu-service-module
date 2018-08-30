@@ -13,13 +13,13 @@ module Actions
     alias read_attribute_for_serialization send
     alias current_user user_context
 
-    def iri(opts = {})
-      parent_iri = resource_path_iri
+    def iri_path(opts = {})
+      parent_iri = URI(resource_iri_path)
       query = parent_iri.query
       parent_iri.query = nil
-      i = RDF::DynamicURI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
+      i = URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri, only_path: true)))
       i.query = query
-      i
+      i.to_s
     end
 
     def actions
@@ -59,8 +59,8 @@ module Actions
       call_option(opts[:collection]) == resource.is_a?(Collection)
     end
 
-    def resource_path_iri
-      resource.iri(only_path: true)
+    def resource_iri_path
+      resource.iri_path
     end
   end
 end

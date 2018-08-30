@@ -21,8 +21,8 @@ module RailsLD
       [super, NS::AS['CollectionPage']]
     end
 
-    def iri(opts = {})
-      RDF::DynamicURI(collection.unfiltered.iri_template.expand(iri_opts.merge(opts)))
+    def iri_path(opts = {})
+      collection.unfiltered.iri_template.expand(iri_opts.merge(opts))
     end
     alias id iri
 
