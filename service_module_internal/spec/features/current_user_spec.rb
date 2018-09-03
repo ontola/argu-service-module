@@ -38,10 +38,12 @@ describe CurrentUser do
   end
 
   before do
-    stub_request(:get, 'http://argu.test/spi/current_user')
+    extend ServiceHelper
+
+    stub_request(:get, expand_service_url(:argu, '/spi/current_user'))
       .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer user_token_1'})
       .to_return(status: 200, body: mock_response(1))
-    stub_request(:get, 'http://argu.test/spi/current_user')
+    stub_request(:get, expand_service_url(:argu, '/spi/current_user'))
       .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer user_token_2'})
       .to_return(status: 200, body: mock_response(2))
   end

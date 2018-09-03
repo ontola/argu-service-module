@@ -18,7 +18,9 @@ describe Resource do
   end
 
   before do
-    stub_request(:get, 'http://argu.test/resources/1')
+    extend ServiceHelper
+
+    stub_request(:get, expand_service_url(:argu, '/resources/1'))
       .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer'})
       .to_return(
         status: 200,

@@ -9,6 +9,14 @@ module ServiceHelper
   CLUSTER_URL_BASE =
     ENV['CLUSTER_URL_BASE'] || [NAMESPACE.presence, SVC_DNS_PREFIX.presence, CLUSTER_DOMAIN.presence].compact.join('.')
 
+  def expand_service_url(service, path, params = {})
+    url = URI(service_url(service))
+    url.path = path
+    url.fragment = params.delete(:fragment)
+    url.query = params.to_param if params.present?
+    url.to_s
+  end
+
   def service(service_name, token: user_token)
     OAuth2::AccessToken.new(service_client(service_name), token)
   end
