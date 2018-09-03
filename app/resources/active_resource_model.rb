@@ -46,23 +46,45 @@ class ActiveResourceModel < ActiveResource::Base
     end
 
     def get(path, headers = {})
-      @token.get(path, headers: headers)
+      @token.get(relative_path(path), headers: headers)
     end
 
     def delete(path, headers = {})
-      @token.delete(path, headers: headers)
+      @token.delete(relative_path(path), headers: headers)
     end
 
     def patch(path, body = '', headers = {})
-      @token.patch(path, body: body, headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type))
+      @token.patch(
+        relative_path(path),
+        body: body,
+        headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type)
+      )
     end
 
     def put(path, body = '', headers = {})
-      @token.put(path, body: body, headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type))
+      @token.put(
+        relative_path(path),
+        body: body,
+        headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type)
+      )
     end
 
     def post(path, body = '', headers = {})
-      @token.post(path, body: body, headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type))
+      @token.post(
+        relative_path(path),
+        body: body,
+        headers: headers.merge('Content-Type': ActiveResource::Formats[:json].mime_type)
+      )
+    end
+
+    private
+
+    def relative_path(path)
+      path = URI(path)
+      path.scheme = nil
+      path.host = nil
+      path.port = nil
+      path
     end
   end
 end
