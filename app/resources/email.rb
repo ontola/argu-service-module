@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Email < ActiveResourceModel
+  self.service_name = :email
+
   def self.collection_name
     'email/emails'
   end

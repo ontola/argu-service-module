@@ -18,7 +18,7 @@ module Iriable
   # @return [String]
   def canonical_iri_path(opts = {})
     return iri_path(opts) if canonical_iri_template_name.nil?
-    expand_uri_template(canonical_iri_template_name, **canonical_iri_opts.merge(opts).merge(only_path: true))
+    expand_uri_template(canonical_iri_template_name, **canonical_iri_opts.merge(opts))
   end
 
   def canonical_iri_template_name
@@ -38,7 +38,7 @@ module Iriable
   end
 
   def iri_path_from_template(opts = {})
-    expand_uri_template(iri_template_name, **iri_opts.merge(opts).merge(only_path: true))
+    expand_uri_template(iri_template_name, **iri_opts.merge(opts))
   end
 
   def iri_opts

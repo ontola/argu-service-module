@@ -3,19 +3,21 @@
 require 'oauth2'
 
 module Argu
-  class API # rubocop:disable Metrics/ClassLength
+  class API
+    include ServiceHelper
     include UriTemplateHelper
     attr_reader :cookie_jar
 
     def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
-      @raw_service_token = service_token
-      @raw_user_token = user_token
+      @service_token = service_token
+      @user_token = user_token
       @cookie_jar = cookie_jar
     end
+    attr_reader :service_token
 
     def authorize_action(opts = {})
       opts[:authorize_action] = opts.delete(:action)
-      user_token.get(uri_template(:spi_authorize).expand(opts))
+      service(:argu).get(uri_template(:spi_authorize).expand(opts))
     rescue OAuth2::Error => e
       [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
     end
@@ -25,12 +27,13 @@ module Argu
     end
 
     def confirm_email_address(email)
-      service_token.put(expand_uri_template(:user_confirm), body: {email: email}, headers: {accept: 'application/json'})
+      service(:argu, token: service_token)
+        .put(expand_uri_template(:user_confirm), body: {email: email}, headers: {accept: 'application/json'})
     end
 
     def create_email(template, recipient, options = {})
       recipient = recipient.slice(:display_name, :email, :language, :id)
-      service_token.post(
+      service(:email, token: service_token).post(
         expand_uri_template(:email_spi_create),
         body: {email: {template: template, recipient: recipient, options: options}},
         headers: {accept: 'application/json'}
@@ -38,11 +41,11 @@ module Argu
     end
 
     def create_favorite(iri)
-      user_token.post(expand_uri_template(:favorites_iri), body: {iri: iri}, headers: {accept: 'application/json'})
+      service(:argu).post(expand_uri_template(:favorites_iri), body: {iri: iri}, headers: {accept: 'application/json'})
     end
 
     def create_membership(token)
-      user_token.post(
+      service(:argu).post(
         "/g/#{token.group_id}/memberships",
         body: {token: token.secret},
         headers: {accept: 'application/json'}
@@ -50,13 +53,13 @@ module Argu
     end
 
     def create_user(email)
-      response = (user_token || generate_guest_token).post(
+      response = service(:argu).post(
         expand_uri_template(:user_registration),
         body: {user: {email: email}},
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
-      @user_token = OAuth2::AccessToken.new(argu_client, cookie_jar.encrypted[:argu_client_token])
+      @user_token = cookie_jar.encrypted[:argu_client_token]
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
@@ -76,12 +79,8 @@ module Argu
 
     private
 
-    def argu_client
-      @argu_client ||= OAuth2::Client.new(ENV['ARGU_APP_ID'], ENV['ARGU_APP_SECRET'], site: ENV['OAUTH_URL'])
-    end
-
     def generate_guest_token
-      result = service_token.post(
+      result = service(:argu, token: service_token).post(
         expand_uri_template(:spi_oauth_token),
         body: {scope: :guest}
       )
@@ -106,14 +105,6 @@ module Argu
       user
     end
 
-    def user_token
-      @user_token = OAuth2::AccessToken.new(argu_client, @raw_user_token || generate_guest_token)
-    end
-
-    def service_token
-      @service_token = OAuth2::AccessToken.new(argu_client, @raw_service_token)
-    end
-
     def set_argu_client_token_cookie(token, expires = nil)
       cookie_jar['argu_client_token'] = {
         expires: expires,
@@ -122,6 +113,10 @@ module Argu
         httponly: true,
         domain: :all
       }
+    end
+
+    def user_token
+      @user_token || generate_guest_token
     end
   end
 end

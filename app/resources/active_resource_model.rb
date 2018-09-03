@@ -5,9 +5,13 @@ require 'json_api_collection_parser'
 require 'json_api_resource_parser'
 
 class ActiveResourceModel < ActiveResource::Base
+  extend ServiceHelper
+  class_attribute :service_name
+
   self.collection_parser = JsonApiCollectionParser
   self.include_format_in_path = false
-  self.site = Rails.configuration.oauth_url
+  self.site = ''
+  self.service_name = :argu
   headers['Accept'] = 'application/vnd.api+json'
 
   def load(attributes, remove_root = false, persisted = false)
@@ -15,16 +19,8 @@ class ActiveResourceModel < ActiveResource::Base
     super
   end
 
-  def self.argu_client
-    @argu_client ||= OAuth2::Client.new(
-      ENV['ARGU_APP_ID'],
-      ENV['ARGU_APP_SECRET'],
-      site: ENV['OAUTH_URL']
-    )
-  end
-
   def self.connection(_refresh = false)
-    @service_token ||= OauthConnection.new(OAuth2::AccessToken.new(argu_client, ENV['SERVICE_TOKEN']))
+    @service_token ||= OauthConnection.new(service(service_name, token: ENV['SERVICE_TOKEN']))
   end
 
   def id_from_response(response); end

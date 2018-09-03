@@ -17,7 +17,7 @@ module Actions
       parent_iri = URI(resource_iri_path)
       query = parent_iri.query
       parent_iri.query = nil
-      i = URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri, only_path: true)))
+      i = URI(expand_uri_template('action_lists_iri', opts.merge(parent_iri: parent_iri)))
       i.query = query
       i.to_s
     end

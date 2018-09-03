@@ -11,7 +11,7 @@ module UriTemplateHelper
     canonical = opts.delete(:canonical)
     expand_uri_template(
       "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
-      opts.merge(parent_iri: parent.try(:iri_path) || parent, only_path: true)
+      opts.merge(parent_iri: parent.try(:iri_path) || parent)
     )
   end
 
@@ -22,7 +22,7 @@ module UriTemplateHelper
     args[:parent_iri] = split_iri_segments(args[:parent_iri]) if args[:parent_iri].present?
     args[:collection_iri] = split_iri_segments(args[:collection_iri]) if args[:collection_iri].present?
     path = tmpl.expand(args)
-    args[:only_path] ? path : path_with_hostname(path)
+    args[:with_hostname] ? path_with_hostname(path) : path
   end
 
   def link_to(name = nil, options = nil, html_options = nil, &block)
@@ -55,7 +55,7 @@ module UriTemplateHelper
   def new_iri_path(parent, collection = nil, opts = {})
     query = opts.delete(:query)
     iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
-    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri, only_path: true)))
+    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri)))
     uri.query = query.to_param if query
     uri.to_s
   end
@@ -71,7 +71,7 @@ module UriTemplateHelper
       iri = parent.try(:iri_path) || parent
       opts[:parent_iri] ||= iri if iri
       opts[:only_path] = true
-      expand_uri_template("#{method}_iri", opts.merge(only_path: true))
+      expand_uri_template("#{method}_iri", opts)
     end
   end
 end
