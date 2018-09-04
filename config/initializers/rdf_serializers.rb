@@ -13,5 +13,3 @@ opts = {
 RDF_CONTENT_TYPES = %i[n3 nt nq ttl jsonld rdf].freeze
 
 RDF::Serializers::Renderers.register(%i[n3 ntriples nquads turtle jsonld rdf], opts)
-
-Dir[Rails.root.join('app', 'responders', '*.rb')].each { |file| require_dependency file }
