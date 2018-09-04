@@ -13,6 +13,8 @@ class ApiController < ActionController::API
   include UrlHelper
   serialization_scope :nil
 
+  force_ssl unless: :internal_request?
+
   def current_user
     @current_user ||= CurrentUser.find(user_token)
   rescue OAuth2::Error
@@ -45,6 +47,10 @@ class ApiController < ActionController::API
 
   def check_if_registered
     raise Argu::Errors::Unauthorized if current_user.blank?
+  end
+
+  def internal_request?
+    Argu::WhitelistConstraint.matches?(request)
   end
 
   def token_from_cookie
