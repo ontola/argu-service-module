@@ -102,6 +102,7 @@ module RailsLD
           foreign_key: reflection.foreign_key.to_sym,
           inverse_of: reflection.inverse_of.name.to_sym,
           klass: reflection.klass,
+          primary_key: reflection.active_record_primary_key.to_sym,
           table_name: reflection.table_name.to_sym
         }
       end
