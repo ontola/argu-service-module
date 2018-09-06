@@ -39,7 +39,7 @@ module RailsLD
           .from(ranked_query(opts))
           .where('child_rank <= ?', opts[:count])
           .includes(opts[:klass].includes_for_serializer)
-          .each { |child| child.send("#{opts[:inverse_of]}=", inverse_of_preloaded(child, opts)) }
+          .each { |child| preloaded_inverse_of(child, opts) }
           .group_by(&opts[:foreign_key])
       end
 
@@ -58,6 +58,11 @@ module RailsLD
 
       def preload_included_associations?
         !preloaded && association_class < ActiveRecord::Base
+      end
+
+      def preloaded_inverse_of(child, opts)
+        inverse = inverse_of_preloaded(child, opts)
+        child.send("#{opts[:inverse_of]}=", inverse) if inverse
       end
 
       def ranked_query(opts)
