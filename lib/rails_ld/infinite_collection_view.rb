@@ -6,7 +6,7 @@ module RailsLD
 
     def initialize(attrs = {})
       # rubocop:disable Rails/TimeZone
-      attrs[:before] = Time.parse(attrs[:before]).to_s(:db)
+      attrs[:before] = Time.parse(attrs[:before]).to_s(:db) if attrs[:before]
       # rubocop:enable Rails/TimeZone
       super
     end
