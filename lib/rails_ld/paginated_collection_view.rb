@@ -33,12 +33,13 @@ module RailsLD
     end
 
     def raw_members
-      association_base
-        .includes(association_class.includes_for_serializer)
-        .reorder(parsed_sort_values)
-        .page(page)
-        .per(page_size)
-        .to_a
+      @raw_members ||=
+        association_base
+          .includes(association_class.includes_for_serializer)
+          .reorder(parsed_sort_values)
+          .page(page)
+          .per(page_size)
+          .to_a
     end
   end
 end
