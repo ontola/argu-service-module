@@ -18,6 +18,10 @@ class BaseSerializer < ActiveModel::Serializer
     object.try(:canonical_iri) || rdf_subject
   end
 
+  def never
+    false
+  end
+
   def rdf_subject
     object.iri
   end
