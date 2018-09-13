@@ -41,7 +41,7 @@ module RailsLD
     def raw_members
       @raw_members ||=
         association_base
-          .includes(association_class.includes_for_serializer)
+          .preload(association_class.includes_for_serializer)
           .where(arel_table[:created_at].lt(before))
           .reorder(parsed_sort_values)
           .limit(page_size)
