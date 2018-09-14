@@ -17,6 +17,11 @@ module RDF
       @rewriten = true
       @value = value.gsub("https://#{ENV['HOSTNAME']}", "https://app.#{ENV['HOSTNAME']}").freeze
     end
+
+    def self.intern(str, *args)
+      str = str.to_s
+      cache[str.to_sym] ||= new(str, *args)
+    end
   end
 
   def self.DynamicURI(uri, *args, &block)
