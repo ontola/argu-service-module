@@ -29,7 +29,10 @@ module Iriable
   # The IRI of the object. The used URL may differ.
   # @return [RDF::URI] IRI of the object.
   def iri(opts = {})
-    RDF::DynamicURI(path_with_hostname(iri_path(opts)))
+    return @iri if @iri && opts.blank?
+    iri = RDF::DynamicURI(path_with_hostname(iri_path(opts)))
+    @iri = iri if opts.blank?
+    iri
   end
 
   def iri_path_from_cache(opts = {})
@@ -55,6 +58,7 @@ module Iriable
   end
 
   def cache_iri_path!
+    @iri = nil
     return unless has_attribute?(:iri_cache) && persisted?
     update_column(:iri_cache, iri_path_from_template)
     iri_path_from_template
