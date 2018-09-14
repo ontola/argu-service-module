@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative 'collection/filtering'
+require_relative 'collection/sorting'
+
 module RailsLD
   class Collection
     include ActiveModel::Serialization

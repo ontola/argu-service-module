@@ -8,6 +8,7 @@ class Collection < RailsLD::Collection
   include Pundit
   include Ldable
   include Iriable
+  include Collection::CounterCache
 
   attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :parent_uri_template_opts
   attr_writer :title
@@ -58,10 +59,6 @@ class Collection < RailsLD::Collection
       URITemplate.new("#{iri_path.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
-  def total_count
-    @total_count ||= count_from_cache_column || super
-  end
-
   private
 
   def canonical_iri_opts
@@ -72,27 +69,6 @@ class Collection < RailsLD::Collection
 
   def canonical_iri_template_name
     @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
-  end
-
-  def count_from_cache_column
-    parent.children_count(counter_cache_column) if counter_cache_column
-  end
-
-  def counter_cache_column
-    return counter_cache_for_filter if filter&.count == 1
-    return if filtered?
-    @counter_cache_column ||= counter_cache_column_name
-  end
-
-  def counter_cache_column_name
-    key = association.to_s
-    key = key[7..-1] if key.starts_with?('active_')
-    opts = association_class.try(:counter_cache_options)
-    key if opts && (opts == true || opts.keys.include?(key.to_sym))
-  end
-
-  def counter_cache_for_filter
-    association_class.filter_options[filter.keys.first].try(:[], :counter_cache).try(:[], filter.values.first)
   end
 
   def filter_iri_opts
