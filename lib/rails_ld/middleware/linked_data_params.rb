@@ -45,7 +45,7 @@ module RailsLD
       # @return [Hash] A hash of attributes, empty if no statements were given.
       def params_from_graph(request)
         graph = graph_from_request(request)
-        target_class = graph && target_class_from_path(request.path)
+        target_class = graph && target_class_from_path(request.path, request.request_method)
         if target_class.blank?
           logger.info("No class found for #{request.path}") if graph
           return
@@ -98,8 +98,8 @@ module RailsLD
         field
       end
 
-      def target_class_from_path(path)
-        opts = Rails.application.routes.recognize_path(path)
+      def target_class_from_path(path, method)
+        opts = Rails.application.routes.recognize_path(path, method: method)
         opts[:controller]&.classify&.safe_constantize
       rescue ActionController::RoutingError
         nil
