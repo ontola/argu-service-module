@@ -27,7 +27,7 @@ class ActionItem
 
   def iri_path(_opts = {})
     return iri_path_from_parent unless iri_template
-    [iri_path_from_template(parent_iri: resource.iri.path), iri_query].compact.join('?')
+    [iri_path_from_template(parent_iri: resource.iri_path), iri_query].compact.join('?')
   end
 
   alias id iri
