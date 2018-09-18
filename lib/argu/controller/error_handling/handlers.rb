@@ -72,16 +72,8 @@ module Argu
           redirect_back(fallback_location: root_path)
         end
 
-        def respond_with(*resources, &_block)
-          return super unless respond_with_422?(resources)
-          active_response_block do
-            respond_with_invalid_resource resource: resources.first
-          end
-        end
-
         def respond_with_422?(resources)
-          ![:html, nil].include?(request.format.symbol) &&
-            !resources.all? { |r| r.respond_to?(:valid?) ? r.valid? : true }
+          resources.any? { |r| r.respond_to?(:errors) && r.errors.present? }
         end
       end
     end
