@@ -19,6 +19,7 @@ blog_posts_collection_iri: "{/parent_iri*}/blog{?filter%5B%5D,page,page_size,typ
 comments_iri: "{/root_id}/c{/id}{?destroy,parent_id}"
 comments_collection_canonical: "{/parent_iri*}/comments{?filter%5B%5D,page,page_size,type,before}"
 comments_collection_iri: "{/parent_iri*}/c{?filter%5B%5D,page,page_size,type,before}"
+confirmations_iri: "/users/confirmation"
 conversions_iri: "{/parent_iri*}/conversion"
 conversions_collection_canonical: "{/parent_iri*}/conversion{?filter%5B%5D,page,page_size,type,before}"
 conversions_collection_iri: "{/parent_iri*}/conversion{?filter%5B%5D,page,page_size,type,before}"
