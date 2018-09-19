@@ -33,9 +33,6 @@ module Actions
       @action ||= {}
       return @action[tag] if @action.key?(tag)
       opts = defined_actions.select { |_tag, options| collection_filter(options) }[tag].dup
-      opts.each do |key, value|
-        opts[key] = instance_exec(&value) if value.respond_to?(:call)
-      end
       @action[tag] = action_item(tag, opts)
     end
 
