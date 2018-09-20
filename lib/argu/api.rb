@@ -3,7 +3,7 @@
 require 'oauth2'
 
 module Argu
-  class API
+  class API # rubocop:disable Metrics/ClassLength
     include ServiceHelper
     include UriTemplateHelper
     attr_reader :cookie_jar
@@ -40,13 +40,19 @@ module Argu
       )
     end
 
-    def create_favorite(iri)
-      service(:argu).post(expand_uri_template(:favorites_iri), body: {iri: iri}, headers: {accept: 'application/json'})
+    def create_favorite(root_id, iri)
+      service(:argu)
+        .post(
+          expand_uri_template(:favorites_iri, root_id: root_id),
+          body: {iri: iri},
+          headers: {accept: 'application/json'}
+        )
     end
 
     def create_membership(token)
+      group_iri = expand_uri_template(:groups_iri, id: token.group_id, root_id: token.root_id)
       service(:argu).post(
-        "/g/#{token.group_id}/memberships",
+        collection_iri_path(group_iri, :group_memberships),
         body: {token: token.secret},
         headers: {accept: 'application/json'}
       )
