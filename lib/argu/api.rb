@@ -18,8 +18,8 @@ module Argu
     def authorize_action(opts = {})
       opts[:authorize_action] = opts.delete(:action)
       service(:argu).get(uri_template(:spi_authorize).expand(opts))
-    rescue OAuth2::Error => e
-      [401, 403].include?(e.response.status) ? false : handle_oauth_error(e)
+    rescue OAuth2::Error
+      false
     end
 
     def authorize_redirect_resource(token)
