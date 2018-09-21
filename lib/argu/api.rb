@@ -65,7 +65,7 @@ module Argu
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
-      @user_token = cookie_jar.encrypted[:argu_client_token]
+      @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
