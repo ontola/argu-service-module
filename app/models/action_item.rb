@@ -14,7 +14,9 @@ class ActionItem
   %i[description result type policy label image url collection form tag http_method].each do |method|
     attr_writer method
     define_method method do
-      value = instance_variable_get(:"@#{method}") || try("#{method}_fallback")
+      value = instance_variable_get(:"@#{method}") ||
+        respond_to?("#{method}_fallback", true) && send("#{method}_fallback") ||
+        nil
       value.respond_to?(:call) ? parent.instance_exec(&value) : value
     end
   end
