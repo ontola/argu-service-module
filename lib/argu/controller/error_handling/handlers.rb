@@ -30,7 +30,10 @@ module Argu
 
         def error_response_serializer(e, type, status: nil)
           status ||= error_status(e)
-          render type => error_graph(status, e), status: status
+          error = error_resource(status, e)
+          response.headers['Exec-Action'] =
+            NS::ONTOLA["actions/snackbar?text=#{ERB::Util.url_encode(error.error.message)}"]
+          render type => error.graph, status: status
         end
 
         def handle_and_report_error(e)
@@ -53,8 +56,8 @@ module Argu
           end
         end
 
-        def error_graph(status, e)
-          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new).graph
+        def error_resource(status, e)
+          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
         end
 
         def error_response(e, format)
@@ -73,7 +76,7 @@ module Argu
         end
 
         def respond_with_422?(resources)
-          resources.any? { |r| r.respond_to?(:errors) && r.errors.present? }
+          resources.any? { |r| r.is_a?(ActiveModel::Errors) || r.respond_to?(:errors) && r.errors.present? }
         end
       end
     end
