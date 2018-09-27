@@ -51,7 +51,9 @@ module RailsLD
         end
 
         def index_collection_name
-          "#{model_name}_collection" if parent_resource.respond_to?("#{model_name}_collection")
+          return unless respond_to?(:parent_resource, true)
+          return unless parent_resource.respond_to?("#{controller_name.singularize}_collection", true)
+          "#{controller_name.singularize}_collection"
         end
 
         def index_collection_or_view

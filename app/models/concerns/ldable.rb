@@ -29,6 +29,7 @@ module Ldable
   end
 
   def previous_changes_by_predicate
+    return {} unless respond_to?(:previous_changes)
     Hash[
       previous_changes
         .map { |k, v| [self.class.serializer_class!._attributes_data[k.to_sym]&.options.try(:[], :predicate), v] }
