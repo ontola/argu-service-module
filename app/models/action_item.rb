@@ -7,11 +7,11 @@ class ActionItem
   include Ldable
 
   attr_accessor :parent, :policy_arguments, :policy_resource, :resource, :iri_template
-  attr_writer :target, :iri_template_opts
+  attr_writer :target
   delegate :user_context, to: :parent
   alias iri_template_name iri_template
 
-  %i[description result type policy label image url collection form tag http_method].each do |method|
+  %i[description result type policy label image url collection form tag http_method iri_template_opts].each do |method|
     attr_writer method
     define_method method do
       value = instance_variable_get(:"@#{method}") ||
@@ -61,7 +61,7 @@ class ActionItem
   end
 
   def iri_opts(opts = {})
-    (@iri_template_opts || {}).merge(opts)
+    (iri_template_opts || {}).merge(opts)
   end
 
   def label_fallback
