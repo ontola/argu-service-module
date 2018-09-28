@@ -4,7 +4,7 @@ module Ldable
   extend ActiveSupport::Concern
 
   included do
-    class_attribute :default_sortings
+    class_attribute :default_sortings, instance_accessor: false, instance_predicate: false
     self.default_sortings = [{key: NS::SCHEMA[:dateCreated], direction: :desc}]
   end
 
