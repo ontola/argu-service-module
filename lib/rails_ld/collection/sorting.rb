@@ -7,7 +7,8 @@ module RailsLD
       attr_writer :default_sortings
 
       def default_sortings
-        @default_sortings || association_class.default_sortings
+        opts = @default_sortings || association_class.default_sortings
+        opts.respond_to?(:call) ? opts.call(parent) : opts
       end
 
       def sorted?
