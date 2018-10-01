@@ -23,6 +23,7 @@ module RailsLD
           {
             default_view: collection_view_includes(member_includes),
             filters: [],
+            sortings: [],
             operation: action_form_includes
           }
         end
