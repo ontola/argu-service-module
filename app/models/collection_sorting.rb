@@ -6,4 +6,5 @@ class CollectionSorting < RailsLD::CollectionSorting
   def iri(_opts = {})
     self
   end
+  alias canonical_iri iri
 end

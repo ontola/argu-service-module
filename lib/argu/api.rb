@@ -71,6 +71,14 @@ module Argu
       nil
     end
 
+    def email_address_exists?(email)
+      service(:argu, token: service_token)
+        .get(expand_uri_template(:spi_email_addresses, email: email))
+      true
+    rescue OAuth2::Error
+      false
+    end
+
     def self.service_api
       new(service_token: ENV['SERVICE_TOKEN'])
     end
