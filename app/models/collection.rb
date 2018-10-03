@@ -10,8 +10,8 @@ class Collection < RailsLD::Collection
   include Iriable
   include Collection::CounterCache
 
-  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :parent_uri_template_opts
-  attr_writer :title
+  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical
+  attr_writer :parent_uri_template_opts, :title
 
   alias id iri
   alias pundit_user user_context
@@ -90,6 +90,10 @@ class Collection < RailsLD::Collection
       user_context: user_context,
       parent_uri_template: parent_uri_template
     )
+  end
+
+  def parent_uri_template_opts
+    @parent_uri_template_opts.respond_to?(:call) ? @parent_uri_template_opts.call(parent) : @parent_uri_template_opts
   end
 
   def policy_scope(scope)
