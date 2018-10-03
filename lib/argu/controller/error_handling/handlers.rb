@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_ld/active_response/rdf_error'
-
 module Argu
   module Controller
     # The generic Argu error handling code. Currently a mess from different error

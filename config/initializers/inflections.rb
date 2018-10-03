@@ -8,4 +8,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'IRI'
   inflect.acronym 'ORI'
   inflect.acronym 'UUID'
+  inflect.acronym 'LD'
 end
