@@ -15,13 +15,21 @@ module Argu
         @record = options[:record]
         @policy = options[:policy]
         @action = @query[-1] == '?' ? @query[0..-2] : @query
+        @message = options[:message]
 
-        raise StandardError if @query.blank?
+        raise StandardError if @query.blank? && @message.blank?
 
-        message = I18n.t("pundit.#{@policy.class.to_s.underscore}.#{@query}",
-                         action: @action,
-                         default: I18n.t('errors.access_denied'))
-        super(message)
+        super(@message || default_message)
+      end
+
+      private
+
+      def default_message
+        I18n.t(
+          "pundit.#{@policy.class.to_s.underscore}.#{@query}",
+          action: @action,
+          default: I18n.t('errors.access_denied')
+        )
       end
     end
   end
