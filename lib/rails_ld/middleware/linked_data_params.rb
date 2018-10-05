@@ -100,7 +100,9 @@ module RailsLD
 
       def target_class_from_path(path, method)
         opts = Rails.application.routes.recognize_path(path, method: method)
-        opts[:controller]&.classify&.safe_constantize
+        class_name = opts[:controller]&.classify
+        class_name&.safe_constantize ||
+          class_name&.deconstantize&.classify&.safe_constantize
       rescue ActionController::RoutingError
         nil
       end
