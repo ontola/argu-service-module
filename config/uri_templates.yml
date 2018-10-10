@@ -118,6 +118,7 @@ shortnames_collection_canonical: "{/parent_iri*}/shortnames{?filter%5B%5D,page,p
 shortnames_collection_iri: "{/parent_iri*}/shortnames{?filter%5B%5D,page,page_size,type,before}"
 sources_iri: "{/parent_iri*}/s{/id}"
 statistics_iri: "{/parent_iri*}/statistics"
+terms_iri: "/terms{?referrer}"
 tokens_iri: "/tokens{/secret}"
 tokens_collection_iri: "/tokens{/token_type}/g{/group_id}{?page,type,before}"
 tokens_bearer_collection_iri: "/tokens/bearer/g{/group_id}{?page,type}"
