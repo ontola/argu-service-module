@@ -8,7 +8,7 @@ class EntryPoint
   include Iriable
 
   attr_accessor :parent
-  delegate :form, :label, :description, :url, :http_method, :image, :user_context, :resource, to: :parent
+  delegate :form, :description, :url, :http_method, :image, :user_context, :resource, :tag, to: :parent
 
   def action_body
     target = parent.collection ? child_instance(resource.parent, resource.association_class) : resource
@@ -33,4 +33,19 @@ class EntryPoint
     u.to_s
   end
   alias id iri
+
+  def label
+    var = parent.submit_label
+    value = var.respond_to?(:call) ? parent.parent.instance_exec(&var) : var
+    value || label_fallback
+  end
+
+  private
+
+  def label_fallback
+    I18n.t(
+      "actions.#{resource&.class_name}.#{tag}.submit",
+      default: [:"actions.default.#{tag}.submit", :'actions.default.submit']
+    )
+  end
 end

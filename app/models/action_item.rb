@@ -6,7 +6,7 @@ class ActionItem
   include Iriable
   include Ldable
 
-  attr_accessor :parent, :policy_arguments, :policy_resource, :resource, :iri_template
+  attr_accessor :parent, :policy_arguments, :policy_resource, :resource, :iri_template, :submit_label
   attr_writer :target
   delegate :user_context, to: :parent
   alias iri_template_name iri_template
@@ -14,10 +14,10 @@ class ActionItem
   %i[description result type policy label image url collection form tag http_method iri_template_opts].each do |method|
     attr_writer method
     define_method method do
-      value = instance_variable_get(:"@#{method}") ||
-        respond_to?("#{method}_fallback", true) && send("#{method}_fallback") ||
-        nil
-      value.respond_to?(:call) ? parent.instance_exec(&value) : value
+      var = instance_variable_get(:"@#{method}")
+      value = var.respond_to?(:call) ? parent.instance_exec(&var) : var
+      return value if value
+      send("#{method}_fallback") if respond_to?("#{method}_fallback", true)
     end
   end
 
