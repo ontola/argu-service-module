@@ -12,6 +12,10 @@ module RailsLD
         NS::ONTOLA["actions/copyToClipboard?#{{value: value}.to_param}"]
       end
 
+      def ontola_dialog_action(resource)
+        NS::ONTOLA["actions/dialog/alert?#{{resource: resource}.to_param}"]
+      end
+
       def ontola_redirect_action(location)
         location =
           location
