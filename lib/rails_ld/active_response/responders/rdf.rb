@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../rdf_error'
+require_relative '../../helpers/ontola_actions'
 require 'active_response/responders/html'
 
 module RailsLD
@@ -8,6 +9,8 @@ module RailsLD
     module Responders
       class RDF < ::ActiveResponse::Responders::HTML
         respond_to(*RDF_CONTENT_TYPES)
+
+        include RailsLD::Helpers::OntolaActions
 
         def collection(opts)
           opts[:resource] = opts.delete(:collection)
@@ -81,16 +84,8 @@ module RailsLD
 
         def response_headers(opts)
           headers = controller.response.headers
-          if opts[:location].present?
-            add_exec_action_header(headers, NS::ONTOLA["actions/redirect?location=#{opts[:location]}"])
-          end
-          return if opts[:notice].blank?
-          add_exec_action_header(headers, NS::ONTOLA["actions/snackbar?text=#{ERB::Util.url_encode(opts[:notice])}"])
-        end
-
-        def add_exec_action_header(headers, action)
-          headers['Exec-Action'] ||= ''
-          headers['Exec-Action'] += "#{action}\n"
+          add_exec_action_header(headers, ontola_redirect_action(opts[:location])) if opts[:location].present?
+          add_exec_action_header(headers, ontola_snackbar_action(opts[:notice])) if opts[:notice].present?
         end
       end
     end

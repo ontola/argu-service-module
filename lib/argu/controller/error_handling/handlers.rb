@@ -8,6 +8,8 @@ module Argu
     # classes with inconsistent attributes.
     module ErrorHandling
       module Handlers
+        include RailsLD::Helpers::OntolaActions
+
         def error_response_html(e, view: nil)
           respond_to?(:flash) && flash[:alert] = e.message
           status ||= error_status(e)
@@ -31,8 +33,7 @@ module Argu
         def error_response_serializer(e, type, status: nil)
           status ||= error_status(e)
           error = error_resource(status, e)
-          response.headers['Exec-Action'] =
-            NS::ONTOLA["actions/snackbar?text=#{ERB::Util.url_encode(error.error.message)}"]
+          add_exec_action_header(response.headers, ontola_snackbar_action(error.error.message))
           render type => error.graph, status: status
         end
 
