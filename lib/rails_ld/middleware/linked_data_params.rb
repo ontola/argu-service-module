@@ -57,6 +57,12 @@ module RailsLD
         )
       end
 
+      def parse_nested_resource(graph, subject, klass, base_params)
+        resource = parse_resource(graph, subject, klass, base_params)
+        resource[:id] ||= nil
+        resource
+      end
+
       # Recursively parses a resource from graph
       def parse_resource(graph, subject, klass, base_params)
         HashWithIndifferentAccess[
@@ -81,9 +87,9 @@ module RailsLD
         nested_resources =
           if graph.query([object, NS::RDFV[:first], nil]).present?
             RDF::List.new(subject: object, graph: graph)
-              .map { |nested| parse_resource(graph, nested, association_klass, base_params) }
+              .map { |nested| parse_nested_resource(graph, nested, association_klass, base_params) }
           else
-            parse_resource(graph, object, association_klass, base_params)
+            parse_nested_resource(graph, object, association_klass, base_params)
           end
         ["#{association}_attributes", nested_resources]
       end
