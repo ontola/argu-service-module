@@ -23,13 +23,8 @@ module RailsLD
           action_resource.action(user_context, ACTION_MAP[form.to_sym] || form.to_sym)
         end
 
-        def create_success_location_rdf
-          create_success_location
-        end
-
         def create_success_options_rdf
           opts = create_success_options
-          opts[:location] = create_success_location_rdf
           opts[:meta] = create_meta
           opts
         end
@@ -49,13 +44,8 @@ module RailsLD
 
         def destroy_success_options_rdf
           opts = destroy_success_options
-          opts[:location] = destroy_success_location_rdf
           opts[:meta] = destroy_meta
           opts
-        end
-
-        def destroy_success_location_rdf
-          destroy_success_location
         end
 
         def destroy_meta

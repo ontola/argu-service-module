@@ -46,12 +46,12 @@ module RailsLD
 
         def new_resource(**opts)
           opts[:status] = :created
-          response_headers(opts)
           controller.respond_with_resource(opts)
         end
 
         def redirect(**opts)
           response_headers(opts)
+          add_exec_action_header(controller.response.headers, ontola_redirect_action(opts[:location]))
           controller.head 200
         end
 
@@ -84,7 +84,6 @@ module RailsLD
 
         def response_headers(opts)
           headers = controller.response.headers
-          add_exec_action_header(headers, ontola_redirect_action(opts[:location])) if opts[:location].present?
           add_exec_action_header(headers, ontola_snackbar_action(opts[:notice])) if opts[:notice].present?
         end
       end
