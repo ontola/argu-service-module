@@ -57,7 +57,7 @@ module RailsLD
 
         def resource(**opts)
           response_headers(opts)
-          if opts[:resource].blank?
+          if opts[:resource].blank? || head_request?
             controller.head 200
           else
             opts[format] = opts.delete(:resource)
@@ -80,6 +80,10 @@ module RailsLD
           RailsLD::ActiveResponse::RDFError
             .new(status, controller.request.original_url, error.is_a?(StandardError) ? error : error.new)
             .graph
+        end
+
+        def head_request?
+          controller.request.method == 'HEAD'
         end
 
         def response_headers(opts)
