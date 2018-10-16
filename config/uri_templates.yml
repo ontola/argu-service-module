@@ -37,6 +37,8 @@ direct_messages_collection_iri: "{/parent_iri*}/dm{?filter%5B%5D,page,page_size,
 discussions_collection_canonical: "{/parent_iri*}/discussions{?filter%5B%5D,page,page_size,type,before}"
 discussions_collection_iri: "{/parent_iri*}/discussions{?filter%5B%5D,page,page_size,type,before}"
 documents_iri: "{/name}"
+drafts_collection_canonical: "{/parent_iri*}/drafts{?filter%5B%5D,page,page_size,type,before}"
+drafts_collection_iri: "{/parent_iri*}/drafts{?filter%5B%5D,page,page_size,type,before}"
 edges_iri: "/edges{/id}"
 edges_canonical_iri: "/edges{/id}"
 edit_iri: "{/parent_iri*}/edit{?form,reset_password_token}"
