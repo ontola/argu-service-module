@@ -53,7 +53,7 @@ module RailsLD
       end
 
       def filtered_association
-        scope = parent&.send(association) || association_class
+        scope = association && parent&.send(association) || association_class
         scope = scope.send(association_scope) if association_scope
         scope = scope.joins(joins) if joins
         scope = apply_filters(scope) if filtered?

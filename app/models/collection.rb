@@ -10,7 +10,7 @@ class Collection < RailsLD::Collection
   include Iriable
   include Collection::CounterCache
 
-  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical
+  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :policy
   attr_writer :parent_uri_template_opts, :title
 
   alias id iri
@@ -97,7 +97,7 @@ class Collection < RailsLD::Collection
   end
 
   def policy_scope(scope)
-    policy_scope = PolicyFinder.new(scope).scope
+    policy_scope = policy && policy::Scope || PolicyFinder.new(scope).scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
   end
 
