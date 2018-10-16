@@ -68,9 +68,9 @@ module RailsLD
         def updated_resource(**opts)
           response_headers(opts)
           if opts[:meta].present?
-            controller.render(format => [], meta: opts[:meta])
+            controller.render(format => [], meta: opts[:meta], location: opts[:location])
           else
-            controller.head 200
+            controller.head 200, location: opts[:location]
           end
         end
 
