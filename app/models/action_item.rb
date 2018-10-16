@@ -21,6 +21,12 @@ class ActionItem
     end
   end
 
+  def action_status
+    return NS::SCHEMA[:PotentialActionStatus] if policy_valid?
+    return NS::ARGU[:ExpiredActionStatus] if policy_expired?
+    NS::ARGU[:DisabledActionStatus]
+  end
+
   def as_json(_opts = {})
     {}
   end
@@ -34,7 +40,7 @@ class ActionItem
 
   def target
     return @target if @target.present?
-    return unless policy.blank? || policy_valid?
+    return unless policy_valid?
     @target = EntryPoint.new(parent: self)
   end
 
@@ -69,8 +75,13 @@ class ActionItem
            default: [:"actions.default.#{tag}.label", tag.to_s.humanize])
   end
 
+  def policy_expired?
+    @policy_expired ||= policy && resource_policy(policy_resource).try(:has_expired_ancestors?)
+  end
+
   def policy_valid?
-    resource_policy(policy_resource).send(policy, *policy_arguments)
+    return true if policy.blank?
+    @policy_valid ||= resource_policy(policy_resource).send(policy, *policy_arguments)
   end
 
   def resource_policy(policy_resource)
