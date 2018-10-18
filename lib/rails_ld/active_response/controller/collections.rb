@@ -61,10 +61,22 @@ module RailsLD
         end
 
         def index_includes_collection
-          collection_view_params.present? ? collection_view_includes(show_includes) : collection_includes(show_includes)
+          if collection_view_params.present?
+            collection_view_includes(preview_includes)
+          else
+            collection_includes(preview_includes)
+          end
         end
 
         def index_meta; end
+
+        def preview_includes
+          []
+        end
+
+        def show_includes
+          preview_includes
+        end
       end
     end
   end
