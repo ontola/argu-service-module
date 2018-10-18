@@ -37,8 +37,13 @@ module RailsLD
         end
 
         def form_resource_includes(action)
-          return if action.blank?
-          action.form&.referred_resources
+          includes = create_includes.presence || []
+          return includes if action.blank?
+
+          includes = [includes] if includes.is_a?(Hash)
+          includes << %i[filters sortings] if action.resource.is_a?(Collection)
+          includes << action.form&.referred_resources
+          includes
         end
 
         def index_collection
