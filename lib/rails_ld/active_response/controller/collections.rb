@@ -33,7 +33,11 @@ module RailsLD
         end
 
         def collection_view_params
-          params.permit(:before, :page, :page_size, :type)
+          params.permit(:before, :page)
+        end
+
+        def collection_type_params
+          params.permit(:page_size, :type)
         end
 
         def form_resource_includes(action)
