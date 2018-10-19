@@ -174,11 +174,12 @@ module Ldable
     included do
       def self.with_collection(name, opts = {})
         collection_name = "#{name.to_s.singularize}_collection"
+        page_size = opts.delete(:page_size)
 
         has_one collection_name, opts.merge(association: name)
 
         define_method collection_name do
-          object.send(collection_name, user_context: scope)
+          object.send(collection_name, user_context: scope, page_size: page_size)
         end
       end
     end
