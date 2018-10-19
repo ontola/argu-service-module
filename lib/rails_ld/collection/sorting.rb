@@ -7,7 +7,10 @@ module RailsLD
       attr_writer :default_sortings
 
       def default_sortings
-        opts = @default_sortings || association_class.default_sortings
+        opts =
+          @default_sortings ||
+          association_class.try(:default_sortings) ||
+          [{key: NS::SCHEMA[:dateCreated], direction: :desc}]
         opts.respond_to?(:call) ? opts.call(parent) : opts
       end
 
