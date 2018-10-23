@@ -106,6 +106,8 @@ permitted_actions_collection_iri: "/permitted_actions{?filter%5B%5D,page,page_si
 phases_iri: "/phases{/id}"
 places_iri: "/places{/id}"
 placements_iri: "/placements{/id}"
+placements_collection_canonical: "{/parent_iri*}/placements{?filter%5B%5D,page,page_size,type,before}"
+placements_collection_iri: "{/parent_iri*}/placements{?filter%5B%5D,page,page_size,type,before}"
 pro_arguments_iri: "{/root_id}/pro{/id}{?destroy}"
 pro_arguments_collection_canonical: "{/parent_iri*}/pro_arguments{?filter%5B%5D,page,page_size,type,before}"
 pro_arguments_collection_iri: "{/parent_iri*}/pros{?filter%5B%5D,page,page_size,type,before}"
