@@ -5,6 +5,7 @@ class ActionItemSerializer < BaseSerializer
   attribute :description, predicate: NS::SCHEMA[:text]
   attribute :result, predicate: NS::SCHEMA[:result]
   attribute :action_status, predicate: NS::SCHEMA[:actionStatus]
+  attribute :favorite, predicate: NS::ARGU[:favoriteAction]
 
   has_one :resource, predicate: NS::SCHEMA[:object]
   has_one :target, predicate: NS::SCHEMA[:target]
