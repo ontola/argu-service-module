@@ -51,10 +51,8 @@ module RailsLD
           return
         end
 
-        request.update_param(
-          target_class.to_s.underscore,
-          parse_resource(graph, NS::LL[:targetResource], target_class, request.params)
-        )
+        set_actor_param(request, graph)
+        set_target_params(request, graph, target_class)
       end
 
       def parse_nested_resource(graph, subject, klass, base_params)
@@ -102,6 +100,21 @@ module RailsLD
         field = klass.try(:predicate_mapping).try(:[], predicate)
         logger.info("#{predicate} not found for #{klass}") if field.blank?
         field
+      end
+
+      def set_actor_param(request, graph)
+        actor = graph.query([NS::LL[:targetResource], NS::SCHEMA[:creator]]).first
+        return if actor.blank?
+
+        request.update_param(:actor_iri, actor.object)
+        graph.delete(actor)
+      end
+
+      def set_target_params(request, graph, target_class)
+        request.update_param(
+          target_class.to_s.underscore,
+          parse_resource(graph, NS::LL[:targetResource], target_class, request.params)
+        )
       end
 
       def target_class_from_path(path, method)
