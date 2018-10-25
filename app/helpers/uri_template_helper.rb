@@ -2,6 +2,11 @@
 
 module UriTemplateHelper
   # @return [RDF::URI]
+  def actors_iri(parent)
+    RDF::DynamicURI(expand_uri_template(:actors_iri, parent_iri: parent.iri_path, with_hostname: true))
+  end
+
+  # @return [RDF::URI]
   def collection_iri(parent, type, opts = {})
     RDF::DynamicURI(path_with_hostname(collection_iri_path(parent, type, opts)))
   end
