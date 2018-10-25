@@ -54,7 +54,7 @@ favorites_collection_canonical: "{/parent_iri*}/favorites{?filter%5B%5D,page,pag
 favorites_collection_iri: "{/parent_iri*}/favorites{?filter%5B%5D,page,page_size,type,before}"
 favorites_feed_iri: "/feed"
 feeds_iri: "{/parent_iri*}/feed{.format}{?complete}"
-follows_iri: "/follows{/id}"
+follows_iri: "/follows{/id}{?gid,follow_type}"
 follows_unsubscribe_iri: "/follows{/id}/unsubscribe"
 forums_iri: "{/root_id}{/id}"
 forums_collection_canonical: "{/parent_iri*}/forums{?filter%5B%5D,page,page_size,type,before}"
