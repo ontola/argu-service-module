@@ -77,7 +77,19 @@ module RailsLD
           end
         end
 
-        def index_meta; end
+        def index_meta
+          return [] if index_collection.is_a?(Collection)
+
+          RDF::List.new(
+            graph: RDF::Graph.new,
+            subject: index_iri,
+            values: index_collection.map(&:iri)
+          ).triples
+        end
+
+        def index_iri
+          RDF::DynamicURI(request.original_url)
+        end
 
         def preview_includes
           []
