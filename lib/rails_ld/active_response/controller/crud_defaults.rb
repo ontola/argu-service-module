@@ -58,13 +58,13 @@ module RailsLD
             collection: index_collection_or_view,
             include: index_includes_collection,
             locals: index_locals,
-            meta: index_meta
+            meta: request.head? ? [] : index_meta
           }
         end
 
         def show_success_options_rdf
           opts = show_success_options.except(:locals)
-          opts[:meta] = show_meta
+          opts[:meta] = request.head? ? [] : show_meta
           opts
         end
 
