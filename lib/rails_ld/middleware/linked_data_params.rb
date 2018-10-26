@@ -3,16 +3,6 @@
 module RailsLD
   module Middleware
     class LinkedDataParams
-      def self.classes_by_iri
-        @classes_by_iri ||=
-          Hash[
-            ActiveRecord::Base
-              .descendants
-              .select { |klass| klass.respond_to?(:iri) }
-              .map { |klass| [klass.iri.to_s, klass] }
-          ].freeze
-      end
-
       def initialize(app)
         @app = app
       end
