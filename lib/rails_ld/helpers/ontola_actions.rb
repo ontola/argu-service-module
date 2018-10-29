@@ -13,6 +13,7 @@ module RailsLD
       end
 
       def ontola_dialog_action(resource)
+        resource.rewrite_value! if resource.is_a?(RDF::DynamicURI)
         NS::ONTOLA["actions/dialog/alert?#{{resource: resource}.to_param}"]
       end
 
