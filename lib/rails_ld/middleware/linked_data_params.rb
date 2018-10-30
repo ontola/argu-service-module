@@ -20,7 +20,7 @@ module RailsLD
       end
 
       def enum_attribute(klass, key, value)
-        opts = klass.serializer_class!.try(:_enums).try(:[], key)
+        opts = klass.serializer_class!.try(:enum_options, key)
         return if opts.blank?
         opts[:options].detect { |_k, options| options[:iri] == value }[0]
       end
