@@ -15,6 +15,7 @@ module NS
   BIBO = RDF::Vocabulary.new('http://purl.org/ontology/bibo/')
   BIO = RDF::Vocabulary.new('http://purl.org/vocab/bio/0.1/')
   CC = RDF::Vocabulary.new('http://creativecommons.org/ns#')
+  CUBE = RDF::Vocabulary.new('http://purl.org/linked-data/cube#')
   DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
   DC = RDF::Vocabulary.new('http://purl.org/dc/terms/')
   DBPEDIA = RDF::Vocabulary.new('http://dbpedia.org/resource/')
