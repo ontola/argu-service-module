@@ -58,10 +58,10 @@ module Argu
       )
     end
 
-    def create_user(email)
+    def create_user(email, r: nil)
       response = service(:argu).post(
         expand_uri_template(:user_registration),
-        body: {user: {email: email}},
+        body: {user: {email: email}, r: r},
         headers: {accept: 'application/json'}
       )
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
