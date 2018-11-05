@@ -51,7 +51,7 @@ class CollectionSerializer < BaseSerializer
 
   def action_triple(subject, predicate, iri, graph = nil)
     subject_iri = subject.iri
-    subject_iri = RDF::DynamicURI(subject_iri.to_s.sub('/lr/', '/od/'))
+    subject_iri = RDF::DynamicURI(subject_iri.to_s.sub('/lr/', '/od/')) if subject.is_a?(LinkedRecord)
     [subject_iri, predicate, iri, graph]
   end
 
