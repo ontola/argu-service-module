@@ -27,7 +27,13 @@ module RailsLD
 
       def graph_from_request(request)
         request_graph = request.delete_param("<#{NS::LL[:graph].value}>")
-        RDF::Graph.load(request_graph[:tempfile].path, content_type: request_graph[:type]) if request_graph.present?
+        return if request_graph.blank?
+        RDF::Graph.load(
+          request_graph[:tempfile].path,
+          content_type: request_graph[:type],
+          canonicalize: true,
+          intern: false
+        )
       end
 
       def logger
