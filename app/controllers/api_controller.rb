@@ -14,6 +14,7 @@ class ApiController < ActionController::API
   serialization_scope :nil
 
   force_ssl unless: :internal_request?
+  before_action :set_locale
 
   def current_user
     @current_user ||= CurrentUser.find(user_token)
@@ -51,6 +52,10 @@ class ApiController < ActionController::API
 
   def internal_request?
     Argu::WhitelistConstraint.matches?(request)
+  end
+
+  def set_locale
+    I18n.locale = current_user&.language&.gsub("#{NS::ARGU[:locale]}/", '') || I18n.default_locale
   end
 
   def token_from_cookie
