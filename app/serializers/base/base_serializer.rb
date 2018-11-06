@@ -53,7 +53,7 @@ class BaseSerializer < ActiveModel::Serializer
     self._enums[key] = opts
 
     define_method(key) do
-      self.class.enum_options(key) && self.class.enum_options(key)[:options][object.send(key).to_sym][:iri]
+      self.class.enum_options(key) && self.class.enum_options(key)[:options][object.send(key)&.to_sym].try(:[], :iri)
     end
   end
 
