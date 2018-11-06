@@ -1,0 +1,5 @@
+en:
+  od:
+    meetings:
+      type: "Meeting"
+      plural: "Meetings"
