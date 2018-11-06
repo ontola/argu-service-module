@@ -34,7 +34,7 @@ class DataEvent
       {
         id: resource_id,
         type: resource_type,
-        attributes: filtered_attributes(resource.previous_changes)
+        attributes: filtered_attributes(previous_changes)
       }
     ]
   end
@@ -47,12 +47,18 @@ class DataEvent
 
   def event_from_resource
     return if resource.nil?
-    new_resource? ? 'create' : 'update'
+    if new_resource?
+      'create'
+    elsif resource.destroyed?
+      'destroy'
+    else
+      'update'
+    end
   end
 
   def new_resource?
     resource.instance_variable_get(:@new_record_before_save) ||
-      resource.previous_changes['id']&.first.nil? && resource.previous_changes['id']&.second.present?
+      previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
   end
 
   def json
@@ -60,7 +66,7 @@ class DataEvent
       .new(
         self,
         adapter: :json_api,
-        include: :resource,
+        include: event == 'destroy' ? nil : :resource,
         key_transform: :camel_lower,
         scope: UserContext.new(doorkeeper_scopes: %w[service])
       )
@@ -88,5 +94,9 @@ class DataEvent
     self.resource_type = resource.class.name.pluralize.camelize(:lower)
     self.event = event_from_resource
     self.changes = changes_from_resource
+  end
+
+  def previous_changes
+    @previous_changes ||= resource.try(:broadcastable_changes) || resource.previous_changes
   end
 end
