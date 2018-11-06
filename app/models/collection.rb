@@ -11,7 +11,7 @@ class Collection < RailsLD::Collection
   include Collection::CounterCache
 
   attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :policy
-  attr_writer :parent_uri_template_opts, :title
+  attr_writer :parent_uri_template_opts
 
   alias id iri
   alias pundit_user user_context

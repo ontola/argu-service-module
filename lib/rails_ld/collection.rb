@@ -33,6 +33,11 @@ module RailsLD
     end
 
     def title
+      return @title.call(parent) if @title.respond_to?(:call)
+      @title || title_from_translation
+    end
+
+    def title_from_translation
       plural = association_class.name.tableize
       I18n.t("#{plural}.collection.#{filter&.values&.join('.').presence || name}",
              count: ->(_opts) { total_count },
