@@ -19,7 +19,9 @@ module RailsLD
 
     def next
       return if before.nil? || members.blank?
-      iri(iri_opts.merge(before: members.last.created_at.utc.to_s(:db)))
+      next_before = members.last.send(sort_column)
+      next_before = next_before.utc.to_s(:db) if next_before.is_a?(Time)
+      iri(iri_opts.merge(before: next_before))
     end
 
     def prev; end
@@ -29,6 +31,10 @@ module RailsLD
     end
 
     private
+
+    def before_query
+      arel_table[sort_column].send(sort_direction, before)
+    end
 
     def iri_opts
       {
@@ -42,10 +48,18 @@ module RailsLD
       @raw_members ||=
         association_base
           .preload(association_class.includes_for_serializer)
-          .where(arel_table[:created_at].lt(before))
+          .where(before_query)
           .reorder(parsed_sort_values)
           .limit(page_size)
           .to_a
+    end
+
+    def sort_column
+      @sort_column ||= collection.sortings.last.sort_value.keys.first
+    end
+
+    def sort_direction
+      @sort_direction ||= collection.sortings.last.sort_value.values.first == :desc ? :lt : :gt
     end
   end
 end
