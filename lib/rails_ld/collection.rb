@@ -11,8 +11,8 @@ module RailsLD
     include RailsLD::Collection::Sorting
 
     attr_accessor :association, :association_class, :association_scope, :joins, :name,
-                  :parent, :part_of, :include_map, :page_size, :type
-    attr_writer :title, :views, :default_type
+                  :parent, :part_of, :include_map, :page_size
+    attr_writer :title, :views, :default_type, :type
 
     # prevents a `stack level too deep`
     def as_json(options = {})
@@ -44,6 +44,10 @@ module RailsLD
       @total_count ||= association_base.count
     end
 
+    def type
+      @type&.to_sym || default_type
+    end
+
     def views
       @views || [default_view]
     end
@@ -55,18 +59,18 @@ module RailsLD
     private
 
     def default_type
-      type&.to_sym || @default_type || :paginated
+      @default_type || :paginated
     end
 
     def default_view_opts
       opts = {
         include_map: (include_map || {}),
-        type: default_type,
+        type: type,
         page_size: page_size || association_class.default_per_page,
         filter: filter
       }
-      opts[:page] = 1 if default_type == :paginated
-      opts[:before] = Time.current.utc.to_s(:db) if default_type == :infinite
+      opts[:page] = 1 if type == :paginated
+      opts[:before] = Time.current.utc.to_s(:db) if type == :infinite
       opts
     end
 

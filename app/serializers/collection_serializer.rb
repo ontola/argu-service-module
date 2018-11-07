@@ -27,6 +27,10 @@ class CollectionSerializer < BaseSerializer
     triples
   end
 
+  def default_type
+    object.type
+  end
+
   def type
     return object.class.iri unless object.filtered?
     NS::ARGU[:FilteredCollection]
