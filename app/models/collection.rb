@@ -47,6 +47,7 @@ class Collection < RailsLD::Collection
   def iri_opts # rubocop:disable Lint/UnneededDisable, Metrics/AbcSize
     opts = {}
     iri_opts_add(opts, :parent_iri, parent&.iri_path)
+    iri_opts_add(opts, :display, display) if display
     iri_opts_add(opts, :type, type) if type&.to_sym != default_type
     iri_opts_add(opts, :page_size, page_size)
     iri_opts_add(opts, :'filter%5B%5D', filter_iri_opts)

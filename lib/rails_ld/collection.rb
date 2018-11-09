@@ -10,7 +10,7 @@ module RailsLD
     include RailsLD::Collection::Filtering
     include RailsLD::Collection::Sorting
 
-    attr_accessor :association, :association_class, :association_scope, :joins, :name,
+    attr_accessor :association, :association_class, :association_scope, :display, :joins, :name,
                   :parent, :part_of, :include_map, :page_size
     attr_writer :title, :views, :default_type, :type
 

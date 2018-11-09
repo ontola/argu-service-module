@@ -5,6 +5,7 @@ class CollectionSerializer < BaseSerializer
   attribute :total_count, predicate: NS::AS[:totalItems], unless: :system_scope?
   attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
   attribute :default_type, predicate: NS::ARGU[:defaultType]
+  attribute :display, predicate: NS::ARGU[:collectionDisplay]
 
   has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf], if: :filtered?
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
@@ -29,6 +30,10 @@ class CollectionSerializer < BaseSerializer
 
   def default_type
     object.type
+  end
+
+  def display
+    NS::ARGU["collectionDisplay/#{object.display || :default}"]
   end
 
   def type
