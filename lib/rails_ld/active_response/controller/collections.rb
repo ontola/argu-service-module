@@ -36,6 +36,12 @@ module RailsLD
           params.permit(:before, :page)
         end
 
+        def collection_options
+          {
+            display: params[:display]
+          }.merge(collection_type_params)
+        end
+
         def collection_type_params
           params.permit(:page_size, :type)
         end
