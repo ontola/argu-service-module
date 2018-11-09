@@ -3,3 +3,6 @@ nl:
     meetings:
       type: "Vergadering"
       plural: "Vergaderingen"
+    motions:
+      type: "Moties"
+      plural: "Moties"

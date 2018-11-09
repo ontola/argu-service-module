@@ -3,3 +3,6 @@ en:
     meetings:
       type: "Meeting"
       plural: "Meetings"
+    motions:
+      type: "Motions"
+      plural: "Motions"
