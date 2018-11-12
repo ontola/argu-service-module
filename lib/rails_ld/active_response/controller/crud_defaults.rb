@@ -18,9 +18,13 @@ module RailsLD
 
         def active_response_action(resource:, view:)
           action_resource = resource.try(:new_record?) ? index_collection : resource
+          action_resource.action(user_context, active_response_action_name(view))
+        end
+
+        def active_response_action_name(view)
           form = params[:form]
           form ||= view == 'form' ? action_name : view
-          action_resource.action(user_context, ACTION_MAP[form.to_sym] || form.to_sym)
+          ACTION_MAP[form.to_sym] || form.to_sym
         end
 
         def create_success_options_rdf
