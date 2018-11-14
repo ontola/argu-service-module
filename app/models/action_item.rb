@@ -6,13 +6,13 @@ class ActionItem
   include Iriable
   include Ldable
 
-  attr_accessor :parent, :policy_arguments, :policy_resource, :resource, :iri_template, :submit_label
+  attr_accessor :parent, :policy_arguments, :resource, :iri_template, :submit_label
   attr_writer :target
   delegate :user_context, to: :parent
   alias iri_template_name iri_template
 
   %i[description result type policy label image url collection form
-     tag http_method iri_template_opts favorite].each do |method|
+     tag http_method iri_template_opts favorite policy_resource].each do |method|
     attr_writer method
     define_method method do
       var = instance_variable_get(:"@#{method}")
