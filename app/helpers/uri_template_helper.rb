@@ -3,7 +3,7 @@
 module UriTemplateHelper
   # @return [RDF::URI]
   def actors_iri(parent)
-    RDF::DynamicURI(expand_uri_template(:actors_iri, parent_iri: parent.iri_path, with_hostname: true))
+    iri_from_template(:actors_iri, parent_iri: parent.iri_path)
   end
 
   # @return [RDF::URI]
@@ -28,6 +28,10 @@ module UriTemplateHelper
     args[:collection_iri] = split_iri_segments(args[:collection_iri]) if args[:collection_iri].present?
     path = tmpl.expand(args)
     args[:with_hostname] ? path_with_hostname(path) : path
+  end
+
+  def iri_from_template(template, opts = {})
+    RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
   end
 
   def link_to(name = nil, options = nil, html_options = nil, &block)
