@@ -43,8 +43,9 @@ class EntryPoint
   private
 
   def label_fallback
+    key = resource.is_a?(Collection) ? resource.association : resource&.class_name
     I18n.t(
-      "actions.#{resource&.class_name}.#{tag}.submit",
+      "actions.#{key}.#{tag}.submit",
       default: [:"actions.default.#{tag}.submit", :'actions.default.submit']
     )
   end
