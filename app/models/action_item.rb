@@ -11,7 +11,7 @@ class ActionItem
   delegate :user_context, to: :parent
   alias iri_template_name iri_template
 
-  %i[description result type policy label image url collection form
+  %i[description result type policy label image url collection form completed
      tag http_method iri_template_opts favorite policy_resource].each do |method|
     attr_writer method
     define_method method do
@@ -23,6 +23,7 @@ class ActionItem
   end
 
   def action_status
+    return NS::SCHEMA[:CompletedActionStatus] if completed
     return NS::SCHEMA[:PotentialActionStatus] if policy_valid?
     return NS::ARGU[:ExpiredActionStatus] if policy_expired?
     NS::ARGU[:DisabledActionStatus]
