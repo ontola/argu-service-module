@@ -40,9 +40,7 @@ class ActionItem
   alias id iri
 
   def target
-    return @target if @target.present?
-    return unless policy_valid?
-    @target = EntryPoint.new(parent: self)
+    @target ||= EntryPoint.new(parent: self)
   end
 
   private
