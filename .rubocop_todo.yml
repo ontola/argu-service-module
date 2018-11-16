@@ -21,5 +21,10 @@ Security/Eval:
     - '../lib/argu/test_helpers.rb'
     - 'lib/argu/test_helpers.rb'
 
+Metrics/MethodLength:
+  Exclude:
+  - '../lib/argu/test_mocks.rb'
+  - 'lib/argu/test_mocks.rb'
+
 RSpec/NestedGroups:
   Enabled: false
