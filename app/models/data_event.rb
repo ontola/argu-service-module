@@ -74,9 +74,10 @@ class DataEvent
   end
 
   def parse_json_api(attrs)
-    self.resource = json_api_included_resource(attrs, attrs.dig('data', 'relationships', 'resource', 'data'))
-    self.resource_id = resource['id']
-    self.resource_type = resource['type']
+    data_resource = attrs.dig('data', 'relationships', 'resource', 'data')
+    self.resource_id = data_resource['id']
+    self.resource_type = data_resource['type']
+    self.resource = json_api_included_resource(attrs, id: resource_id, type: resource_type)
     self.affected_resources = attrs.dig('data', 'relationships', 'affected_resources')&.map do |r|
       json_api_included_resource(attrs, r['data'])
     end
