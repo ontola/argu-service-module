@@ -42,10 +42,10 @@ class Connection
       body
     end
 
-    def subscribe(queue_name)
+    def subscribe(queue_name, &block)
       channel, queue = subscribe_to_queue(queue_name)
       begin
-        listen(channel, queue)
+        listen(channel, queue, &block)
       rescue Interrupt
         connection.close
       end
