@@ -41,6 +41,8 @@ module Service
     config.autoload_paths += %W[#{config.root}/app/serializers/base]
     config.autoload_paths += %W[#{config.root}/app/models/actions]
     config.autoload_paths += %W[#{config.root}/app/responders]
+    config.autoload_paths += Dir["#{config.root}/app/enhancements/**/"]
+    Dir.glob("#{config.root}/app/enhancements/**{,/*/**}/*.rb").each { |file| require_dependency file }
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
 
