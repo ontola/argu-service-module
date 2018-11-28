@@ -55,3 +55,9 @@ Rails/SkipsModelValidations:
     - ../app/models/concerns/iriable.rb
 Rails/LexicallyScopedActionFilter:
   Enabled: false
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - staging

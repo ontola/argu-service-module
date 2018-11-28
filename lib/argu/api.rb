@@ -64,8 +64,7 @@ module Argu
         body: {user: {email: email}, r: r},
         headers: {accept: 'application/json'}
       )
-      set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
-      @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
+      update_user_token(response)
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
@@ -123,10 +122,16 @@ module Argu
       cookie_jar['argu_client_token'] = {
         expires: expires,
         value: token,
-        secure: Rails.env.production?,
+        secure: Rails.env.staging? || Rails.env.production?,
         httponly: true,
         domain: :all
       }
+    end
+
+    def update_user_token(response)
+      set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
+      @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
+      Bugsnag.notify('No new user token received') if @user_token.blank?
     end
 
     def user_token
