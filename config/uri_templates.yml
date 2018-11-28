@@ -147,6 +147,7 @@ widgets_iri: "/widgets{/id}"
 widgets_collection_canonical: "{/parent_iri*}/widgets{?display,filter%5B%5D,page,page_size,type,before}"
 widgets_collection_iri: "{/parent_iri*}/widgets{?display,filter%5B%5D,page,page_size,type,before}"
 # Argu Service
+set_language: "/u/language{/language}"
 new_vote: "{/voteable_path*}/votes/new{?confirm,r,vote%5Bfor%5D}"
 new_pasword: "/users/password/new"
 user_confirmation: "/users/confirmation{?confirmation_token}"
