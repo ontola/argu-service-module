@@ -13,7 +13,7 @@ module Argu
       @user_token = user_token
       @cookie_jar = cookie_jar
     end
-    attr_reader :service_token
+    attr_reader :service_token, :user_token
 
     def authorize_action(opts = {})
       opts[:authorize_action] = opts.delete(:action)
@@ -78,6 +78,14 @@ module Argu
       false
     end
 
+    def generate_guest_token
+      result = service(:argu, token: service_token).post(
+        expand_uri_template(:spi_oauth_token),
+        body: {scope: :guest}
+      )
+      @user_token = JSON.parse(result.body)['access_token']
+    end
+
     def self.service_api
       new(service_token: ENV['SERVICE_TOKEN'])
     end
@@ -92,14 +100,6 @@ module Argu
 
     private
 
-    def generate_guest_token
-      result = service(:argu, token: service_token).post(
-        expand_uri_template(:spi_oauth_token),
-        body: {scope: :guest}
-      )
-      JSON.parse(result.body)['access_token']
-    end
-
     def parsed_cookies(response)
       cookies = {}
       response.headers['set-cookie']&.split(',')&.each do |cookie|
@@ -110,7 +110,7 @@ module Argu
     end
 
     def user_from_response(response, email)
-      user = CurrentUser.send(:instantiate_record, JSON.parse(response.body))
+      user = CurrentUser.new(user_token, attributes: JSON.parse(response.body))
       user.attributes['email'] = email
       user.attributes['email_addresses'] = [
         OpenStruct.new(attributes: {email: email, primary: true}.with_indifferent_access)
@@ -132,10 +132,6 @@ module Argu
       set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
       @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
       Bugsnag.notify('No new user token received') if @user_token.blank?
-    end
-
-    def user_token
-      @user_token || generate_guest_token
     end
   end
 end

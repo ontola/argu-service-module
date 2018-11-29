@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class UserContext
-  attr_reader :user, :actor, :doorkeeper_scopes, :tree_root_id
+  attr_reader :api, :user, :actor, :doorkeeper_scopes, :tree_root_id
 
-  def initialize(user: nil, doorkeeper_scopes: nil, profile: nil, tree_root_id: nil)
+  def initialize(api: nil, user: nil, doorkeeper_scopes: nil, profile: nil, tree_root_id: nil)
+    @api = api
     @user = user
     @profile = profile
     @doorkeeper_scopes = doorkeeper_scopes

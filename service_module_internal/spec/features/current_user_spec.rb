@@ -3,48 +3,42 @@
 require_relative '../spec_helper'
 
 describe CurrentUser do
-  context 'with user 1' do
-    subject { described_class.find('user_token_1') }
+  let(:current_user) { described_class.new(token) }
 
-    it 'has proper attributes' do
-      is_expected.to have_attributes(
-        id: 'user_1',
-        display_name: 'user 1'
-      )
+  let(:token_1) { doorkeeper_token('user', id: 1) }
+  let(:token_2) { doorkeeper_token('user', id: 2, language: :nl) }
+
+  context 'with user 1' do
+    let(:token) { token_1 }
+
+    it 'gets id from token' do
+      expect(current_user.id).to eq(1)
+    end
+
+    it 'gets language from token' do
+      expect(current_user.language).to eq('en')
+    end
+
+    it 'fetches user for display_name' do
+      user_mock
+      expect(current_user.display_name).to eq('User1')
     end
   end
 
   context 'with user 2' do
-    subject { described_class.find('user_token_2') }
+    let(:token) { token_2 }
 
-    it 'has proper attributes' do
-      is_expected.to have_attributes(
-        id: 'user_2',
-        display_name: 'user 2'
-      )
+    it 'gets id from token' do
+      expect(current_user.id).to eq(2)
     end
-  end
 
-  private
+    it 'gets language from token' do
+      expect(current_user.language).to eq('nl')
+    end
 
-  def mock_response(id)
-    {
-      data: {
-        id: "user_#{id}",
-        type: 'users',
-        attributes: {displayName: "user #{id}"}
-      }
-    }.to_json
-  end
-
-  before do
-    extend ServiceHelper
-
-    stub_request(:get, expand_service_url(:argu, '/spi/current_user'))
-      .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer user_token_1'})
-      .to_return(status: 200, body: mock_response(1))
-    stub_request(:get, expand_service_url(:argu, '/spi/current_user'))
-      .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer user_token_2'})
-      .to_return(status: 200, body: mock_response(2))
+    it 'fetches user for display_name' do
+      user_mock(2)
+      expect(current_user.display_name).to eq('User2')
+    end
   end
 end

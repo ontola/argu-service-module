@@ -37,6 +37,7 @@ module ServiceModule
         YAML.safe_load(File.read(File.expand_path('../../config/uri_templates.yml', __FILE__)))
           .map { |k, v| [k, URITemplate.new(v)] }
       ].with_indifferent_access.freeze
+    secrets.jwt_encryption_token = 'secret'
   end
 end
 
@@ -62,6 +63,7 @@ end
 
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
 require_relative '../../lib/ns'
+require_relative '../../lib/argu/test_mocks'
 require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app', '{models/concerns}', '*.rb'), &method(:require))
@@ -91,6 +93,8 @@ require 'webmock/rspec'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.include TestMocks
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
