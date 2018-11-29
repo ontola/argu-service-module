@@ -13,7 +13,7 @@ module UriTemplateHelper
 
   # @return [String]
   def collection_iri_path(parent, type, opts = {})
-    canonical = opts.delete(:canonical)
+    canonical = opts.delete(:canonical) && uri_template("#{type}_collection_canonical")
     expand_uri_template(
       "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
       opts.merge(parent_iri: parent.try(:iri_path) || parent)

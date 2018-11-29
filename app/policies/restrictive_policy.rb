@@ -23,6 +23,10 @@ class RestrictivePolicy
     false
   end
 
+  def create_child?(_raw_klass)
+    false
+  end
+
   def delete?
     destroy?
   end

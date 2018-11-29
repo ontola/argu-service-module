@@ -35,8 +35,12 @@ module Iriable
     iri
   end
 
+  def iri_cachable?
+    respond_to?(:has_attribute?) && has_attribute?(:iri_cache)
+  end
+
   def iri_path_from_cache(opts = {})
-    return if opts.present? || !persisted? || !has_attribute?(:iri_cache)
+    return if opts.present? || !persisted? || !iri_cachable?
     iri_cache || cache_iri_path!
   end
 
@@ -59,7 +63,7 @@ module Iriable
 
   def cache_iri_path!
     @iri = nil
-    return unless has_attribute?(:iri_cache) && persisted?
+    return unless iri_cachable? && persisted?
     update_column(:iri_cache, iri_path_from_template)
     iri_path_from_template
   end

@@ -28,6 +28,10 @@ module RailsLD
           }
         end
 
+        def collection_include_map
+          JSONAPI::IncludeDirective::Parser.parse_include_args([:root] + [show_includes])
+        end
+
         def collection_view_includes(member_includes = {})
           {member_sequence: {members: member_includes}}
         end
@@ -38,7 +42,10 @@ module RailsLD
 
         def collection_options
           {
-            display: params[:display]
+            display: params[:display],
+            filter: parse_filter(params[:filter], controller_class.try(:filter_options)),
+            include_map: collection_include_map,
+            user_context: user_context
           }.merge(collection_type_params)
         end
 
@@ -95,6 +102,11 @@ module RailsLD
 
         def index_iri
           RDF::DynamicURI(request.original_url)
+        end
+
+        def parse_filter(array, whitelist)
+          return {} if array.blank? || whitelist.blank?
+          Hash[array&.map { |f| f.split('=') }].slice(*whitelist.keys)
         end
 
         def preview_includes

@@ -12,9 +12,13 @@ module ActiveResponseHelper
 
   def active_response_action(opts)
     action_resource = opts[:resource].try(:new_record?) ? index_collection : opts[:resource]
+    form = active_response_action_name(opts)
+    action_resource.action(user_context, ACTION_MAP[form.to_sym] || form.to_sym) if form
+  end
+
+  def active_response_action_name(opts)
     form = params[:form] || opts[:view]
-    form = action_name if form == 'form'
-    action_resource.action(user_context, ACTION_MAP[form.to_sym] || form.to_sym)
+    form == 'form' ? action_name : form
   end
 
   def create_meta
@@ -31,14 +35,6 @@ module ActiveResponseHelper
     redirect_location
   end
 
-  def default_form_options(action)
-    return super unless active_responder.is_a?(RDFResponder)
-    {
-      action: active_response_action(super) || raise("No action found for #{action_name}"),
-      include: ActiveResponse::Controller::RDF::Collections::ACTION_FORM_INCLUDES
-    }
-  end
-
   def default_form_view(action)
     if lookup_context.exists?("#{controller_path}/#{action}")
       action
@@ -51,7 +47,7 @@ module ActiveResponseHelper
 
   def default_form_view_locals(_action)
     {
-      model_name => current_resource,
+      controller_name.singularize.to_sym => current_resource,
       resource: current_resource
     }
   end
@@ -78,6 +74,11 @@ module ActiveResponseHelper
     index_success_options_rdf
   end
 
+  def index_success_options_rdf
+    skip_verify_policy_scoped(true) if index_collection_or_view&.policy
+    super
+  end
+
   def redirect_location
     current_resource.persisted? ? current_resource.iri_path : current_resource.parent.iri_path
   end
@@ -92,7 +93,7 @@ module ActiveResponseHelper
 
   def show_view_locals
     {
-      model_name => current_resource,
+      controller_name.singularize.to_sym => current_resource,
       resource: current_resource
     }
   end

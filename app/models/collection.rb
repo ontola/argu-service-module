@@ -10,8 +10,8 @@ class Collection < RailsLD::Collection
   include Iriable
   include Collection::CounterCache
 
-  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical, :policy
-  attr_writer :parent_uri_template_opts
+  attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical
+  attr_writer :parent_uri_template_opts, :policy
 
   alias id iri
   alias pundit_user user_context
@@ -60,6 +60,10 @@ class Collection < RailsLD::Collection
       URITemplate.new("#{iri_path.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
+  def policy
+    @policy ||= PolicyFinder.new(association_class).policy
+  end
+
   private
 
   def canonical_iri_opts
@@ -69,7 +73,9 @@ class Collection < RailsLD::Collection
   end
 
   def canonical_iri_template_name
-    @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
+    return @canonical_iri_template_name if @canonical_iri_template_name
+    canonical_name ||= @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
+    @canonical_iri_template_name = uri_template(canonical_name) ? canonical_name : iri_template_name
   end
 
   def filter_iri_opts
@@ -98,7 +104,7 @@ class Collection < RailsLD::Collection
   end
 
   def policy_scope(scope)
-    policy_scope = policy && policy::Scope || PolicyFinder.new(scope).scope
+    policy_scope = policy && policy::Scope
     policy_scope ? policy_scope.new(pundit_user, scope).resolve : scope
   end
 
