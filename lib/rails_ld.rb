@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'rails_ld/form_option'
+require_relative 'rails_ld/serializers'
+require_relative 'rails_ld/shacl'
+
 module RailsLD
   mattr_accessor :parent_collection_view
   mattr_accessor :infinite_collection_view

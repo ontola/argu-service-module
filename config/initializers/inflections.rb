@@ -9,4 +9,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'ORI'
   inflect.acronym 'UUID'
   inflect.acronym 'LD'
+  inflect.acronym 'SHACL'
 end
