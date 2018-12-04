@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CurrentUser
+  include Iriable
   include JWTHelper
 
   def initialize(token, attributes: nil)
@@ -20,6 +21,10 @@ class CurrentUser
 
   def respond_to_missing?(method_name, *args)
     argu_user.respond_to?(method_name, *args)
+  end
+
+  def to_param
+    id
   end
 
   private
