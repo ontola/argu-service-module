@@ -6,8 +6,7 @@ require_relative '../../lib/rails_ld/collection.rb'
 class Collection < RailsLD::Collection
   include ApplicationModel
   include Pundit
-  include Ldable
-  include Iriable
+  include RailsLD::Model
   include Collection::CounterCache
 
   attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical

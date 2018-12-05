@@ -5,8 +5,7 @@ module RailsLD
     include ActiveModel::Serialization
     include ActiveModel::Model
 
-    include Ldable
-    include Iriable
+    include RailsLD::Model
 
     attr_accessor :iri
     alias_attribute :id, :iri

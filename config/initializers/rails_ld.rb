@@ -2,8 +2,9 @@
 
 require_relative '../../lib/rails_ld'
 
-RailsLD.parent_collection_view = 'CollectionView'
-RailsLD.infinite_collection_view = 'InfiniteCollectionView'
-RailsLD.paginated_collection_view = 'PaginatedCollectionView'
-RailsLD.collection_filter = 'CollectionFilter'
-RailsLD.collection_sorting = 'CollectionSorting'
+RailsLD.collection_class = 'Collection'
+RailsLD.collection_filter_class = 'CollectionFilter'
+RailsLD.collection_sorting_class = 'CollectionSorting'
+RailsLD.collection_view_class = 'CollectionView'
+RailsLD.infinite_collection_view_class = 'InfiniteCollectionView'
+RailsLD.paginated_collection_view_class = 'PaginatedCollectionView'

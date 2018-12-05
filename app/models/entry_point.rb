@@ -4,8 +4,7 @@ class EntryPoint
   include ActiveModel::Model
   include ActiveModel::Serialization
   include ChildHelper
-  include Ldable
-  include Iriable
+  include RailsLD::Model
 
   attr_accessor :parent
   delegate :form, :description, :url, :http_method, :image, :user_context, :resource, :tag, to: :parent

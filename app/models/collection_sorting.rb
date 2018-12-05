@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CollectionSorting < RailsLD::CollectionSorting
-  include Iriable
+  include RailsLD::Model
 
   def iri(_opts = {})
     self

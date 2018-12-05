@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RailsLD
-  class InfiniteCollectionView < RailsLD.parent_collection_view.constantize
+  class InfiniteCollectionView < RailsLD.collection_view_class
     attr_accessor :before
 
     def initialize(attrs = {})

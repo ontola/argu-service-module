@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CurrentUser
-  include Iriable
+  include RailsLD::Model
   include JWTHelper
 
   def initialize(token, attributes: nil)

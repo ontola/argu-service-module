@@ -2,7 +2,7 @@
 
 module RailsLD
   class Form # rubocop:disable Metrics/ClassLength
-    include Iriable
+    include RailsLD::Model
     extend UriTemplateHelper
 
     class_attribute :_fields, :_property_groups, :_referred_resources

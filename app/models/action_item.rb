@@ -3,8 +3,7 @@
 class ActionItem
   include ActiveModel::Model
   include ActiveModel::Serialization
-  include Iriable
-  include Ldable
+  include RailsLD::Model
 
   attr_accessor :parent, :policy_arguments, :resource, :iri_template, :submit_label
   attr_writer :target

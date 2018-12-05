@@ -77,8 +77,7 @@ module RailsLD
         opts[:klass]
           .order(
             RailsLD
-              .collection_sorting
-              .constantize
+              .collection_sorting_class
               .from_array(opts[:klass], opts[:klass].default_sortings)
               .map(&:sort_value)
           ).order_values

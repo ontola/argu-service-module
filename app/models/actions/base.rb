@@ -3,8 +3,7 @@
 module Actions
   class Base
     include ActiveModel::Model
-    include Ldable
-    include Iriable
+    include RailsLD::Model
 
     class_attribute :defined_actions
     attr_accessor :resource, :user_context

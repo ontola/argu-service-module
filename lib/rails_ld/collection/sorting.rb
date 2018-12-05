@@ -20,7 +20,7 @@ module RailsLD
 
       def sortings
         @sortings ||=
-          RailsLD.collection_sorting.constantize.from_array(association_class, sort || default_sortings)
+          RailsLD.collection_sorting_class.from_array(association_class, sort || default_sortings)
       end
     end
   end

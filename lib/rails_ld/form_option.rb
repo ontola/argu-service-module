@@ -4,8 +4,7 @@ module RailsLD
   class FormOption
     include ActiveModel::Model
     include ActiveModel::Serialization
-    include Ldable
-    include Iriable
+    include RailsLD::Model
 
     attr_accessor :attr, :iri, :key, :klass, :type
     attr_writer :label

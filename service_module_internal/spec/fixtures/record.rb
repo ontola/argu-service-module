@@ -4,8 +4,7 @@
 class Record < ActiveRecord::Base
   extend ActiveRecord::Delegation::DelegateCache
 
-  include Ldable
-  include Iriable
+  include RailsLD::Model
   include ActiveModel::Model
   with_collection :records
 

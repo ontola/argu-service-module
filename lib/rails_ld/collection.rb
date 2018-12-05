@@ -58,7 +58,7 @@ module RailsLD
     end
 
     def view_with_opts(opts)
-      RailsLD.parent_collection_view.constantize.new({collection: self, type: type, page_size: page_size}.merge(opts))
+      RailsLD.collection_view_class.new({collection: self, type: type, page_size: page_size}.merge(opts))
     end
 
     private

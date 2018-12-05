@@ -17,7 +17,7 @@ module RailsLD
 
       def filters
         @filters ||= filter&.map do |key, value|
-          RailsLD.collection_filter.constantize.new(
+          RailsLD.collection_filter_class.new(
             key: key,
             value: value
           )

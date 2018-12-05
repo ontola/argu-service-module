@@ -63,6 +63,9 @@ end
 
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/helpers', '*.rb'), &method(:require))
 require_relative '../../lib/ns'
+
+require_relative '../../lib/rails_ld'
+
 require_relative '../../lib/argu/test_mocks'
 require_relative '../../config/initializers/rdf'
 require_relative '../../app/resources/active_resource_model'
@@ -74,11 +77,6 @@ Dir.glob(File.join(File.dirname(__FILE__) + '/../../app',
                    '{models/actions,models/collection}', '*.rb'),
          &method(:require))
 
-require_relative '../../lib/rails_ld'
-require_relative '../../lib/rails_ld/collection_view/preloading'
-require_relative '../../lib/rails_ld/collection/filtering'
-require_relative '../../lib/rails_ld/collection/sorting'
-require_relative '../../lib/rails_ld/collection_view'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../lib/rails_ld', '*.rb'), &method(:require))
 
 require_relative '../../app/models/collection_view'

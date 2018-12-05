@@ -2,7 +2,7 @@
 
 class DataEvent
   include JsonApiHelper
-  include Ldable
+  include RailsLD::Model
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
   alias read_attribute_for_serialization send
 

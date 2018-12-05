@@ -58,7 +58,7 @@ module RailsLD
           return includes if action.blank?
 
           includes = [includes] if includes.is_a?(Hash)
-          includes << %i[filters sortings] if action.resource.is_a?(Collection)
+          includes << %i[filters sortings] if action.resource.is_a?(RailsLD.collection_class)
           includes << action.form&.referred_resources
           includes
         end
@@ -91,7 +91,7 @@ module RailsLD
         end
 
         def index_meta
-          return [] if index_collection.is_a?(Collection)
+          return [] if index_collection.is_a?(RailsLD.collection_class)
 
           RDF::List.new(
             graph: RDF::Graph.new,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RailsLD
-  class PaginatedCollectionView < RailsLD.parent_collection_view.constantize
+  class PaginatedCollectionView < RailsLD.collection_view_class
     attr_accessor :page
 
     def first

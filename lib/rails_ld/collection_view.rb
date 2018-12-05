@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
+require_relative 'collection_view/preloading'
+
 module RailsLD
   class CollectionView
     include ActiveModel::Serialization
     include ActiveModel::Model
     include Pundit
 
-    include Ldable
-    include Iriable
+    include RailsLD::Model
     include RailsLD::CollectionView::Preloading
 
     attr_accessor :collection, :filter, :include_map
@@ -75,20 +76,12 @@ module RailsLD
         return super if type.nil?
         case type
         when :paginated
-          paginated_collection_view_class.new(opts)
+          RailsLD.paginated_collection_view_class.new(opts)
         when :infinite
-          infinite_collection_view_class.new(opts)
+          RailsLD.infinite_collection_view_class.new(opts)
         else
           raise ActionController::BadRequest.new("'#{type}' is not a valid collection type")
         end
-      end
-
-      def infinite_collection_view_class
-        @infinite_collection_view_class ||= RailsLD.infinite_collection_view.constantize
-      end
-
-      def paginated_collection_view_class
-        @paginated_collection_view_class ||= RailsLD.paginated_collection_view.constantize
       end
     end
   end
