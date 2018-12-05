@@ -78,10 +78,10 @@ module Argu
       false
     end
 
-    def generate_guest_token
+    def generate_guest_token(r: nil)
       result = service(:argu, token: service_token).post(
         expand_uri_template(:spi_oauth_token),
-        body: {scope: :guest}
+        body: {scope: :guest, r: r}
       )
       @user_token = JSON.parse(result.body)['access_token']
     end

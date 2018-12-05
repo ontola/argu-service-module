@@ -30,7 +30,11 @@ module Argu
       end
 
       def generate_guest_token
-        @user_token = api.generate_guest_token
+        @user_token = api.generate_guest_token(r: r_for_guest_token)
+      end
+
+      def r_for_guest_token
+        request.original_url
       end
 
       def token_from_cookie
