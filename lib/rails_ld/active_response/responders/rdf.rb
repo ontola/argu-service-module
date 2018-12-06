@@ -35,8 +35,7 @@ module RailsLD
         end
 
         def invalid_resource(**opts)
-          errors = opts[:resource].is_a?(ActiveModel::Errors) ? opts[:resource] : opts[:resource].errors
-          message = errors.full_messages.join("\n")
+          message = error_message(opts[:resource])
           response_headers(opts.merge(notice: message))
           controller.render(
             format => error_graph(StandardError.new(message), 422),
@@ -80,6 +79,11 @@ module RailsLD
           RailsLD::ActiveResponse::RDFError
             .new(status, controller.request.original_url, error.is_a?(StandardError) ? error : error.new)
             .graph
+        end
+
+        def error_message(resource)
+          errors = resource.is_a?(ActiveModel::Errors) ? resource : resource.errors
+          (errors.is_a?(Array) ? errors.map(&:full_messages).flatten : errors.full_messages).join("\n")
         end
 
         def head_request?
