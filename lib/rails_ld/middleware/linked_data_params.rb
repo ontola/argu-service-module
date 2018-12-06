@@ -51,9 +51,9 @@ module RailsLD
       # @return [Hash] A hash of attributes, empty if no statements were given.
       def params_from_graph(request)
         graph = graph_from_request(request)
-        target_class = graph && target_class_from_path(request.path, request.request_method)
+        target_class = graph && target_class_from_path(request.env['PATH_INFO'], request.request_method)
         if target_class.blank?
-          logger.info("No class found for #{request.path}") if graph
+          logger.info("No class found for #{request.env['PATH_INFO']}") if graph
           return
         end
 
