@@ -32,6 +32,10 @@ module RailsLD
         NS::SH[:PropertyShape]
       end
 
+      def pattern
+        object.pattern.is_a?(Regexp) ? object.pattern.source : object.pattern
+      end
+
       def sh_in
         options = sh_in_options
         return options unless [Array, ActiveRecord::Relation].any? { |klass| options.is_a?(klass) }
