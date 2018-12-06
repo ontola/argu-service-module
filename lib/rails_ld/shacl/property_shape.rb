@@ -45,7 +45,7 @@ module RailsLD
 
       # The placeholder of the property.
       def description
-        description_from_attribute || description_from_translation
+        description_from_attribute || translation_with_fallbacks('description', 'placeholders', 'hints')
       end
 
       def model_name
@@ -53,15 +53,7 @@ module RailsLD
       end
 
       def name
-        return if model_attribute.blank?
-        name =
-          I18n.t("#{model_name}.form.#{model_attribute}_heading",
-                 default: [
-                   :"formtastic.labels.#{model_name}.#{model_attribute}",
-                   :"formtastic.labels.#{model_attribute}",
-                   ''
-                 ])
-        name unless name.is_a?(Hash)
+        translation_with_fallbacks('label', 'labels')
       end
 
       private
@@ -71,19 +63,23 @@ module RailsLD
         @description.respond_to?(:call) ? @description.call(form.target) : @description
       end
 
-      # Translations are currently all-over-the-place, so we need some nesting, though
-      # doesn't include a generic fallback mechanism yet.
-      def description_from_translation
+      def translation_fallbacks(fallbacks)
+        fallbacks.map do |fallback|
+          [
+            :"formtastic.#{fallback}.#{model_name}.#{model_attribute}",
+            :"formtastic.#{fallback}.#{model_attribute}"
+          ]
+        end.append('').flatten
+      end
+
+      def translation_with_fallbacks(key, *fallbacks)
         return if model_attribute.blank?
-        description =
-          I18n.t("formtastic.placeholders.#{model_name}.#{model_attribute}",
-                 default: [
-                   :"formtastic.placeholders.#{model_attribute}",
-                   :"formtastic.hints.#{model_name}.#{model_attribute}",
-                   :"formtastic.hints.#{model_attribute}",
-                   ''
-                 ]).presence
-        description unless description.is_a?(Hash)
+        translation =
+          I18n.t(
+            "#{model_name.to_s.pluralize}.form.#{model_attribute}.#{key}",
+            default: translation_fallbacks(fallbacks)
+          ).presence
+        translation unless translation.is_a?(Hash)
       end
 
       def validator_option(klass, option_key)
