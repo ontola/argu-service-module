@@ -19,16 +19,9 @@ class ActiveResourceModel < ActiveResource::Base
     super
   end
 
-  def self.connection(_refresh = false)
-    @service_token ||= OauthConnection.new(service(service_name, token: ENV['SERVICE_TOKEN']))
-  end
+  protected
 
   def id_from_response(response); end
-
-  def find_or_create_resource_for(name)
-    resource = super
-    resource < ActiveRecord::Base ? create_resource_for(name.to_s.camelize) : resource
-  end
 
   def load_attributes_from_response(response)
     return unless load_attributes_from_response?(response)
@@ -36,8 +29,23 @@ class ActiveResourceModel < ActiveResource::Base
     @persisted = true
   end
 
+  private
+
+  def find_or_create_resource_for(name)
+    resource = super
+    resource < ActiveRecord::Base ? create_resource_for(name.to_s.camelize) : resource
+  end
+
   def load_attributes_from_response?(response)
     response_code_allows_body?(response.status.to_i) && response.body.present?
+  end
+
+  class << self
+    protected
+
+    def connection(_refresh = false)
+      @service_token ||= OauthConnection.new(service(service_name, token: ENV['SERVICE_TOKEN']))
+    end
   end
 
   class OauthConnection
