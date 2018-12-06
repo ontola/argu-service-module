@@ -13,7 +13,7 @@ module RailsLD
 
     attr_accessor :collection, :filter, :include_map
     attr_writer :page_size
-    delegate :association_base, :association_class, :canonical_iri, :parent, :user_context, to: :collection
+    delegate :association_base, :association_class, :canonical_iri, :parent, :policy, :user_context, to: :collection
     delegate :count, to: :members
 
     alias pundit_user user_context
