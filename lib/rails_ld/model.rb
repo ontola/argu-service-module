@@ -16,6 +16,10 @@ module RailsLD
     include Iri
     include Sorting
 
+    def build_child(klass)
+      klass.new
+    end
+
     module ClassMethods
       def includes_for_serializer
         {}
