@@ -139,6 +139,42 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
+  def group_mock(id)
+    stub_request(
+      :get,
+      expand_service_url(:argu, "/g/#{id}")
+    ).to_return(
+      status: 200,
+      body: {
+        data: {
+          id: 1,
+          type: 'groups',
+          attributes: {
+            iri: argu_url('/argu/g/1')
+          },
+          relationships: {
+            organization: {
+              data: {
+                id: 1,
+                type: 'organizations'
+              }
+            }
+          }
+        },
+        included: [
+          {
+            id: 1,
+            type: 'organizations',
+            attributes: {
+              displayName: 'Organization Name',
+              iri: argu_url('/argu')
+            }
+          }
+        ]
+      }.to_json
+    )
+  end
+
   def confirm_email_mock(email)
     stub_request(:put, expand_service_url(:argu, '/users/confirm'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
