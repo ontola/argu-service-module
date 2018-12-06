@@ -19,6 +19,10 @@ class CurrentUser
     type == 'guest'
   end
 
+  def iri
+    token_attributes['user']['@id'] && RDF::DynamicURI(token_attributes['user']['@id']) || super
+  end
+
   def respond_to_missing?(method_name, *args)
     argu_user.respond_to?(method_name, *args)
   end
