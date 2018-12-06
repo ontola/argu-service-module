@@ -172,6 +172,7 @@ GEM
     rdf (3.0.2)
       hamster (~> 3.0)
       link_header (~> 0.0, >= 0.0.8)
+    rfc-822 (0.4.1)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -238,6 +239,7 @@ DEPENDENCIES
   rake
   rdf
   rdf-serializers!
+  rfc-822 (~> 0.4.1)
   rspec-rails
   rubocop
   rubocop-rspec
