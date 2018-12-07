@@ -35,4 +35,8 @@ class ApiController < ActionController::API
   def set_locale
     I18n.locale = current_user&.language&.gsub("#{NS::ARGU[:locale]}/", '') || I18n.default_locale
   end
+
+  def success_message_translation_opts
+    {type: I18n.t("#{current_resource.model_name.collection}.type").capitalize}
+  end
 end

@@ -1,0 +1,9 @@
+en:
+  active_response:
+    actions:
+      create:
+        success: "%{type} succesvol aangemaakt"
+      update:
+        success: "%{type} succesvol opgeslagen"
+      destroy:
+        success: "%{type} succesvol verwijderd"
