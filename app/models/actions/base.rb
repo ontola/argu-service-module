@@ -44,7 +44,8 @@ module Actions
     private
 
     def action_item(tag, options)
-      ActionItem.new(resource: resource, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
+      target = options[:resource] ? instance_exec(&options.delete(:resource)) : resource
+      ActionItem.new(resource: target, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
     end
 
     def call_option(option)
