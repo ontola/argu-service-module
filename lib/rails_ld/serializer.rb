@@ -51,7 +51,7 @@ module RailsLD
       end
 
       def serializable_class
-        @serializable_class ||= name.gsub('Serializer', '').constantize
+        @serializable_class ||= name.gsub('Serializer', '').gsub('Kernel::', '').constantize
       end
 
       def with_collection(name, opts = {})
