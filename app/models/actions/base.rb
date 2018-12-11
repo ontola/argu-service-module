@@ -22,23 +22,25 @@ module Actions
     end
 
     def actions
-      defined_actions
-        &.select { |_tag, opts| collection_filter(opts) }
-        &.keys
-        &.map { |tag| action(tag) }
+      @actions ||=
+        defined_actions
+          .keys
+          .map { |tag| action(tag) }
     end
 
     def action(tag)
       @action ||= {}
-      return @action[tag] if @action.key?(tag)
-      opts = defined_actions.select { |_tag, options| collection_filter(options) }[tag].dup
-      @action[tag] = action_item(tag, opts)
+      @action[tag] ||= action_item(tag, defined_actions[tag].dup)
     end
 
     def self.define_action(action, opts = {})
       self.defined_actions ||= {}
       opts[:collection] ||= false
       self.defined_actions[action] = opts
+    end
+
+    def defined_actions
+      self.class.defined_actions&.select { |_tag, opts| collection_filter(opts) } || {}
     end
 
     private
