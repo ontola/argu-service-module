@@ -18,7 +18,7 @@ module Actionable
       triples :action_methods
 
       def actions
-        object.actions(scope) if scope.is_a?(UserContext)
+        object.actions(scope).select(&:available?) if scope.is_a?(UserContext)
       end
 
       def action_methods

@@ -10,7 +10,7 @@ class ActionItem
   delegate :user_context, to: :parent
   alias iri_template_name iri_template
 
-  %i[description result type policy label image url collection form completed
+  %i[description result type policy label image url collection condition form completed
      tag http_method iri_template_opts favorite policy_resource].each do |method|
     attr_writer method
     define_method method do
@@ -30,6 +30,10 @@ class ActionItem
 
   def as_json(_opts = {})
     {}
+  end
+
+  def available?
+    @condition.nil? || condition
   end
 
   def iri_path(_opts = {})

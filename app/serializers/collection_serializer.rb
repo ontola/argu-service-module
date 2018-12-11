@@ -19,7 +19,7 @@ class CollectionSerializer < BaseSerializer
   triples :action_methods
 
   def actions
-    object.actions(scope)
+    object.actions(scope).select(&:available?)
   end
 
   def action_methods

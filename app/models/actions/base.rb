@@ -45,6 +45,10 @@ module Actions
 
     private
 
+    def action_condition(opts)
+      opts[:if].blank? || instance_exec(&opts[:if])
+    end
+
     def action_item(tag, options)
       target = options[:resource] ? instance_exec(&options.delete(:resource)) : resource
       ActionItem.new(resource: target, tag: options[:action_tag] || tag, parent: self, **options.except(:action_tag))
