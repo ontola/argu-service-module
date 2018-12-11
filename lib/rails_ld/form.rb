@@ -64,10 +64,6 @@ module RailsLD
       RailsLD::SHACL::PropertyShape.new(attrs.merge(form: self))
     end
 
-    def target_class
-      target.is_a?(Class) ? target : target.class
-    end
-
     class << self
       def inherited(target)
         target._fields = {}
