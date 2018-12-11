@@ -11,6 +11,7 @@ class Collection < RailsLD::Collection
 
   attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts, :policy
+  delegate :root_id, to: :parent
 
   alias id iri
   alias pundit_user user_context
