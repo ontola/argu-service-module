@@ -79,17 +79,20 @@ class ActionItem
   end
 
   def policy_expired?
-    @policy_expired ||= policy && resource_policy(policy_resource).try(:has_expired_ancestors?)
+    @policy_expired ||= policy && resource_policy.try(:has_expired_ancestors?)
+  end
+
+  def policy_resource_fallback
+    resource
   end
 
   def policy_valid?
+    return false if policy_resource.blank?
     return true if policy.blank?
-    @policy_valid ||= resource_policy(policy_resource).send(policy, *policy_arguments)
+    @policy_valid ||= resource_policy.send(policy, *policy_arguments)
   end
 
-  def resource_policy(policy_resource)
-    policy_resource ||= resource
-    @resource_policy ||= {}
-    @resource_policy[policy_resource.identifier] ||= Pundit.policy(user_context, policy_resource)
+  def resource_policy
+    @resource_policy ||= Pundit.policy(user_context, policy_resource)
   end
 end
