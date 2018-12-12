@@ -8,9 +8,9 @@ module RailsLD
 
       attr_accessor :error, :requested_url, :status
 
-      def initialize(status, requested_url, error)
+      def initialize(status, requested_url, original_error)
         self.status = status
-        self.error = error
+        self.error = original_error.is_a?(StandardError) ? original_error : original_error.new
         self.requested_url = ::RDF::URI(requested_url)
       end
 

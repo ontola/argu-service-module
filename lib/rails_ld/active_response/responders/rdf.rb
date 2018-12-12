@@ -77,7 +77,7 @@ module RailsLD
 
         def error_graph(error, status)
           RailsLD::ActiveResponse::RDFError
-            .new(status, controller.request.original_url, error.is_a?(StandardError) ? error : error.new)
+            .new(status, controller.request.original_url, error)
             .graph
         end
 

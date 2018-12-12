@@ -64,7 +64,7 @@ module Argu
         end
 
         def error_resource(status, e)
-          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e.is_a?(StandardError) ? e : e.new)
+          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e)
         end
 
         def error_response(e, format)
