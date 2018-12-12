@@ -8,6 +8,14 @@ module Argu
       module Handlers
         include RailsLD::Helpers::OntolaActions
 
+        def add_error_snackbar(error)
+          add_exec_action_header(response.headers, ontola_snackbar_action(error.error.message))
+        end
+
+        def add_error_snackbar?(_error)
+          true
+        end
+
         def error_response_html(e, view: nil)
           respond_to?(:flash) && flash[:alert] = e.message
           status ||= error_status(e)
@@ -31,7 +39,7 @@ module Argu
         def error_response_serializer(e, type, status: nil)
           status ||= error_status(e)
           error = error_resource(status, e)
-          add_exec_action_header(response.headers, ontola_snackbar_action(error.error.message))
+          add_error_snackbar(error) if add_error_snackbar?(error)
           render type => error.graph, status: status
         end
 
