@@ -39,7 +39,7 @@ class Collection < RailsLD::Collection
 
     def counter_culture_column
       column = "#{association}_count"
-      column if parent.try(:attributes)&.keys&.include?(column)
+      column if !parent.try(:previous_changes)&.key?(:id) && parent.try(:attributes)&.keys&.include?(column)
     end
   end
 end
