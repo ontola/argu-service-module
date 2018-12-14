@@ -16,10 +16,6 @@ class ActionItemsController < AuthorizedController
     end
   end
 
-  def create_includes
-    inc_shallow_collection
-  end
-
   def current_forum; end
 
   def index_includes

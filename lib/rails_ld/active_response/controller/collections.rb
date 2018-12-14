@@ -4,19 +4,10 @@ module RailsLD
   module ActiveResponse
     module Controller
       module Collections
-        ACTION_FORM_INCLUDES = [
-          target: {
-            action_body: [
-              referred_shapes: [property: :sh_in_options],
-              property: [:sh_in_options, referred_shapes: [property: :sh_in_options]].freeze
-            ].freeze
-          }.freeze
-        ].freeze
-
         private
 
         def action_form_includes(action = nil)
-          ACTION_FORM_INCLUDES + [resource: form_resource_includes(action)]
+          RailsLD::Model::ACTION_FORM_INCLUDES + [resource: form_resource_includes(action)]
         end
 
         def collection_includes(member_includes = {})
@@ -29,7 +20,7 @@ module RailsLD
         end
 
         def collection_include_map
-          JSONAPI::IncludeDirective::Parser.parse_include_args([:root] + [show_includes])
+          JSONAPI::IncludeDirective::Parser.parse_include_args([:root] + [controller_class.includes_for_serializer])
         end
 
         def collection_view_includes(member_includes = {})
@@ -54,7 +45,7 @@ module RailsLD
         end
 
         def form_resource_includes(action)
-          includes = create_includes.presence || []
+          includes = controller_class.try(:show_includes)&.presence || []
           return includes if action.blank?
 
           includes = [includes] if includes.is_a?(Hash)
@@ -110,11 +101,11 @@ module RailsLD
         end
 
         def preview_includes
-          []
+          controller_class.try(:preview_includes)
         end
 
         def show_includes
-          preview_includes
+          controller_class.try(:show_includes)
         end
       end
     end

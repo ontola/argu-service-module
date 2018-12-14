@@ -5,6 +5,22 @@ module RailsLD
     module Collections
       extend ActiveSupport::Concern
 
+      included do
+        class_attribute :inc_nested_collection
+        self.inc_nested_collection = [
+          default_view: {member_sequence: :members},
+          filters: [],
+          sortings: [],
+          operation: RailsLD::Model::ACTION_FORM_INCLUDES
+        ].freeze
+        class_attribute :inc_shallow_collection
+        self.inc_shallow_collection = [
+          filters: [],
+          sortings: [],
+          operation: RailsLD::Model::ACTION_FORM_INCLUDES
+        ].freeze
+      end
+
       # Initialises a {Collection} for one of the collections defined by {has_collection}
       # @see Ldable#has_collection
       # @param [Hash] name as defined with {has_collection}
