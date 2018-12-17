@@ -13,7 +13,7 @@ module Argu
         end
 
         def add_error_snackbar?(_error)
-          true
+          request.method != 'GET'
         end
 
         def error_response_html(e, view: nil)
