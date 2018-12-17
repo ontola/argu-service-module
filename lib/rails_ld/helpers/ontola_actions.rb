@@ -17,11 +17,11 @@ module RailsLD
         NS::ONTOLA["actions/dialog/alert?#{{resource: resource}.to_param}"]
       end
 
-      def ontola_redirect_action(location)
+      def ontola_redirect_action(location, reload: nil)
         location =
           location
             .gsub("https://#{Rails.application.config.host_name}", "https://app.#{Rails.application.config.host_name}")
-        NS::ONTOLA["actions/redirect?#{{location: location}.to_param}"]
+        NS::ONTOLA["actions/redirect?#{{location: location, reload: reload}.compact.to_param}"]
       end
 
       def ontola_snackbar_action(text)
