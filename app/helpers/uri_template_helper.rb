@@ -69,7 +69,7 @@ module UriTemplateHelper
     uri.to_s
   end
 
-  %i[edit delete trash untrash move settings statistics feeds conversions invites export logs].each do |method|
+  %i[edit delete trash untrash settings statistics feeds conversions invites export logs].each do |method|
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
       RDF::DynamicURI(path_with_hostname(send("#{method}_iri_path", parent, opts)))
