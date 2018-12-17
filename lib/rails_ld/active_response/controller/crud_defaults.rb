@@ -17,7 +17,7 @@ module RailsLD
         }.freeze
 
         def active_response_action(resource:, view:)
-          action_resource = resource.try(:new_record?) ? index_collection : resource
+          action_resource = resource.try(:new_record?) && index_collection || resource
           action_resource.action(user_context, active_response_action_name(view))
         end
 
