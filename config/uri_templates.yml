@@ -78,7 +78,7 @@ group_memberships_collection_iri: "{/parent_iri*}/group_memberships{?display,fil
 guest_users_iri: "/sessions{/id}"
 identities_iri: "/identities{/id}"
 info_iri: "/i{/id}"
-invites_iri: "{/parent_iri*}/invite"
+invites_iri: "{/parent_iri*}/invites"
 linked_collections_iri: "{/root_id}{/forum}/od{/id}"
 linked_collection_members_iri: "{/parent_iri*}{?display,filter%5B%5D,page,page_size,type,before}"
 linked_records_iri: "{/root_id}{/forum_id}/od{/linked_record_id}"
