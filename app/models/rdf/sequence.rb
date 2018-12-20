@@ -5,8 +5,8 @@ module RDF
     attr_accessor :members, :node
     alias read_attribute_for_serialization send
 
-    def initialize(members)
-      self.node = RDF::Node.new
+    def initialize(members, id: nil)
+      self.node = id || RDF::Node.new
       self.members = members
     end
   end
