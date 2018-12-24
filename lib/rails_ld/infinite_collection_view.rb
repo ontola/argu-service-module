@@ -39,8 +39,7 @@ module RailsLD
     def iri_opts
       {
         before: before,
-        pageSize: page_size,
-        type: :infinite
+        pageSize: page_size
       }.merge(collection.iri_opts)
     end
 

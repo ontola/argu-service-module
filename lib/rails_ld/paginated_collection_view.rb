@@ -27,8 +27,7 @@ module RailsLD
     def iri_opts
       {
         page: page,
-        pageSize: page_size,
-        type: :paginated
+        pageSize: page_size
       }.merge(collection.iri_opts)
     end
 

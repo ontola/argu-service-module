@@ -32,24 +32,24 @@ describe CollectionView do
     context 'with paginated view' do
       subject { paginated_collection_view.id }
 
-      it { is_expected.to eq('http://argu.test/resources?page=1&type=paginated') }
+      it { is_expected.to eq('http://argu.test/resources?page=1') }
 
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq('http://argu.test/r/record_id/resources?page=1&type=paginated') }
+        it { is_expected.to eq('http://argu.test/r/record_id/resources?page=1') }
       end
     end
 
     context 'with infinite' do
       subject { infinite_collection_view.id }
 
-      it { is_expected.to eq("http://argu.test/resources?type=infinite&before=#{encoded_before_time}") }
+      it { is_expected.to eq("http://argu.test/resources?before=#{encoded_before_time}") }
 
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq("http://argu.test/r/record_id/resources?type=infinite&before=#{encoded_before_time}") }
+        it { is_expected.to eq("http://argu.test/r/record_id/resources?before=#{encoded_before_time}") }
       end
     end
   end

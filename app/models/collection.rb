@@ -57,7 +57,7 @@ class Collection < RailsLD::Collection
 
   def iri_template
     @iri_template ||=
-      URITemplate.new("#{iri_path.split('?').first}{?filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
+      URITemplate.new("#{iri_path.split('?').first}{?display,filter%5B%5D,page,page_size,type,before,sort%5B%5D}")
   end
 
   def policy
