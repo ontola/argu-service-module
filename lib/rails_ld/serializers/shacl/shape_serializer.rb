@@ -28,10 +28,6 @@ module RailsLD
           end
         end
       end
-
-      def type
-        NS::SH[:Shape]
-      end
     end
   end
 end

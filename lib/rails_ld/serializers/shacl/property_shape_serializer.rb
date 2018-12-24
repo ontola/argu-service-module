@@ -28,10 +28,6 @@ module RailsLD
         object.default_value.respond_to?(:call) ? object.default_value.call(object) : object.default_value
       end
 
-      def type
-        NS::SH[:PropertyShape]
-      end
-
       def pattern
         object.pattern.is_a?(Regexp) ? object.pattern.source : object.pattern
       end

@@ -6,6 +6,7 @@ require_relative 'rails_ld/resource'
 require_relative 'rails_ld/serializer'
 require_relative 'rails_ld/serializers'
 require_relative 'rails_ld/shacl'
+require_relative 'rails_ld/property_query'
 require_relative 'rails_ld/collection'
 require_relative 'rails_ld/collection_view'
 
