@@ -12,7 +12,8 @@ describe CollectionView do
       association_class: Record,
       filter: try(:filter),
       parent: try(:parent),
-      user_context: UserContext.new
+      user_context: UserContext.new,
+      type: type
     )
     col
   end
@@ -20,13 +21,14 @@ describe CollectionView do
     collection.send(:filtered_collection, a: 1, b: 2)
   end
   let(:paginated_collection_view) do
-    collection.view_with_opts(type: :paginated, page: 1)
+    collection.view_with_opts(page: 1)
   end
   let(:infinite_collection_view) do
-    collection.view_with_opts(type: :infinite, before: before_time)
+    collection.view_with_opts(before: before_time)
   end
   let(:before_time) { Time.current.utc.to_s(:db) }
   let(:encoded_before_time) { ERB::Util.url_encode(before_time) }
+  let(:type) { nil }
 
   describe '#id' do
     context 'with paginated view' do
@@ -44,12 +46,14 @@ describe CollectionView do
     context 'with infinite' do
       subject { infinite_collection_view.id }
 
-      it { is_expected.to eq("http://argu.test/resources?before=#{encoded_before_time}") }
+      let(:type) { :infinite }
+
+      it { is_expected.to eq("http://argu.test/resources?type=infinite&before=#{encoded_before_time}") }
 
       context 'with parent' do
         let(:parent) { Record.new({}) }
 
-        it { is_expected.to eq("http://argu.test/r/record_id/resources?before=#{encoded_before_time}") }
+        it { is_expected.to eq("http://argu.test/r/record_id/resources?type=infinite&before=#{encoded_before_time}") }
       end
     end
   end
@@ -63,6 +67,8 @@ describe CollectionView do
 
     context 'with infinite' do
       subject { infinite_collection_view.collection }
+
+      let(:type) { :infinite }
 
       it { is_expected.to eq(collection) }
     end

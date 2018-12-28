@@ -12,13 +12,15 @@ describe Collection do
       association_class: Record,
       filter: try(:filter),
       parent: try(:parent),
-      user_context: UserContext.new
+      user_context: UserContext.new,
+      type: type
     )
     col
   end
   let(:filtered_collection) do
     collection.send(:new_child, filter: {key: :value, key2: 'value2', key3: 'empty'})
   end
+  let(:type) { nil }
 
   describe '#id' do
     context 'with collection' do
@@ -45,6 +47,22 @@ describe Collection do
 
         it { is_expected.to eq("http://argu.test/r/record_id/resources?#{filter_string}") }
       end
+    end
+
+    context 'with default type' do
+      subject { collection.id }
+
+      let(:type) { :paginated }
+
+      it { is_expected.to eq('http://argu.test/resources') }
+    end
+
+    context 'with different type' do
+      subject { collection.id }
+
+      let(:type) { :infinite }
+
+      it { is_expected.to eq('http://argu.test/resources?type=infinite') }
     end
   end
 
