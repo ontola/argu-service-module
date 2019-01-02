@@ -13,6 +13,9 @@ class RestrictivePolicy
   end
 
   attr_reader :context, :record
+  delegate :export_scope?, :service_scope?, :system_scope?,
+           to: :context,
+           allow_nil: true
 
   def initialize(context, record)
     @context = context
