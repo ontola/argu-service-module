@@ -9,6 +9,10 @@ module TestMocks
     @bearer_token = doorkeeper_token('guest')
   end
 
+  def as_service
+    @bearer_token = doorkeeper_token('service')
+  end
+
   def as_guest_with_account(with_access_token = true)
     token = with_access_token ? as_guest : generate_guest_token_mock
     stub_request(:post, expand_service_url(:argu, '/users'))
@@ -69,21 +73,9 @@ module TestMocks
         headers: {'Content-Type' => 'application/json'},
         body: {
           data: user_data(id, opts[:email], opts[:language], opts[:secondary_emails]),
-          included: [email: opts[:email], confirmed: opts[:confirmed]]
-                      .concat(opts[:secondary_emails])
-                      .each_with_index
-                      .map do |e, i|
-                      {
-                        id: "https://argu.dev/u/#{id}/email/#{i}",
-                        type: 'emailAddresses',
-                        attributes: {
-                          '@type' => 'argu:Email',
-                          email: e[:email],
-                          primary: i.zero?,
-                          confirmedAt: e[:confirmed] ? Time.current : nil
-                        }
-                      }
-                    end
+          included:
+            included_emails(id, [email: opts[:email], confirmed: opts[:confirmed]] + opts[:secondary_emails])
+              .append(included_profile_photo)
         }.to_json
       )
   end
@@ -139,10 +131,10 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
-  def group_mock(id)
+  def group_mock(id, root_id: nil)
     stub_request(
       :get,
-      expand_service_url(:argu, "/g/#{id}")
+      expand_service_url(:argu, ['', root_id, :g, id].compact.join('/'))
     ).to_return(
       status: 200,
       body: {
@@ -150,7 +142,8 @@ module TestMocks
           id: 1,
           type: 'groups',
           attributes: {
-            iri: argu_url('/argu/g/1')
+            iri: argu_url('/argu/g/1'),
+            display_name: "Group#{id}"
           },
           relationships: {
             organization: {
@@ -201,17 +194,23 @@ module TestMocks
     stub_request(:get, expand_service_url(:argu, '/spi/authorize', params)).to_return(status: 403)
   end
 
+  def not_found_mock(url)
+    stub_request(:get, url).to_return(status: 404)
+  end
+
   private
 
-  def doorkeeper_token(type, id: SecureRandom.hex, email: nil, language: :en)
+  def doorkeeper_token(type, id: SecureRandom.hex, email: nil, language: :en, exp: 1.hour.from_now)
     registered = type == 'user'
     sign_payload(
+      exp: exp.to_i,
       iat: Time.current.iso8601(5),
+      scopes: [type],
       user: {
         type: type,
         '@id': expand_uri_template("#{registered ? :users : :guest_users}_iri", id: 1, with_hostname: true),
         id: id,
-        email: registered && (email || "user#{id}@example.com"),
+        email: registered && (email || "user#{id}@email.com"),
         language: language
       }
     )
@@ -221,9 +220,35 @@ module TestMocks
     Rails.application.config.host_name
   end
 
-  def user_data(id, email, language = nil, secondary_emails = [])
+  def included_emails(id, emails)
+    emails.each_with_index
+      .map do |e, i|
+      {
+        id: "https://argu.dev/u/#{id}/email/#{i}",
+        type: 'emailAddresses',
+        attributes: {
+          '@type' => 'argu:Email',
+          email: e[:email],
+          primary: i.zero?,
+          confirmedAt: e[:confirmed] ? Time.current : nil
+        }
+      }
+    end
+  end
+
+  def included_profile_photo(id = '1')
     {
       id: id,
+      type: 'photos',
+      attributes: {
+        thumbnail: nil
+      }
+    }
+  end
+
+  def user_data(id, email, language = NS::ARGU['locale/en'], secondary_emails = [])
+    {
+      id: NS::ARGU["u/#{id}"],
       type: 'users',
       attributes: {
         '@context': {
@@ -245,7 +270,7 @@ module TestMocks
         language: language
       },
       relationships: {
-        profilePhoto: {
+        defaultProfilePhoto: {
           data: {
             id: '1',
             type: 'photos'
