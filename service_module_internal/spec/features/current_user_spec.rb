@@ -3,7 +3,7 @@
 require_relative '../spec_helper'
 
 describe CurrentUser do
-  let(:current_user) { described_class.new(token) }
+  let(:current_user) { described_class.from_token(token) }
 
   let(:token_1) { doorkeeper_token('user', id: 1) }
   let(:token_2) { doorkeeper_token('user', id: 2, language: :nl) }

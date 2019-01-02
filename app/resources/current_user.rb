@@ -1,34 +1,19 @@
 # frozen_string_literal: true
 
 class CurrentUser
+  include ActiveModel::Model
   include RailsLD::Model
-  include JWTHelper
+  extend JWTHelper
 
-  def initialize(token, attributes: nil)
-    @token = token || raise('No user token given')
-    @argu_attributes = User.send(:instantiate_record, attributes) if attributes
-  end
-
-  %w[email id type language].each do |method|
-    define_method method do
-      token_attributes['user'][method]
-    end
-  end
+  attr_accessor :token, :email, :id, :iri, :scopes, :type, :language
+  attr_writer :argu_user
 
   def guest?
     type == 'guest'
   end
 
-  def iri
-    token_attributes['user']['@id'] && RDF::DynamicURI(token_attributes['user']['@id']) || super
-  end
-
   def respond_to_missing?(method_name, *args)
     argu_user.respond_to?(method_name, *args)
-  end
-
-  def scopes
-    token_attributes['scopes']
   end
 
   def to_param
@@ -38,7 +23,7 @@ class CurrentUser
   private
 
   def argu_user
-    @argu_attributes ||= User.find(id)
+    @argu_user ||= User.find(id)
   end
 
   def method_missing(method, *args, &block)
@@ -49,7 +34,32 @@ class CurrentUser
     end
   end
 
-  def token_attributes
-    @token_attributes ||= decode_token(@token)
+  class << self
+    def from_response(token, argu_user)
+      user = from_token(token)
+      user.argu_user = argu_user if user
+      user
+    end
+
+    def from_token(token)
+      return if token.nil?
+      new(attributes_from_token(token))
+    end
+
+    private
+
+    def attributes_from_token(token) # rubocop:disable Metrics/MethodLength
+      token_data = decode_token(token)
+      user_data = token_data['user']
+      {
+        token: token,
+        email: user_data['email'],
+        id: user_data['id'],
+        iri: user_data['@id'] && RDF::DynamicURI(user_data['@id']),
+        scopes: token_data['scopes'] || [],
+        type: user_data['type'],
+        language: user_data['language']
+      }
+    end
   end
 end

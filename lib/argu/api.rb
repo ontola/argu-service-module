@@ -110,12 +110,12 @@ module Argu
     end
 
     def user_from_response(response, email)
-      user = CurrentUser.new(user_token, attributes: JSON.parse(response.body))
-      user.attributes['email'] = email
-      user.attributes['email_addresses'] = [
-        OpenStruct.new(attributes: {email: email, primary: true}.with_indifferent_access)
+      attributes = JSON.parse(response.body)
+      attributes['included'] = [
+        {attributes: {email: email, primary: true}}
+          .merge(attributes.dig('data', 'relationships', 'emailAddresses', 'data').first)
       ]
-      user
+      CurrentUser.from_response(user_token, User.new(attributes))
     end
 
     def set_argu_client_token_cookie(token, expires = nil)

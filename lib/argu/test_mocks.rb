@@ -285,7 +285,7 @@ module TestMocks
             }
           }
         },
-        email_addresses: {
+        emailAddresses: {
           data: Array.new((secondary_emails.count + 1)) do |i|
             {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emailAddresses'}
           end
