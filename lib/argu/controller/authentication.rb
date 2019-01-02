@@ -7,16 +7,18 @@ module Argu
     module Authentication
       extend ActiveSupport::Concern
 
+      include JWTHelper
+
       included do
         before_action :check_if_registered
       end
 
       def current_user
-        @current_user ||= CurrentUser.new(user_token || generate_guest_token)
+        @current_user ||= CurrentUser.new(validated_user_token || generate_guest_token)
       end
 
       def user_context
-        @user_context ||= UserContext.new(api: api, user: current_user)
+        @user_context ||= UserContext.new(api: api, user: current_user, doorkeeper_scopes: current_user.scopes)
       end
 
       private
@@ -47,6 +49,10 @@ module Argu
 
       def user_token
         @user_token ||= authorization_header? ? token_from_header : token_from_cookie
+      end
+
+      def validated_user_token
+        user_token if user_token && Time.current <= decode_token(user_token)['exp']
       end
     end
   end

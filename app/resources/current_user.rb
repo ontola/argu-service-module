@@ -27,6 +27,10 @@ class CurrentUser
     argu_user.respond_to?(method_name, *args)
   end
 
+  def scopes
+    token_attributes['scopes']
+  end
+
   def to_param
     id
   end
