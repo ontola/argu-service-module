@@ -15,7 +15,7 @@ module RDF
     def rewrite_value!
       return if @rewriten
       @rewriten = true
-      @value = value.gsub("https://#{ENV['HOSTNAME']}", "https://app.#{ENV['HOSTNAME']}").freeze
+      @value = value.sub("https://#{ENV['HOSTNAME']}", "https://app.#{ENV['HOSTNAME']}").freeze
       self
     end
   end
