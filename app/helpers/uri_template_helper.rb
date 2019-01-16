@@ -16,7 +16,7 @@ module UriTemplateHelper
     canonical = opts.delete(:canonical) && uri_template("#{type}_collection_canonical")
     expand_uri_template(
       "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
-      opts.merge(parent_iri: parent.try(:iri_path) || parent)
+      opts.merge(parent_iri: (parent.try(:iri_path) || parent).presence)
     )
   end
 
@@ -24,7 +24,7 @@ module UriTemplateHelper
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
     raise "Uri template #{template} is missing" unless tmpl
-    args[:parent_iri] = split_iri_segments(args[:parent_iri]) if args[:parent_iri].present?
+    args[:parent_iri] = split_iri_segments(args[:parent_iri])
     args[:collection_iri] = split_iri_segments(args[:collection_iri]) if args[:collection_iri].present?
     path = tmpl.expand(args)
     args[:with_hostname] ? path_with_hostname(path) : path
@@ -47,7 +47,8 @@ module UriTemplateHelper
 
   # @return [Array<String>]
   def split_iri_segments(iri)
-    iri.to_s.split('/').map(&:presence).compact
+    return if iri.blank?
+    iri.to_s.split('/').map(&:presence).compact.presence
   end
 
   # @return [URITemplat]
@@ -78,7 +79,7 @@ module UriTemplateHelper
     # @return [String]
     define_method "#{method}_iri_path" do |parent, opts = {}|
       iri = parent.try(:iri_path) || parent
-      opts[:parent_iri] ||= iri if iri
+      opts[:parent_iri] ||= iri if iri.present?
       opts[:only_path] = true
       expand_uri_template("#{method}_iri", opts)
     end
