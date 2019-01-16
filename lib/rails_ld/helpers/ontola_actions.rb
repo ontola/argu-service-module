@@ -13,14 +13,11 @@ module RailsLD
       end
 
       def ontola_dialog_action(resource)
-        resource.rewrite_value! if resource.is_a?(RDF::DynamicURI)
         NS::ONTOLA["actions/dialog/alert?#{{resource: resource}.to_param}"]
       end
 
       def ontola_redirect_action(location, reload: nil)
-        location =
-          location
-            .gsub("https://#{Rails.application.config.host_name}", "https://app.#{Rails.application.config.host_name}")
+        location = DynamicUriHelper.rewrite(location)
         NS::ONTOLA["actions/redirect?#{{location: location, reload: reload}.compact.to_param}"]
       end
 
