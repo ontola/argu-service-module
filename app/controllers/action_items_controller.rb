@@ -46,8 +46,4 @@ class ActionItemsController < AuthorizedController
   def parent_resource
     super if parent_id_from_params.present?
   end
-
-  def tree_root_id
-    parent_resource.try(:root_id)
-  end
 end
