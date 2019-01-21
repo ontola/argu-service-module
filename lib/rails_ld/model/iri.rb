@@ -72,6 +72,11 @@ module RailsLD
       end
       # rubocop:enable Rails/SkipsModelValidations
 
+      def reload(_opts = {})
+        @iri = nil
+        super
+      end
+
       module ClassMethods
         def iri
           NS::ARGU[name.demodulize]
