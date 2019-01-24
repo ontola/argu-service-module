@@ -7,6 +7,7 @@ gem 'activerecord'
 gem 'activeresource',
     git: 'https://github.com/rails/activeresource',
     branch: 'master'
+gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
 gem 'oauth2'

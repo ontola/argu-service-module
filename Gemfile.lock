@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/ArthurWD/acts_as_tenant
+  revision: deff226341a1b65dfd89cec2fab895f0cbf2546d
+  branch: master
+  specs:
+    acts_as_tenant (0.4.3)
+      rails (>= 4.0)
+      request_store (>= 1.0.5)
+
+GIT
   remote: https://github.com/argu-co/rdf-serializers
   revision: d477c0968d742242e20a733f8eed303adac04a50
   branch: master
@@ -172,6 +181,8 @@ GEM
     rdf (3.0.2)
       hamster (~> 3.0)
       link_header (~> 0.0, >= 0.0.8)
+    request_store (1.4.1)
+      rack (>= 1.4)
     rfc-822 (0.4.1)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
@@ -230,6 +241,7 @@ DEPENDENCIES
   active_model_serializers (= 0.10.7)
   activerecord
   activeresource!
+  acts_as_tenant!
   bunny (~> 2.6.1)
   combustion (~> 0.5.5)
   oauth2

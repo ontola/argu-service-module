@@ -15,6 +15,7 @@ require 'action_cable/engine'
 require 'rails/test_unit/railtie'
 
 require_relative '../../lib/rails_ld/middleware/linked_data_params'
+require_relative '../../lib/tenant_middleware'
 require_relative '../../config/initializers/version'
 require_relative '../../config/initializers/build'
 
@@ -38,6 +39,7 @@ module Service
     config.origin = "https://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
 
+    config.middleware.use TenantMiddleware
     config.middleware.use RailsLD::Middleware::LinkedDataParams
 
     config.autoload_paths += %w[lib]
