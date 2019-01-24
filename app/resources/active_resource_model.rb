@@ -46,6 +46,12 @@ class ActiveResourceModel < ActiveResource::Base
     def connection(_refresh = false)
       @service_token ||= OauthConnection.new(service(service_name, token: ENV['SERVICE_TOKEN']))
     end
+
+    def headers
+      headers = super
+      headers['X-Forwarded-Host'] ||= Rails.application.config.host_name
+      headers
+    end
   end
 
   class OauthConnection

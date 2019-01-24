@@ -17,7 +17,7 @@ module Argu
 
     def authorize_action(opts = {})
       opts[:authorize_action] = opts.delete(:action)
-      service(:argu).get(uri_template(:spi_authorize).expand(opts))
+      api_request(:argu, :get, uri_template(:spi_authorize).expand(opts))
     rescue OAuth2::Error
       false
     end
@@ -27,31 +27,43 @@ module Argu
     end
 
     def confirm_email_address(email)
-      service(:argu, token: service_token)
-        .put(expand_uri_template(:user_confirm), body: {email: email}, headers: {accept: 'application/json'})
+      api_request(
+        :argu,
+        :put,
+        expand_uri_template(:user_confirm),
+        token: service_token,
+        body: {email: email},
+        headers: {accept: 'application/json'}
+      )
     end
 
     def create_email(template, recipient, options = {})
       recipient = recipient.slice(:display_name, :email, :language, :id)
-      service(:email, token: service_token).post(
+      api_request(
+        :email,
+        :post,
         expand_uri_template(:email_spi_create),
+        token: service_token,
         body: {email: {template: template, recipient: recipient, options: options}},
         headers: {accept: 'application/json'}
       )
     end
 
     def create_favorite(root_id, iri)
-      service(:argu)
-        .post(
-          expand_uri_template(:favorites_iri, root_id: root_id),
-          body: {iri: iri},
-          headers: {accept: 'application/json'}
-        )
+      api_request(
+        :argu,
+        :post,
+        expand_uri_template(:favorites_iri, root_id: root_id),
+        body: {iri: iri},
+        headers: {accept: 'application/json'}
+      )
     end
 
     def create_membership(token)
       group_iri = expand_uri_template(:groups_iri, id: token.group_id, root_id: token.root_id)
-      service(:argu).post(
+      api_request(
+        :argu,
+        :post,
         collection_iri_path(group_iri, :group_memberships),
         body: {token: token.secret},
         headers: {accept: 'application/json'}
@@ -59,11 +71,7 @@ module Argu
     end
 
     def create_user(email, r: nil)
-      response = service(:argu).post(
-        expand_uri_template(:user_registration),
-        body: {user: {email: email}, r: r},
-        headers: {accept: 'application/json'}
-      )
+      response = create_user_request(email, r)
       update_user_token(response)
       user_from_response(response, email)
     rescue OAuth2::Error
@@ -71,24 +79,27 @@ module Argu
     end
 
     def email_address_exists?(email)
-      service(:argu, token: service_token)
-        .get(expand_uri_template(:spi_email_addresses, email: email))
+      api_request(:argu, :get, expand_uri_template(:spi_email_addresses, email: email), token: service_token)
       true
     rescue OAuth2::Error
       false
     end
 
     def generate_guest_token(r: nil)
-      result = service(:argu, token: service_token).post(
+      result = api_request(
+        :argu,
+        :post,
         expand_uri_template(:spi_oauth_token),
+        token: service_token,
         body: {scope: :guest, r: r}
       )
       @user_token = JSON.parse(result.body)['access_token']
     end
 
     def get_tenant(iri)
-      result = service(:argu, token: service_token).request(:head, expand_uri_template(:spi_find_tenant, iri: iri))
-      Page.new(iri_prefix: result.headers['Tenant-IRI'].split('://').last)
+      result = api_request(:argu, :get, expand_uri_template(:spi_find_tenant, iri: iri), token: service_token)
+      body = JSON.parse(result.body)
+      Page.new(iri_prefix: body['iri_prefix'], uuid: body['uuid'])
     end
 
     def self.service_api
@@ -104,6 +115,28 @@ module Argu
     end
 
     private
+
+    def api_request(service, method, path, opts = {})
+      token = opts.delete(:token)
+      opts[:headers] = default_headers.merge(opts[:headers] || {})
+      service(service, token: token || user_token).request(method, path, opts)
+    end
+
+    def create_user_request(email, r)
+      api_request(
+        :argu,
+        :post,
+        expand_uri_template(:user_registration),
+        body: {user: {email: email}, r: r},
+        headers: {accept: 'application/json'}
+      )
+    end
+
+    def default_headers
+      {
+        'X-Forwarded-Host': Rails.application.config.host_name
+      }
+    end
 
     def parsed_cookies(response)
       cookies = {}
