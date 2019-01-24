@@ -86,6 +86,11 @@ module Argu
       @user_token = JSON.parse(result.body)['access_token']
     end
 
+    def get_tenant(iri)
+      result = service(:argu, token: service_token).request(:head, expand_uri_template(:spi_find_tenant, iri: iri))
+      Page.new(iri_prefix: result.headers['Tenant-IRI'].split('://').last)
+    end
+
     def self.service_api
       new(service_token: ENV['SERVICE_TOKEN'])
     end
