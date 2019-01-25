@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 class Email < ActiveResourceModel
-  self.service_name = :email
-
-  def self.collection_name
-    'email/emails'
-  end
+  self.collection_name = 'email/emails'
+  self.site = URI(service_url(:email))
 
   %w[opened delivered clicked bounced dropped].each do |event|
     define_method "#{event}?" do

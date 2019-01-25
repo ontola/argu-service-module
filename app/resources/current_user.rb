@@ -23,7 +23,7 @@ class CurrentUser
   private
 
   def argu_user
-    @argu_user ||= User.find(id)
+    @argu_user ||= User.find(id, params: {root_id: ActsAsTenant.current_tenant.uuid})
   end
 
   def method_missing(method, *args, &block)
