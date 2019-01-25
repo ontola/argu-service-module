@@ -24,6 +24,10 @@ RSpec.configure do |config|
   config.include TestMocks
   config.include IriHelpers
 
+  config.before do
+    find_tenant_mock
+  end
+
   config.use_transactional_fixtures = true
 
   config.infer_spec_type_from_file_location!

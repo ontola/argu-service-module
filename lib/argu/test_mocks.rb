@@ -50,6 +50,19 @@ module TestMocks
     user_mock(id, opts)
   end
 
+  def find_tenant_mock
+    stub_request(:get, %r{#{expand_service_url(:argu, '/spi/find_tenant')}\?iri=www.example.com\/argu\/tokens.*})
+      .with(
+        headers: {
+          'Authorization' => "Bearer #{ENV['SERVICE_TOKEN']}",
+          'X-Forwarded-Host' => ENV['HOSTNAME']
+        }
+      ).to_return(
+        status: 200,
+        body: {iri_prefix: "app.#{ENV['HOSTNAME']}/argu", uuid: TEST_ROOT_ID}.to_json
+      )
+  end
+
   def generate_guest_token_mock
     token = doorkeeper_token('guest')
     stub_request(:post, expand_service_url(:argu, '/spi/oauth/token'))
@@ -64,7 +77,7 @@ module TestMocks
     opts[:confirmed] ||= true
     opts[:secondary_emails] ||= []
     opts[:token] ||= ENV['SERVICE_TOKEN']
-    opts[:url] ||= expand_service_url(:argu, "/u/#{id}")
+    opts[:url] ||= expand_service_url(:argu, "/#{TEST_ROOT_ID}/u/#{id}")
     opts[:email] ||= "user#{id}@email.com"
     stub_request(:get, opts[:url])
       .with(headers: {'Authorization' => ['Bearer', opts[:token]].compact.join(' ')})
@@ -131,7 +144,7 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
-  def group_mock(id, root_id: nil)
+  def group_mock(id, root_id: TEST_ROOT_ID)
     stub_request(
       :get,
       expand_service_url(:argu, ['', root_id, :g, id].compact.join('/'))

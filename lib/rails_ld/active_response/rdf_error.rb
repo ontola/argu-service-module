@@ -11,7 +11,7 @@ module RailsLD
       def initialize(status, requested_url, original_error)
         self.status = status
         self.error = original_error.is_a?(StandardError) ? original_error : original_error.new
-        self.requested_url = ::RDF::URI(requested_url)
+        self.requested_url = ::RDF::DynamicURI(requested_url)
       end
 
       def graph
