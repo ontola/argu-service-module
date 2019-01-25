@@ -4,9 +4,7 @@ source 'https://rubygems.org'
 
 gem 'active_model_serializers', '= 0.10.7'
 gem 'activerecord'
-gem 'activeresource',
-    git: 'https://github.com/rails/activeresource',
-    branch: 'master'
+gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource'
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
