@@ -15,12 +15,14 @@ require 'assert_difference'
 require 'webmock/rspec'
 require 'argu/test_helpers'
 require 'argu/test_mocks'
+require 'support/iri_helpers'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include AssertDifference
   config.include Argu::TestHelpers::RequestHelpers
   config.include TestMocks
+  config.include IriHelpers
 
   config.use_transactional_fixtures = true
 
