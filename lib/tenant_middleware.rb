@@ -27,6 +27,6 @@ class TenantMiddleware
 
   def rewrite_path(env, request)
     return if ActsAsTenant.current_tenant.nil? || ActsAsTenant.current_tenant.iri_prefix == request.host
-    env['PATH_INFO'].gsub!(%r{(\/#{ActsAsTenant.current_tenant.url})(\/|$)}, '')
+    env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}, '')
   end
 end
