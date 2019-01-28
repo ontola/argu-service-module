@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../spec/support/test_root_id'
+
 module TestMocks
   include JWTHelper
   include UrlHelper
@@ -77,10 +79,12 @@ module TestMocks
     opts[:confirmed] ||= true
     opts[:secondary_emails] ||= []
     opts[:token] ||= ENV['SERVICE_TOKEN']
-    opts[:url] ||= expand_service_url(:argu, "/#{TEST_ROOT_ID}/u/#{id}")
+    opts[:url] ||= expand_service_url(:argu, "/#{opts[:root] || TEST_ROOT_ID}/u/#{id}")
     opts[:email] ||= "user#{id}@email.com"
+    headers = {'Accept': 'application/vnd.api+json'}
+    headers['Authorization'] = "Bearer #{opts[:token]}" if opts[:token]
     stub_request(:get, opts[:url])
-      .with(headers: {'Authorization' => ['Bearer', opts[:token]].compact.join(' ')})
+      .with(headers: headers)
       .to_return(
         status: 200,
         headers: {'Content-Type' => 'application/json'},
@@ -218,7 +222,7 @@ module TestMocks
     sign_payload(
       exp: exp.to_i,
       iat: Time.current.iso8601(5),
-      scopes: [type],
+      scopes: [type, :afe],
       user: {
         type: type,
         '@id': expand_uri_template("#{registered ? :users : :guest_users}_iri", id: 1, with_hostname: true),

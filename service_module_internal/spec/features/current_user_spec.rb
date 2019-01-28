@@ -8,6 +8,10 @@ describe CurrentUser do
   let(:token_1) { doorkeeper_token('user', id: 1) }
   let(:token_2) { doorkeeper_token('user', id: 2, language: :nl) }
 
+  before do
+    ActsAsTenant.current_tenant = Page.new(iri_prefix: 'app.argu.localtest/argu', uuid: TEST_ROOT_ID)
+  end
+
   context 'with user 1' do
     let(:token) { token_1 }
 

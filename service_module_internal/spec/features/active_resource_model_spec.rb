@@ -21,7 +21,7 @@ describe Resource do
     extend ServiceHelper
 
     stub_request(:get, expand_service_url(:argu, '/resources/1'))
-      .with(headers: {'Accept': 'application/vnd.api+json', 'Authorization': 'Bearer'})
+      .with(headers: {'Accept': 'application/vnd.api+json'})
       .to_return(
         status: 200,
         body: {
