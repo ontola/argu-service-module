@@ -82,7 +82,7 @@ module RailsLD
         end
 
         def index_meta
-          return [] if index_collection.is_a?(RailsLD.collection_class)
+          return [] if index_collection.is_a?(RailsLD.collection_class) || index_collection.is_a?(RDF::Sequence)
 
           RDF::List.new(
             graph: RDF::Graph.new,
