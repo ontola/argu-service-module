@@ -2,6 +2,8 @@
 
 class BaseSerializer < ActiveModel::Serializer
   include RailsLD::Serializer
+  include UriTemplateHelper
+
   class_attribute :_enums
 
   delegate :afe_request?, :export_scope?, :service_scope?, :system_scope?,
