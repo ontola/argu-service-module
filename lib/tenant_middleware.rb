@@ -14,6 +14,7 @@ class TenantMiddleware
     request = Rack::Request.new(env)
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
     Rails.logger.debug ActsAsTenant.current_tenant ? "Tenant: #{ActsAsTenant.current_tenant.url}" : 'No tenant found'
+    return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
     RequestStore.store[:old_frontend] = old_frontend?(env)
     rewrite_path(env, request)
     @app.call(env)
@@ -23,6 +24,18 @@ class TenantMiddleware
 
   def old_frontend?(env)
     env['HTTP_AUTHORIZATION'].blank? || !decode_token(env['HTTP_AUTHORIZATION'][7..-1])['scopes'].include?('afe')
+  end
+
+  def redirect_to_new_frontend?(request)
+    tenant = ActsAsTenant.current_tenant
+    tenant&.use_new_frontend && !request.url.include?("://#{tenant.iri_prefix}")
+  end
+
+  def redirect_to_new_frontend(request)
+    tenant = ActsAsTenant.current_tenant
+    old = [Rails.application.config.host_name, tenant.url].join('/')
+    new = tenant.iri_prefix
+    [301, {'Location' => request.url.sub(old, new), 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def rewrite_path(env, request)
