@@ -101,6 +101,16 @@ module RailsLD
 
       private
 
+      def attr_column(name)
+        column_model =
+          if model_class.is_delegated_attribute?(name)
+            model_class.class_for_delegated_attribute(name)
+          else
+            model_class
+          end
+        column_model.column_for_attribute(name)
+      end
+
       def attr_to_datatype(attr) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
         return nil if method_defined?(attr.name)
 
@@ -124,7 +134,7 @@ module RailsLD
       end
 
       def decimal_data_type(name) # rubocop:disable Metrics/MethodLength
-        case model_class.columns_hash[name].precision
+        case attr_column(name).precision
         when 64
           NS::XSD[:long]
         when 32
