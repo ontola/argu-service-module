@@ -2,7 +2,7 @@
 
 module RailsLD
   module Middleware
-    class LinkedDataParams
+    class LinkedDataParams # rubocop:disable Metrics/ClassLength
       def initialize(app)
         @app = app
       end
@@ -40,6 +40,16 @@ module RailsLD
         Rails.logger
       end
 
+      def opts_from_route(route, method = 'GET', klass: nil)
+        opts = Rails.application.routes.recognize_path(route, method: method)
+        route_klass = opts[:controller]&.classify&.safe_constantize
+        return {} unless klass.nil? || route_klass.present? && klass <= route_klass
+
+        opts
+      rescue ActionController::RoutingError
+        {}
+      end
+
       # Converts a serialized graph from a multipart request body to a nested
       # attributes hash.
       #
@@ -63,7 +73,7 @@ module RailsLD
 
       def parse_nested_resource(graph, subject, klass, base_params)
         resource = parse_resource(graph, subject, klass, base_params)
-        resource[:id] ||= nil
+        resource[:id] ||= opts_from_route(subject.to_s, klass: klass)[:id]
         resource
       end
 
@@ -124,11 +134,11 @@ module RailsLD
       end
 
       def target_class_from_path(path, method)
-        opts = Rails.application.routes.recognize_path(path, method: method)
+        opts = opts_from_route(path, method)
+        return if opts.blank?
+
         controller = "#{opts[:controller]}_controller".classify.constantize
         controller.try(:controller_class) || controller.controller_name.classify.safe_constantize
-      rescue ActionController::RoutingError
-        nil
       end
     end
   end
