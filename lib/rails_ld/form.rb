@@ -71,16 +71,6 @@ module RailsLD
         target._referred_resources = []
       end
 
-      def actor_selector
-        {
-          custom: true,
-          datatype: NS::XSD[:string],
-          default_value: ->(resource) { resource.form.user_context.user.iri },
-          max_count: 1,
-          sh_in: ->(resource) { actors_iri(resource.form.target.root) }
-        }
-      end
-
       def model_class
         @model_class ||=
           name.sub(/Form$/, '').safe_constantize ||
