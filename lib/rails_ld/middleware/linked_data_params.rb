@@ -22,7 +22,7 @@ module RailsLD
       def enum_attribute(klass, key, value)
         opts = klass.serializer_class!.try(:enum_options, key)
         return if opts.blank?
-        opts[:options].detect { |_k, options| options[:iri] == value }[0]
+        opts[:options].detect { |_k, options| options[:iri] == value }&.first
       end
 
       def graph_from_request(request)
