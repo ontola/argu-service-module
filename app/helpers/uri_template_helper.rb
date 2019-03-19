@@ -72,7 +72,21 @@ module UriTemplateHelper
     uri.to_s
   end
 
-  %i[edit delete trash untrash settings statistics feeds conversions invites export logs].each do |method|
+  # @return [RDF::URI]
+  def settings_iri(parent, opts = {})
+    RDF::DynamicURI(path_with_hostname(settings_iri_path(parent, opts)))
+  end
+
+  # @return [String]
+  def settings_iri_path(parent, opts = {})
+    iri = parent.try(:iri_path) || parent
+    opts[:parent_iri] ||= iri if iri.present?
+    opts[:only_path] = true
+    opts[:fragment] = opts.delete(:tab) unless RequestStore.store[:old_frontend]
+    expand_uri_template(:settings_iri, opts)
+  end
+
+  %i[edit delete trash untrash statistics feeds conversions invites export logs].each do |method|
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
       RDF::DynamicURI(path_with_hostname(send("#{method}_iri_path", parent, opts)))
