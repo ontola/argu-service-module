@@ -164,7 +164,7 @@ module Argu
         value: token,
         secure: Rails.env.staging? || Rails.env.production?,
         httponly: true,
-        domain: :all
+        domain: Rails.env.staging? ? nil : :all
       }
     end
 
