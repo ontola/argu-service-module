@@ -33,9 +33,7 @@ module RailsLD
 
     def raw_members
       @raw_members ||=
-        association_base
-          .preload(association_class.includes_for_serializer)
-          .reorder(parsed_sort_values)
+        prepare_members(association_base)
           .page(page)
           .per(page_size)
           .to_a

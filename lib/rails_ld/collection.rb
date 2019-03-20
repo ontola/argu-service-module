@@ -46,7 +46,7 @@ module RailsLD
     end
 
     def total_count
-      @total_count ||= association_base.count
+      @total_count ||= association_base.try(:total_count) || association_base.count
     end
 
     def type

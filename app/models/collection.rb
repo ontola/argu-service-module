@@ -10,7 +10,7 @@ class Collection < RailsLD::Collection
   include Collection::CounterCache
 
   attr_accessor :user_context, :parent_uri_template, :parent_uri_template_canonical
-  attr_writer :parent_uri_template_opts, :policy
+  attr_writer :association_base, :parent_uri_template_opts, :policy
   delegate :root_id, to: :parent
 
   alias id iri

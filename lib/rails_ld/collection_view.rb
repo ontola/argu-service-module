@@ -66,6 +66,12 @@ module RailsLD
       collection.sortings.map(&:sort_value)
     end
 
+    def prepare_members(scope)
+      scope = scope.preload(association_class.includes_for_serializer) if scope.respond_to?(:preload)
+      scope = scope.reorder(parsed_sort_values) if scope.respond_to?(:reorder)
+      scope
+    end
+
     def total_page_count
       (base_count / page_size.to_f).ceil if base_count
     end

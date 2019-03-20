@@ -45,10 +45,8 @@ module RailsLD
 
     def raw_members
       @raw_members ||=
-        association_base
-          .preload(association_class.includes_for_serializer)
+        prepare_members(association_base)
           .where(before_query)
-          .reorder(parsed_sort_values)
           .limit(page_size)
           .to_a
     end
