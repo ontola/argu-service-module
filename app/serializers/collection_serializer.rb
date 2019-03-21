@@ -23,9 +23,7 @@ class CollectionSerializer < BaseSerializer
   end
 
   def action_methods
-    triples = []
-    actions&.each { |action| triples.concat(action_triples(action)) }
-    triples
+    actions&.map(&method(:action_triple))
   end
 
   def default_type
@@ -43,21 +41,12 @@ class CollectionSerializer < BaseSerializer
 
   private
 
-  def action_for_parent(action)
-    action_triple(object.parent, NS::SCHEMA[:potentialAction], action.iri, NS::LL[:add]) if object.parent
-  end
-
-  def action_triples(action)
-    [
-      action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], action.iri, NS::LL[:add]),
-      action_for_parent(action)
-    ].compact
-  end
-
-  def action_triple(subject, predicate, iri, graph = nil)
-    subject_iri = subject.iri
-    subject_iri = RDF::DynamicURI(subject_iri.to_s.sub('/lr/', '/od/')) if subject.class.to_s == 'LinkedRecord'
-    [subject_iri, predicate, iri, graph]
+  def action_triple(action)
+    predicate = NS::ARGU["#{action.tag}_action".camelize(:lower)]
+    iri = action.iri
+    subject_iri = object.iri
+    subject_iri = RDF::DynamicURI(subject_iri.to_s.sub('/lr/', '/od/')) if object.class.to_s == 'LinkedRecord'
+    [subject_iri, predicate, iri]
   end
 
   delegate :filtered?, to: :object

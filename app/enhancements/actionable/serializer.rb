@@ -8,17 +8,14 @@ module Actionable
       has_many :actions,
                key: :operation,
                unless: :system_scope?,
-               predicate: NS::SCHEMA[:potentialAction],
-               graph: NS::LL[:add]
+               predicate: NS::SCHEMA[:potentialAction]
       has_many :favorite_actions,
                unless: :system_scope?,
-               predicate: NS::ARGU[:favoriteAction],
-               graph: NS::LL[:add]
-
+               predicate: NS::ARGU[:favoriteAction]
       triples :action_methods
 
       def actions
-        object.actions(scope).select(&:available?) if scope.is_a?(UserContext)
+        object_actions + collection_actions
       end
 
       def action_methods
@@ -34,13 +31,25 @@ module Actionable
       private
 
       def action_triples(action)
-        action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], action.iri, NS::LL[:add])
+        action_triple(object, NS::ARGU["#{action.tag}_action".camelize(:lower)], action.iri)
       end
 
-      def action_triple(subject, predicate, iri, graph = nil)
+      def action_triple(subject, predicate, iri)
         subject_iri = subject.iri
         subject_iri = RDF::DynamicURI(subject_iri.to_s.sub('/lr/', '/od/')) if subject.class.to_s == 'LinkedRecord'
-        [subject_iri, predicate, iri, graph]
+        [subject_iri, predicate, iri]
+      end
+
+      def collection_actions # rubocop:disable Metrics/AbcSize
+        return [] unless scope.is_a?(UserContext) && object.collections.present?
+
+        object.collections.map do |opts|
+          object.collection_for(opts[:name], user_context: scope).actions(scope).select(&:available?)
+        end.flatten
+      end
+
+      def object_actions
+        scope.is_a?(UserContext) ? object.actions(scope).select(&:available?) : []
       end
     end
   end
