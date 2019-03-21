@@ -9,7 +9,8 @@ module RailsLD
       private
 
       def collection_opts(key, option)
-        parent.collections.find { |opts| opts[:name].to_s == key[0...-11].pluralize }[:options][option]
+        options = association_class.collections.find { |opts| opts[:name].to_s == key[0...-11].pluralize }
+        options[:options][option] if options
       end
 
       def inverse_of_preloaded(child, opts)
@@ -43,11 +44,12 @@ module RailsLD
           .group_by(&opts[:foreign_key])
       end
 
-      def preload_included_associations
+      def preload_included_associations # rubocop:disable Metrics/MethodLength
         include_map&.each do |key, value|
           if key.to_s.ends_with?('_collection')
             if value[:default_view]&.key?(:member_sequence)
-              preload_collection(key, reflection_for(collection_opts(key, :association)))
+              association_name = collection_opts(key, :association)
+              preload_collection(key, reflection_for(association_name)) if association_name
             end
           else
             preload_association(key, value)
