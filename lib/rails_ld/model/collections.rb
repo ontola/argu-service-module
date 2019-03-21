@@ -6,6 +6,7 @@ module RailsLD
       extend ActiveSupport::Concern
 
       included do
+        class_attribute :collections
         class_attribute :inc_nested_collection
         self.inc_nested_collection = [
           default_view: {member_sequence: :members},
@@ -59,18 +60,16 @@ module RailsLD
       end
 
       module ClassMethods
-        def collections
-          class_variables.include?(:@@collections) ? super : []
-        end
-
         def collections_add(opts)
-          unless class_variables.include?(:@@collections)
-            cattr_accessor :collections do
-              []
-            end
-          end
+          initialize_collections
           collections.delete_if { |c| c[:name] == opts[:name] }
           collections.append(opts)
+        end
+
+        def initialize_collections
+          return if collections && method(:collections).owner == singleton_class
+
+          self.collections = superclass.try(:collections)&.dup || []
         end
 
         # Defines a collection to be used in {collection_for}
