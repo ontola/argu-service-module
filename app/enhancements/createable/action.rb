@@ -46,7 +46,7 @@ module Createable
     end
 
     def create_action_favorite
-      association.to_sym == :votes
+      association.to_sym == :votes && !resource.parent.is_a?(Argument)
     end
 
     def new_image
