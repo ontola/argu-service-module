@@ -86,7 +86,7 @@ module UriTemplateHelper
     expand_uri_template(:settings_iri, opts)
   end
 
-  %i[edit delete trash untrash statistics feeds conversions invites export logs].each do |method|
+  %i[edit delete trash untrash statistics feeds conversions invites export logs search_results].each do |method|
     # @return [RDF::URI]
     define_method "#{method}_iri" do |parent, opts = {}|
       RDF::DynamicURI(path_with_hostname(send("#{method}_iri_path", parent, opts)))
