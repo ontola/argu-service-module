@@ -22,7 +22,10 @@ module Updateable
 
     def update_description; end
 
-    def update_label; end
+    def update_label
+      type = I18n.t("#{resource.class.name.tableize}.type", default: nil)
+      type.present? ? I18n.t('edit_type', type: type) : I18n.t('update')
+    end
 
     def update_template_opts
       {}
