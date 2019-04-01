@@ -24,6 +24,8 @@ class TenantMiddleware
 
   def old_frontend?(env)
     env['HTTP_AUTHORIZATION'].blank? || !decode_token(env['HTTP_AUTHORIZATION'][7..-1])['scopes'].include?('afe')
+  rescue JWT::DecodeError
+    true
   end
 
   def redirect_to_new_frontend?(request)
