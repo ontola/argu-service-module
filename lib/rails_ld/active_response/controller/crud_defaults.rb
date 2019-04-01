@@ -37,7 +37,7 @@ module RailsLD
           []
         end
 
-        def default_form_options(action)
+        def §(action)
           return super unless active_responder.is_a?(RDFResponder)
           action = active_response_action(super.slice(:resource, :view))
           {

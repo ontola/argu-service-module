@@ -11,11 +11,5 @@ module Actionable
     def action(user_context, tag)
       actions(user_context).find { |a| a.tag == tag }
     end
-
-    module ClassMethods
-      def preview_includes
-        super + [favorite_actions: :target]
-      end
-    end
   end
 end
