@@ -6,6 +6,7 @@ class CollectionSerializer < BaseSerializer
   attribute :iri_template, predicate: NS::ARGU[:iriTemplate]
   attribute :default_type, predicate: NS::ARGU[:defaultType]
   attribute :display, predicate: NS::ARGU[:collectionDisplay]
+  attribute :columns, predicate: NS::ARGU[:columns]
 
   has_one :unfiltered_collection, predicate: NS::ARGU[:isFilteredCollectionOf], if: :filtered?
   has_one :part_of, predicate: NS::SCHEMA[:isPartOf]
@@ -24,6 +25,13 @@ class CollectionSerializer < BaseSerializer
 
   def action_methods
     actions&.map(&method(:action_triple))
+  end
+
+  def columns
+    return unless object.display == 'settingsTable'
+
+    columns_list = object.association_class.try(:defined_columns).try(:[], :settings)
+    RDF::List[*columns_list] if columns_list.present?
   end
 
   def default_type
