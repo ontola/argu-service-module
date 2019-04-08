@@ -99,7 +99,7 @@ module Argu
     def get_tenant(iri)
       result = api_request(:argu, :get, expand_uri_template(:spi_find_tenant, iri: iri), token: service_token)
       body = JSON.parse(result.body)
-      Page.new(iri_prefix: body['iri_prefix'], uuid: body['uuid'])
+      Page.new(body)
     rescue OAuth2::Error
       nil
     end
