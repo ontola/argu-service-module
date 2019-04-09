@@ -44,7 +44,7 @@ module RailsLD
 
       # The placeholder of the property.
       def description
-        description_from_attribute || translation_with_fallbacks('description', 'placeholders', 'hints')
+        description_from_attribute || RailsLD.attribute_description_translation.call(model_name, model_attribute)
       end
 
       def min_count
@@ -56,7 +56,7 @@ module RailsLD
       end
 
       def name
-        translation_with_fallbacks('label', 'labels')
+        RailsLD.attribute_label_translation.call(model_name, model_attribute)
       end
 
       private
@@ -64,25 +64,6 @@ module RailsLD
       def description_from_attribute
         return if @description.blank?
         @description.respond_to?(:call) ? @description.call(form.target) : @description
-      end
-
-      def translation_fallbacks(fallbacks)
-        fallbacks.map do |fallback|
-          [
-            :"formtastic.#{fallback}.#{model_name}.#{model_attribute}",
-            :"formtastic.#{fallback}.#{model_attribute}"
-          ]
-        end.append('').flatten
-      end
-
-      def translation_with_fallbacks(key, *fallbacks)
-        return if model_attribute.blank?
-        translation =
-          I18n.t(
-            "#{model_name.to_s.pluralize}.form.#{model_attribute}.#{key}",
-            default: translation_fallbacks(fallbacks)
-          ).presence
-        translation unless translation.is_a?(Hash)
       end
 
       def validator_by_class(klass)

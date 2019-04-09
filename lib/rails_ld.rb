@@ -30,4 +30,10 @@ module RailsLD
       @model_classes[method] ||= class_variable_get("@@#{method}").constantize
     end
   end
+
+  mattr_accessor :attribute_label_translation
+  mattr_accessor :attribute_description_translation
+
+  self.attribute_label_translation = ->(_class_name, attribute, _locale = I18n.locale) { attribute.to_s.humanize }
+  self.attribute_description_translation = ->(_class_name, _attribute, _locale = I18n.locale) { nil }
 end
