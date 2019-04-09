@@ -35,6 +35,10 @@ module RailsLD
         {}
       end
 
+      def input_select_property
+        NS::SCHEMA[:name]
+      end
+
       def predicate_mapping
         @predicate_mapping ||= Hash[attribute_mapping + reflection_mapping]
       end
