@@ -7,6 +7,7 @@ class ActionItemSerializer < BaseSerializer
   attribute :action_status, predicate: NS::SCHEMA[:actionStatus]
   attribute :favorite, predicate: NS::ARGU[:favoriteAction]
 
+  has_one :parent, predicate: NS::SCHEMA[:isPartOf]
   has_one :resource, predicate: NS::SCHEMA[:object]
   has_one :target, predicate: NS::SCHEMA[:target]
 
@@ -14,5 +15,13 @@ class ActionItemSerializer < BaseSerializer
 
   def result
     object.result&.iri
+  end
+
+  def parent
+    if object.resource.is_a?(Edge)
+      object.resource
+    elsif object.resource.try(:parent).is_a?(Edge)
+      object.resource.parent
+    end
   end
 end
