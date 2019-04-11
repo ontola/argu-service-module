@@ -5,6 +5,7 @@ module RailsLD
     class PropertyGroupSerializer < ActiveModel::Serializer
       include RailsLD::Serializer
 
+      attribute :description, predicate: NS::SH[:description]
       attribute :label, predicate: NS::RDFS[:label]
       attribute :order, predicate: NS::SH[:order]
 

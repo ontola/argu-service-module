@@ -10,12 +10,23 @@ module RailsLD
       attr_accessor :iri
 
       # SHACL attributes
-      attr_accessor :label,
-                    :order
+      attr_writer :description,
+                  :label
+      attr_accessor :order
 
       def initialize(attrs = {})
         super(attrs)
         @iri ||= RDF::Node.new
+      end
+
+      def description
+        return if @description.blank?
+        @description.respond_to?(:call) ? @description.call : @description
+      end
+
+      def label
+        return if @label.blank?
+        @label.respond_to?(:call) ? @label.call : @label
       end
 
       def self.iri

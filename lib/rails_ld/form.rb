@@ -201,10 +201,11 @@ module RailsLD
         serializer_attr&.dig(:options, :predicate)
       end
 
-      def property_group(name, opts = {}) # rubocop:disable Metrics/AbcSize
+      def property_group(name, opts = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         raise "Property group '#{name}' defined twice" if _property_groups[name].present?
         raise "Property group '#{name}' not available in fields" if _fields[name].nil?
         group = RailsLD::SHACL::PropertyGroup.new(
+          description: opts[:description],
           label: opts[:label],
           iri: opts[:iri]
         )
