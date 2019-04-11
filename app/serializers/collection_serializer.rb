@@ -28,9 +28,12 @@ class CollectionSerializer < BaseSerializer
   end
 
   def columns
-    return unless object.display == 'settingsTable'
-
-    columns_list = object.association_class.try(:defined_columns).try(:[], :settings)
+    case object.display
+    when 'table'
+      columns_list = object.association_class.try(:defined_columns).try(:[], :default)
+    when 'settingsTable'
+      columns_list = object.association_class.try(:defined_columns).try(:[], :settings)
+    end
     RDF::List[*columns_list] if columns_list.present?
   end
 
