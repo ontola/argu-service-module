@@ -163,7 +163,7 @@ module RailsLD
       end
 
       def literal_or_node_property_attrs(serializer_attr, attrs)
-        if serializer_attr.is_a?(ActiveModel::Serializer::Attribute)
+        if serializer_attr.is_a?(ActiveModel::Serializer::Attribute) || attrs[:model_attribute].to_s.ends_with?('_id')
           literal_property_attrs(serializer_attr, attrs)
         elsif serializer_attr.is_a?(ActiveModel::Serializer::Reflection)
           node_property_attrs(serializer_attr, attrs)
@@ -228,10 +228,11 @@ module RailsLD
         literal_or_node_property_attrs(serializer_attr, attrs)
       end
 
-      def serializer_attribute(key)
+      def serializer_attribute(key) # rubocop:disable Metrics/AbcSize
         return serializer_attributes[key] if serializer_attributes[key]
+        normalized_key = key.to_s.ends_with?('_id') ? key.to_s[0...-3].to_sym : key
 
-        k_v = serializer_reflections.find { |_k, v| (v[:options][:association] || v.name) == key }
+        k_v = serializer_reflections.find { |_k, v| (v[:options][:association] || v.name) == normalized_key }
         k_v[1] if k_v
       end
 
