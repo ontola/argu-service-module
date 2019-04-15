@@ -40,6 +40,17 @@ module RailsLD
         Rails.logger
       end
 
+      def nested_attributes(graph, subject, klass, association, base_params)
+        nested_resources =
+          if graph.query([subject, NS::RDFV[:first], nil]).present?
+            RDF::List.new(subject: subject, graph: graph)
+              .map { |nested| parse_nested_resource(graph, nested, klass, base_params) }
+          else
+            parse_nested_resource(graph, subject, klass, base_params)
+          end
+        ["#{association}_attributes", nested_resources]
+      end
+
       def opts_from_route(route, method = 'GET', klass: nil)
         opts = Rails.application.routes.recognize_path(route, method: method)
         route_klass = opts[:controller]&.classify&.safe_constantize
@@ -98,14 +109,11 @@ module RailsLD
 
       def parsed_association(graph, object, klass, association, base_params)
         association_klass = klass.reflect_on_association(association).klass
-        nested_resources =
-          if graph.query([object, NS::RDFV[:first], nil]).present?
-            RDF::List.new(subject: object, graph: graph)
-              .map { |nested| parse_nested_resource(graph, nested, association_klass, base_params) }
-          else
-            parse_nested_resource(graph, object, association_klass, base_params)
-          end
-        ["#{association}_attributes", nested_resources]
+        if graph.has_subject?(object)
+          nested_attributes(graph, object, association_klass, association, base_params)
+        elsif object.iri?
+          ["#{association}_id", opts_from_route(object.to_s, klass: association_klass)[:id]]
+        end
       end
 
       def parsed_attribute(klass, key, value, base_params)
