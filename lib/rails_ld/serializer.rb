@@ -21,6 +21,10 @@ module RailsLD
       object.iri
     end
 
+    def serializable_class
+      self.class.serializable_class
+    end
+
     def type
       object.class.iri
     end
