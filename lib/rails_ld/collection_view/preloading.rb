@@ -18,11 +18,18 @@ module RailsLD
       end
 
       def preload_association(key, includes)
-        reflection = reflection_for(key)
-        return if reflection.nil?
-        ActiveRecord::Associations::Preloader
-          .new
-          .preload(raw_members, key => reflection.klass.reflect_on_all_associations.map(&:name) & includes.keys)
+        preload = preload_keys(association_class, key, includes)
+        ActiveRecord::Associations::Preloader.new.preload(raw_members, key => preload) if preload
+      end
+
+      def preload_keys(klass, key, includes)
+        reflection = reflection_for(klass, key)
+        return nil if reflection.nil?
+        Hash[
+          (reflection.klass.reflect_on_all_associations.map(&:name) & includes.keys).map do |child|
+            [child, preload_keys(reflection.klass, child, includes[child])]
+          end
+        ]
       end
 
       def preload_collection(key, reflection)
@@ -49,7 +56,7 @@ module RailsLD
           if key.to_s.ends_with?('_collection')
             if value[:default_view]&.key?(:member_sequence)
               association_name = collection_opts(key, :association)
-              preload_collection(key, reflection_for(association_name)) if association_name
+              preload_collection(key, reflection_for(association_class, association_name)) if association_name
             end
           else
             preload_association(key, value)
@@ -93,8 +100,8 @@ module RailsLD
         "#{table_name}.*, dense_rank() OVER #{partition} AS child_rank"
       end
 
-      def reflection_for(key)
-        association_class.reflect_on_association(key)
+      def reflection_for(klass, key)
+        klass.reflect_on_association(key)
       end
 
       def preload_opts(reflection)
