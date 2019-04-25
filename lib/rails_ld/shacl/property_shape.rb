@@ -25,7 +25,6 @@ module RailsLD
       # SHACL attributes
       attr_accessor :sh_class,
                     :datatype,
-                    :default_value,
                     :group,
                     :model_class,
                     :node,
@@ -35,12 +34,16 @@ module RailsLD
                     :order,
                     :path,
                     :validators
-      attr_writer :description, :min_count
+      attr_writer :default_value, :description, :min_count
 
       validations [:min_length, ActiveRecord::Validations::LengthValidator, :minimum],
                   [:max_length, ActiveRecord::Validations::LengthValidator, :maximum],
                   [:pattern, ActiveModel::Validations::FormatValidator, :with],
                   [:sh_in, ActiveModel::Validations::InclusionValidator, :in]
+
+      def default_value
+        @default_value || form.target.send(model_attribute)
+      end
 
       # The placeholder of the property.
       def description
