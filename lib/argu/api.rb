@@ -37,6 +37,17 @@ module Argu
       )
     end
 
+    def couple_email(email)
+      api_request(
+        :argu,
+        :put,
+        expand_uri_template(:settings_iri, parent_iri: 'u'),
+        token: user_token,
+        body: {user: {email_addresses_attributes: {999 => {email: email}}}},
+        headers: {accept: 'application/json'}
+      )
+    end
+
     def create_email(template, recipient, options = {})
       recipient = recipient.slice(:display_name, :email, :language, :id)
       api_request(
