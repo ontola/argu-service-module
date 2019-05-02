@@ -49,6 +49,7 @@ module RailsLD
         end
 
         def redirect(**opts)
+          return super if controller.request.head?
           response_headers(opts)
           add_exec_action_header(controller.response.headers, ontola_redirect_action(opts[:location]))
           controller.head 200
