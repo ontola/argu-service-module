@@ -18,10 +18,10 @@ class ActionItemSerializer < BaseSerializer
   end
 
   def parent
-    if object.resource.is_a?(Edge)
-      object.resource
-    elsif object.resource.try(:parent).is_a?(Edge)
+    if object.resource.is_a?(RailsLD.collection_class)
       object.resource.parent
+    else
+      object.resource
     end
   end
 end
