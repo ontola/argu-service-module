@@ -83,6 +83,7 @@ require_relative '../../app/models/collection_view'
 Dir.glob(File.join(File.dirname(__FILE__) + '/../../app/models', '*.rb'),
          &method(:require))
 require_relative '../../config/initializers/resource_identifier'
+require_relative '../../lib/argu/test_helpers'
 require_relative 'fixtures/resource'
 require_relative 'fixtures/record'
 require_relative 'fixtures/record_serializer'
@@ -92,6 +93,7 @@ require 'webmock/rspec'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.include TestMocks
+  config.include Argu::TestHelpers::RequestHelpers
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

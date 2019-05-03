@@ -22,3 +22,11 @@ def assert_differences(expression_array, message = nil, &block)
     assert_equal(before[i] + difference, eval(e, b), error)
   end
 end
+
+def use_legacy_frontend
+  @use_legacy_frontend = true
+end
+
+def use_legacy_frontend?
+  @use_legacy_frontend == true
+end

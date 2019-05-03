@@ -8,6 +8,7 @@ module Argu
       def expect_attributes(keys, index = nil)
         attrs = index.present? ? parsed_body.dig('data', index, 'attributes') : parsed_body.dig('data', 'attributes')
         expect(attrs.keys - keys.map(&:to_s)).to be_empty
+        expect(keys.map(&:to_s) - attrs.keys).to be_empty
       end
 
       def expect_data_size(n)

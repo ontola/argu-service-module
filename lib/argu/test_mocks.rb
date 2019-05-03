@@ -155,6 +155,11 @@ module TestMocks
     ).to_return(status: 200, body: [].to_json)
   end
 
+  def email_check_mock(email, exists)
+    stub_request(:get, expand_service_url(:argu, '/spi/email_addresses', email: email))
+      .to_return(status: exists ? 200 : 404)
+  end
+
   def group_mock(id, root_id: TEST_ROOT_ID)
     stub_request(
       :get,
@@ -229,7 +234,7 @@ module TestMocks
     sign_payload(
       exp: exp.to_i,
       iat: Time.current.iso8601(5),
-      scopes: [type, :afe],
+      scopes: use_legacy_frontend? ? [type] : [type, :afe],
       user: {
         type: type,
         '@id': expand_uri_template("#{registered ? :users : :guest_users}_iri", id: 1, with_hostname: true),
