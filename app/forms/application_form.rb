@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationForm < RailsLD::Form
+class ApplicationForm < LinkedRails::Form
   class << self
     private
 

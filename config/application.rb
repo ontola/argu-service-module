@@ -14,7 +14,7 @@ require 'action_cable/engine'
 # require "sprockets/railtie"
 require 'rails/test_unit/railtie'
 
-require_relative '../../lib/rails_ld/middleware/linked_data_params'
+require 'linked_rails/middleware/linked_data_params'
 require_relative '../../lib/tenant_middleware'
 require_relative '../../config/initializers/version'
 require_relative '../../config/initializers/build'
@@ -40,7 +40,7 @@ module Service
     config.oauth_url = ENV['OAUTH_URL']
 
     config.middleware.use TenantMiddleware
-    config.middleware.use RailsLD::Middleware::LinkedDataParams
+    config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
     config.autoload_paths += %w[lib]
     config.autoload_paths += %W[#{config.root}/app/serializers/base]

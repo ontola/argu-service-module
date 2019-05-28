@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-class CollectionView < RailsLD::CollectionView; end
+class CollectionView < LinkedRails::Collection::View; end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BaseSerializer < ActiveModel::Serializer
-  include RailsLD::Serializer
+  include LinkedRails::Serializer
   include UriTemplateHelper
 
   class_attribute :_enums

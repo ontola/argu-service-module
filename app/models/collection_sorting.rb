@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class CollectionSorting < RailsLD::CollectionSorting
-  include RailsLD::Model
-
+class CollectionSorting < LinkedRails::Collection::Sorting
   def iri(_opts = {})
     self
   end

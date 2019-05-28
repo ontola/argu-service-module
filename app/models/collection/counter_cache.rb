@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../../lib/rails_ld.rb'
-require_relative '../../../lib/rails_ld/collection.rb'
-
-class Collection < RailsLD::Collection
+class Collection
   module CounterCache
     def total_count
       @total_count ||= count_from_cache_column || super

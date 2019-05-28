@@ -2,7 +2,7 @@
 
 class CurrentUser
   include ActiveModel::Model
-  include RailsLD::Model
+  include LinkedRails::Model
   extend JWTHelper
 
   attr_accessor :token, :email, :id, :iri, :scopes, :type, :language

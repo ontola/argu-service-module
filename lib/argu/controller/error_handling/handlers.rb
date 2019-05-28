@@ -6,7 +6,7 @@ module Argu
     # classes with inconsistent attributes.
     module ErrorHandling
       module Handlers
-        include RailsLD::Helpers::OntolaActions
+        include LinkedRails::Helpers::OntolaActionsHelper
 
         def add_error_snackbar(error)
           add_exec_action_header(response.headers, ontola_snackbar_action(error.error.message))
@@ -64,7 +64,7 @@ module Argu
         end
 
         def error_resource(status, e)
-          RailsLD::ActiveResponse::RDFError.new(status, request.original_url, e)
+          LinkedRails.rdf_error_class.new(status, request.original_url, e)
         end
 
         def error_response(e, format)

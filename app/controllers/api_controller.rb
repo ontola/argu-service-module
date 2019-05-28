@@ -5,10 +5,10 @@ require 'argu'
 
 class ApiController < ActionController::API
   include ActiveResponse::Controller
+  include LinkedRails::Controller
   include Argu::Controller::Authentication
   include Argu::Controller::Authorization
   include Argu::Controller::ErrorHandling
-  include RailsLD::ActiveResponse::Controller::CrudDefaults
 
   include ActionController::MimeResponds
   include JsonApiHelper
