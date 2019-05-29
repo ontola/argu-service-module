@@ -1,0 +1,1 @@
+../../../../../app/serializers/collection_serializer.rb

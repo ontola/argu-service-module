@@ -1,0 +1,1 @@
+../../../../../app/models/paginated_view.rb

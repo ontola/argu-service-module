@@ -1,0 +1,1 @@
+../../../../../config/initializers/uri_templates.rb

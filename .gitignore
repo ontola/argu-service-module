@@ -1,3 +1,5 @@
 
 \.idea/
 /tmp/*
+/service_module_internal/spec/dummy/db/*.sqlite3
+/service_module_internal/spec/dummy/log/*.log

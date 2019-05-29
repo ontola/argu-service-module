@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/ApplicationRecord:
-class Record < ActiveRecord::Base
+class Record < ApplicationRecord
   extend ActiveRecord::Delegation::DelegateCache
 
-  include RailsLD::Model
+  include LinkedRails::Model
   include ActiveModel::Model
   with_collection :records
 
@@ -43,4 +42,3 @@ class Record < ActiveRecord::Base
     11
   end
 end
-# rubocop:enable Rails/ApplicationRecord:

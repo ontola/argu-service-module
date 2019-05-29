@@ -1,0 +1,1 @@
+../../../../../app/models/infinite_view.rb

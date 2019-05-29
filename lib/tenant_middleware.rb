@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/tenant_finder'
-require_relative '../../app/helpers/jwt_helper'
+require_relative '../app/helpers/jwt_helper'
 
 class TenantMiddleware
   include JWTHelper
