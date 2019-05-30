@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationForm < LinkedRails::Form
+  extend UriTemplateHelper
+
   class << self
     private
 
