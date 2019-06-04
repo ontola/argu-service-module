@@ -27,25 +27,29 @@ end
 LinkedRails::Model::Iri.send(:prepend, LinkedRailsDynamicIRI)
 
 LinkedRails::Translate.translations_for(:property, :description) do |object|
-  I18n.t(
-    "#{object.model_name.to_s.pluralize}.form.#{object.model_attribute}.description",
-    default: [
-      :"formtastic.placeholders.#{object.model_name}.#{object.model_attribute}",
-      :"formtastic.placeholders.#{object.model_attribute}",
-      :"formtastic.hints.#{object.model_name}.#{object.model_attribute}",
-      :"formtastic.hints.#{object.model_attribute}",
-      ''
-    ]
-  ).presence
+  if object.model_attribute.present?
+    I18n.t(
+      "#{object.model_name.to_s.tableize}.form.#{object.model_attribute}.description",
+      default: [
+        :"formtastic.placeholders.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.placeholders.#{object.model_attribute}",
+        :"formtastic.hints.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.hints.#{object.model_attribute}",
+        ''
+      ]
+    ).presence
+  end
 end
 
 LinkedRails::Translate.translations_for(:property, :label) do |object|
-  I18n.t(
-    "#{object.model_name.to_s.pluralize}.form.#{object.model_attribute}.label",
-    default: [
-      :"formtastic.labels.#{object.model_name}.#{object.model_attribute}",
-      :"formtastic.labels.#{object.model_attribute}",
-      ''
-    ]
-  ).presence
+  if object.model_attribute.present?
+    I18n.t(
+      "#{object.model_name.to_s.tableize}.form.#{object.model_attribute}.label",
+      default: [
+        :"formtastic.labels.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.labels.#{object.model_attribute}",
+        ''
+      ]
+    ).presence
+  end
 end
