@@ -28,6 +28,10 @@ class Collection < LinkedRails::Collection
       URITemplate.new("#{iri_path.split('?').first}{?#{COLLECTION_PARAMS.join(',')}}")
   end
 
+  def iri_template_name
+    @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
+  end
+
   private
 
   def canonical_iri_opts
@@ -40,10 +44,6 @@ class Collection < LinkedRails::Collection
     return @canonical_iri_template_name if @canonical_iri_template_name
     canonical_name ||= @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
     @canonical_iri_template_name = uri_template(canonical_name) ? canonical_name : iri_template_name
-  end
-
-  def iri_template_name
-    @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
   end
 
   def new_child_values
