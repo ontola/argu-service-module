@@ -18,7 +18,7 @@ class DataEvent
   end
 
   def self.publish(resource)
-    new(resource).publish
+    BroadcastWorker.perform_async(resource.class, resource.id)
   end
 
   def publish
