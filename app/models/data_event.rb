@@ -49,20 +49,23 @@ class DataEvent
     # Schedules a resource to be broadcasted as data event
     # @return [Hash] The attributes to be assigned to the data event
     def publish(resource)
-      event = event_from_resource(resource)
-
-      attrs = {
-        resource_id: resource.id,
-        resource_type: type_from_resource(resource),
-        event: event,
-        changes: serialize_changes(event, resource)
-      }
-
+      attrs = attributes_from_resource(resource)
       BroadcastWorker.perform_async(attrs)
       attrs
     end
 
     private
+
+    def attributes_from_resource(resource)
+      event = event_from_resource(resource)
+
+      {
+        resource_id: resource.id,
+        resource_type: type_from_resource(resource),
+        event: event,
+        changes: event == 'update' ? serialize_changes(resource) : nil
+      }
+    end
 
     def changes_from_resource(resource)
       resource.try(:broadcastable_changes) || resource.previous_changes
@@ -100,12 +103,14 @@ class DataEvent
       attrs.dig('data', 'type').split('Event').first
     end
 
-    def serialize_changes(event, resource)
-      return unless event == 'update'
+    def serialize_changes(resource)
+      if resource.respond_to?(:iri)
+        iri = RDF::URI(DynamicUriHelper.rewrite(DynamicUriHelper.revert(resource.iri), old_frontend: false))
+      end
 
       [
         {
-          id: resource.try(:iri) || resource.id,
+          id: iri || resource.id,
           type: type_from_resource(resource),
           attributes: filtered_attributes(changes_from_resource(resource))
         }

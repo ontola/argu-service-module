@@ -11,7 +11,7 @@ module DynamicUriHelper
     old_frontend ? DynamicUriHelper.old_frontend_prefix(tenant) : tenant.iri_prefix
   end
 
-  def revert(uri, tenant, old_frontend: RequestStore.store[:old_frontend])
+  def revert(uri, tenant = ActsAsTenant.current_tenant, old_frontend: RequestStore.store[:old_frontend])
     return uri if tenant.nil?
 
     uri.to_s.sub("://#{tenant_prefix(tenant, old_frontend)}", "://#{Rails.application.config.host_name}")
