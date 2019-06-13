@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class DataEvent
-  include JsonApiHelper
+  extend JsonApiHelper
+  include ActiveModel::Model
   include LinkedRails::Model
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
 
@@ -9,56 +10,11 @@ class DataEvent
     nil
   end
 
-  def initialize(attrs = {})
-    attrs.is_a?(Hash) ? parse_json_api(attrs) : parse_resource(attrs)
-  end
-
-  def self.parse(body)
-    new(JSON.parse(body))
-  end
-
-  def self.publish(resource)
-    BroadcastWorker.perform_async(resource.class, resource.id)
-  end
-
   def publish
     Connection.publish('events', json)
   end
 
   private
-
-  def changes_from_resource
-    return unless event == 'update'
-    [
-      {
-        id: resource_id,
-        type: resource_type,
-        attributes: filtered_attributes(previous_changes)
-      }
-    ]
-  end
-
-  def filtered_attributes(attributes)
-    ActionDispatch::Http::ParameterFilter
-      .new(Rails.application.config.filter_parameters)
-      .filter(attributes)
-  end
-
-  def event_from_resource
-    return if resource.nil?
-    if new_resource?
-      'create'
-    elsif resource.destroyed?
-      'destroy'
-    else
-      'update'
-    end
-  end
-
-  def new_resource?
-    resource.instance_variable_get(:@new_record_before_save) ||
-      previous_changes['id']&.first.nil? && previous_changes['id']&.second.present?
-  end
 
   def json
     ActiveModelSerializers::SerializableResource
@@ -72,31 +28,92 @@ class DataEvent
       .to_json
   end
 
-  def parse_json_api(attrs)
-    data_resource = attrs.dig('data', 'relationships', 'resource', 'data')
-    self.resource_id = data_resource['id']
-    self.resource_type = data_resource['type']
-    self.resource = json_api_included_resource(attrs, id: resource_id, type: resource_type)
-    self.affected_resources = attrs.dig('data', 'relationships', 'affected_resources')&.map do |r|
-      json_api_included_resource(attrs, r['data'])
+  class << self
+    # Creates a new data event from JSON
+    # Used for parsing incoming data events
+    # @return [DataEvent]
+    def parse(body)
+      attrs = JSON.parse(body)
+      data_resource = attrs.dig('data', 'relationships', 'resource', 'data')
+
+      new(
+        resource_id: data_resource['id'],
+        resource_type: data_resource['type'],
+        resource: json_api_included_resource(attrs, id: data_resource['id'], type: data_resource['type']),
+        affected_resources: parse_affected_resources(attrs),
+        event: parse_event(attrs),
+        changes: attrs.dig('data', 'attributes', 'changes')&.map(&:with_indifferent_access)
+      )
     end
-    self.event = parse_event(attrs)
-    self.changes = attrs.dig('data', 'attributes', 'changes')&.map(&:with_indifferent_access)
-  end
 
-  def parse_event(attrs)
-    attrs.dig('data', 'type').split('Event').first
-  end
+    # Schedules a resource to be broadcasted as data event
+    # @return [Hash] The attributes to be assigned to the data event
+    def publish(resource)
+      event = event_from_resource(resource)
 
-  def parse_resource(attrs)
-    self.resource = attrs
-    self.resource_id = resource.try(:iri) || resource.id
-    self.resource_type = resource.class.name.pluralize.camelize(:lower)
-    self.event = event_from_resource
-    self.changes = changes_from_resource
-  end
+      attrs = {
+        resource_id: resource.id,
+        resource_type: type_from_resource(resource),
+        event: event,
+        changes: serialize_changes(event, resource)
+      }
 
-  def previous_changes
-    @previous_changes ||= resource.try(:broadcastable_changes) || resource.previous_changes
+      BroadcastWorker.perform_async(attrs)
+      attrs
+    end
+
+    private
+
+    def changes_from_resource(resource)
+      resource.try(:broadcastable_changes) || resource.previous_changes
+    end
+
+    def event_from_resource(resource)
+      return if resource.nil?
+      if new_resource?(resource)
+        'create'
+      elsif resource.destroyed?
+        'destroy'
+      else
+        'update'
+      end
+    end
+
+    def filtered_attributes(attributes)
+      ActionDispatch::Http::ParameterFilter
+        .new(Rails.application.config.filter_parameters)
+        .filter(attributes)
+    end
+
+    def new_resource?(resource)
+      resource.instance_variable_get(:@new_record_before_save) ||
+        changes_from_resource(resource)['id']&.first.nil? && changes_from_resource(resource)['id']&.second.present?
+    end
+
+    def parse_affected_resources(attrs)
+      attrs.dig('data', 'relationships', 'affected_resources')&.map do |r|
+        json_api_included_resource(attrs, r['data'])
+      end
+    end
+
+    def parse_event(attrs)
+      attrs.dig('data', 'type').split('Event').first
+    end
+
+    def serialize_changes(event, resource)
+      return unless event == 'update'
+
+      [
+        {
+          id: resource.try(:iri) || resource.id,
+          type: type_from_resource(resource),
+          attributes: filtered_attributes(changes_from_resource(resource))
+        }
+      ]
+    end
+
+    def type_from_resource(resource)
+      resource.class.name.pluralize.camelize(:lower)
+    end
   end
 end

@@ -12,24 +12,33 @@ shared_examples_for 'parsing event' do
 end
 
 describe DataEvent do
-  let(:expected_id) { 'record_id' }
+  let(:expected_id) { record.id }
   let(:expected_type) { 'records' }
+  let(:record_attrs) { {attr1: 'was'} }
+  let(:record) { Record.create(record_attrs) }
+  let(:updated_record) do
+    record.update(attr1: 'is', attr2: 'new', password: 'secret')
+    record
+  end
 
   describe 'new resource' do
-    let(:body) { JSON.parse(described_class.new(Record.new(true)).publish) }
+    let(:attributes) { described_class.publish(record) }
+    let(:body) { JSON.parse(BroadcastWorker.new.perform(attributes)) }
 
     it { expect(body['data']['type']).to eq('createEvent') }
     it { expect(body['data']['attributes']['changes']).to be_nil }
     it { expect(body['data']['relationships'].keys).to include('resource') }
-    it { expect(body['included'].first['attributes']).to eq('attr1' => 'is', 'attr2' => 'new') }
+    it { expect(body['included'].first['attributes']).to eq('attr1' => 'was', 'attr2' => nil) }
   end
 
   describe 'publish updated resource' do
-    let(:body) { JSON.parse(described_class.new(Record.new(false)).publish) }
+    let(:expected_id) { updated_record.id }
+    let(:attributes) { described_class.publish(updated_record) }
+    let(:body) { JSON.parse(BroadcastWorker.new.perform(attributes)) }
     let(:changes) do
       [
         {
-          id: 'http://app.argu.localtest/argu/records/record_id',
+          id: "http://app.argu.localtest/argu/records/#{expected_id}",
           type: 'records',
           attributes: {'attr1' => %w[was is], 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
         }.with_indifferent_access
@@ -52,7 +61,7 @@ describe DataEvent do
             attributes: {
               changes: [
                 {
-                  id: 'record_id',
+                  id: expected_id,
                   type: 'records',
                   attributes: [
                     attr1: %w[was is],
@@ -78,7 +87,7 @@ describe DataEvent do
             relationships: {
               resource: {
                 data: {
-                  id: 'record_id',
+                  id: expected_id,
                   type: 'records'
                 }
               },
@@ -100,7 +109,7 @@ describe DataEvent do
           },
           included: [
             {
-              id: 'record_id',
+              id: expected_id,
               type: 'records',
               attributes: {
                 attr1: 'is',
@@ -128,7 +137,7 @@ describe DataEvent do
     let(:expected_event) { 'update' }
     let(:expected_attributes) do
       {
-        id: 'record_id',
+        id: expected_id,
         type: 'records',
         attributes: {
           attr1: 'is',
@@ -157,7 +166,7 @@ describe DataEvent do
     let(:expected_changes) do
       [
         {
-          id: 'record_id',
+          id: expected_id,
           type: 'records',
           attributes: [
             attr1: %w[was is],
@@ -196,7 +205,7 @@ describe DataEvent do
             relationships: {
               resource: {
                 data: {
-                  id: 'record_id',
+                  id: expected_id,
                   type: 'records'
                 }
               },
@@ -218,7 +227,7 @@ describe DataEvent do
           },
           included: [
             {
-              id: 'record_id',
+              id: expected_id,
               type: 'records',
               attributes: {
                 attr1: 'is',
@@ -246,7 +255,7 @@ describe DataEvent do
     let(:expected_event) { 'create' }
     let(:expected_attributes) do
       {
-        id: 'record_id',
+        id: expected_id,
         type: 'records',
         attributes: {
           attr1: 'is',
@@ -289,7 +298,7 @@ describe DataEvent do
             relationships: {
               resource: {
                 data: {
-                  id: 'record_id',
+                  id: expected_id,
                   type: 'records'
                 }
               }

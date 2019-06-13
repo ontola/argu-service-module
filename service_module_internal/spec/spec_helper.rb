@@ -20,14 +20,19 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('dummy/config/environment', __dir__)
 
 require 'webmock/rspec'
+require 'sidekiq/testing'
 
 require_relative '../../lib/argu/test_mocks'
 require_relative '../../lib/argu/test_helpers'
 
+Sidekiq::Testing.fake!
+
 def create_table
   ActiveRecord::Base.connection.create_table :records do |t|
     t.integer :user_id
-    t.timestamps
+    t.string :attr1
+    t.string :attr2
+    t.string :password
   end
 end
 
