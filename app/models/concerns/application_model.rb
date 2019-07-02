@@ -12,6 +12,8 @@ module ApplicationModel
   end
 
   def canonical_iri_opts
+    return iri_opts unless respond_to?(:id)
+
     {id: id, :"#{self.class.name.underscore}_id" => id}
   end
 

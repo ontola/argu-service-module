@@ -3,7 +3,7 @@
 module UriTemplateHelper
   # @return [RDF::URI]
   def actors_iri(parent)
-    iri_from_template(:actors_iri, parent_iri: parent.iri_path)
+    iri_from_template(:actors_iri, parent_iri: split_iri_segments(parent.iri_path))
   end
 
   # @return [RDF::URI]
@@ -16,7 +16,7 @@ module UriTemplateHelper
     canonical = opts.delete(:canonical) && uri_template("#{type}_collection_canonical")
     expand_uri_template(
       "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
-      opts.merge(parent_iri: (parent.try(:iri_path) || parent).presence)
+      opts.merge(parent_iri: split_iri_segments(parent.try(:iri_path) || parent))
     )
   end
 
@@ -24,8 +24,6 @@ module UriTemplateHelper
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
     raise "Uri template #{template} is missing" unless tmpl
-    args[:parent_iri] = split_iri_segments(args[:parent_iri])
-    args[:collection_iri] = split_iri_segments(args[:collection_iri]) if args[:collection_iri].present?
     path = tmpl.expand(args)
     args[:with_hostname] ? path_with_hostname(path) : path
   end
@@ -67,7 +65,7 @@ module UriTemplateHelper
   def new_iri_path(parent, collection = nil, opts = {})
     query = opts.delete(:query)
     iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
-    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: iri)))
+    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: split_iri_segments(iri))))
     uri.query = query.to_param if query
     uri.to_s
   end
@@ -80,7 +78,7 @@ module UriTemplateHelper
   # @return [String]
   def settings_iri_path(parent, opts = {})
     iri = parent.try(:iri_path) || parent
-    opts[:parent_iri] ||= iri if iri.present?
+    opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
     opts[:only_path] = true
     opts[:fragment] = opts.delete(:tab) unless RequestStore.store[:old_frontend]
     expand_uri_template(:settings_iri, opts)
@@ -95,7 +93,7 @@ module UriTemplateHelper
     # @return [String]
     define_method "#{method}_iri_path" do |parent, opts = {}|
       iri = parent.try(:iri_path) || parent
-      opts[:parent_iri] ||= iri if iri.present?
+      opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
       opts[:only_path] = true
       expand_uri_template("#{method}_iri", opts)
     end

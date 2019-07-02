@@ -19,8 +19,20 @@ LinkedRails.policy_parent_class = 'RestrictivePolicy'
 LinkedRails.serializer_parent_class = 'BaseSerializer'
 
 module LinkedRailsDynamicIRI
-  def iri(_opts = {})
+  def actions_iri
     RDF::DynamicURI(super)
+  end
+
+  def canonical_iri_path(opts = {})
+    root_relative_canonical_iri(opts).to_s
+  end
+
+  def iri_with_root(_opts = {})
+    RDF::DynamicURI(super)
+  end
+
+  def iri_path(opts = {})
+    root_relative_iri(opts).to_s
   end
 end
 

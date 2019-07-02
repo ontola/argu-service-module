@@ -7,11 +7,6 @@ class Collection < LinkedRails::Collection
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
-  def canonical_iri_template
-    @canonical_iri_template ||=
-      URITemplate.new("#{canonical_iri_path.split('?').first}{?#{COLLECTION_PARAMS.join(',')}}")
-  end
-
   def clear_total_count
     parent&.reload
     @total_count = nil
@@ -19,17 +14,8 @@ class Collection < LinkedRails::Collection
 
   def iri_opts
     opts = super
-    iri_opts_add(opts, :parent_iri, parent&.iri_path) if parent
+    iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path)) if parent
     opts.merge(parent_uri_template_opts || {})
-  end
-
-  def iri_template
-    @iri_template ||=
-      URITemplate.new("#{iri_path.split('?').first}{?#{COLLECTION_PARAMS.join(',')}}")
-  end
-
-  def iri_template_name
-    @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
   end
 
   private
@@ -44,6 +30,10 @@ class Collection < LinkedRails::Collection
     return @canonical_iri_template_name if @canonical_iri_template_name
     canonical_name ||= @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
     @canonical_iri_template_name = uri_template(canonical_name) ? canonical_name : iri_template_name
+  end
+
+  def iri_template_name
+    @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
   end
 
   def new_child_values
