@@ -99,6 +99,7 @@ motions_collection_canonical: "{/parent_iri*}/motions{?display,filter%5B%5D,page
 motions_collection_iri: "{/parent_iri*}/m{?display,filter%5B%5D,page,page_size,type,before}"
 moves_iri: "{/parent_iri*}/move{?move%5Bnew_parent_id%5D}"
 new_iri: "{/parent_iri*}/new"
+new_container_node_iri: "/container_nodes/new{?display,filter%5B%5D,page,page_size,type,before}"
 notifications_iri: "/n{/id}"
 notifications_collection_canonical: "/n{?display,filter%5B%5D,page,page_size,type,before}"
 notifications_collection_iri: "/n{?display,filter%5B%5D,page,page_size,type,before}"
