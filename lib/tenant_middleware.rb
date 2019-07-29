@@ -9,17 +9,27 @@ class TenantMiddleware
     @app = app
   end
 
-  def call(env)
+  def call(env) # rubocop:disable Metrics/AbcSize
     request = Rack::Request.new(env)
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
     Rails.logger.debug ActsAsTenant.current_tenant ? "Tenant: #{ActsAsTenant.current_tenant.url}" : 'No tenant found'
     return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
+
     RequestStore.store[:old_frontend] = old_frontend?(env)
+
+    handle_missing_tenant if ActsAsTenant.current_tenant.blank?
+
     rewrite_path(env, request)
     @app.call(env)
   end
 
   private
+
+  def handle_missing_tenant
+    raise 'No tenant found' unless RequestStore.store[:old_frontend]
+
+    Apartment::Tenant.switch!('argu')
+  end
 
   def old_frontend?(env)
     env['HTTP_AUTHORIZATION'].blank? || !decode_token(env['HTTP_AUTHORIZATION'][7..-1])['scopes'].include?('afe')
