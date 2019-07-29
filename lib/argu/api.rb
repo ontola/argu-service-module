@@ -115,6 +115,13 @@ module Argu
       nil
     end
 
+    def get_tenants # rubocop:disable Naming/AccessorMethodName
+      result = ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || Page.default) do
+        api_request(:argu, :get, '/spi/tenants', token: service_token)
+      end
+      JSON.parse(result.body)['schemas']
+    end
+
     def self.service_api
       new(service_token: ENV['SERVICE_TOKEN'])
     end

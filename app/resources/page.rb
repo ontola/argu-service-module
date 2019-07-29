@@ -10,4 +10,10 @@ class Page < ActiveResourceModel
   def use_new_frontend
     false
   end
+
+  class << self
+    def default
+      new(iri_prefix: "app.#{ENV['HOSTNAME']}/argu", database_schema: 'argu')
+    end
+  end
 end

@@ -17,6 +17,10 @@ require 'argu/test_helpers'
 require 'argu/test_mocks'
 require 'support/iri_helpers'
 
+Sidekiq::Testing.server_middleware do |chain|
+  chain.add ActsAsTenant::Sidekiq::Server
+end
+
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include AssertDifference
@@ -25,6 +29,8 @@ RSpec.configure do |config|
   config.include IriHelpers
 
   config.before do
+    Apartment::Tenant.create('argu') unless ApplicationRecord.connection.schema_exists?('argu')
+    Apartment::Tenant.switch!('argu')
     find_tenant_mock
   end
 

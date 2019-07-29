@@ -67,7 +67,8 @@ module TestMocks
           accent_background_color: '#475668',
           accent_color: '#FFFFFF',
           navbar_background: '#475668',
-          navbar_color: '#FFFFFF'
+          navbar_color: '#FFFFFF',
+          database_schema: 'argu'
         }.to_json
       )
   end
