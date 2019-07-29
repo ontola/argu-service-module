@@ -8,19 +8,16 @@ class ActiveResourceModel < ActiveResource::Base
   extend ServiceHelper
   self.collection_parser = JsonApiCollectionParser
   self.include_format_in_path = false
-  self.site = URI("#{service_url(:argu)}/:root_id")
   self.auth_type = :bearer
   self.bearer_token = ENV['SERVICE_TOKEN']
   headers['Accept'] = 'application/vnd.api+json'
-  headers['X-Forwarded-Host'] = Rails.application.config.host_name
+  headers['X-Forwarded-Proto'] = 'https'
+
+  class_attribute :service, default: :argu
 
   def load(attributes, remove_root = false, persisted = false)
     attributes = JsonApiResourceParser.new(attributes).parse if (attributes.keys & %w[data attributes]).any?
     super
-  end
-
-  def root_id
-    prefix_options[:root_id] || ActsAsTenant.current_tenant.uuid
   end
 
   protected
@@ -42,5 +39,21 @@ class ActiveResourceModel < ActiveResource::Base
 
   def load_attributes_from_response?(response)
     response_code_allows_body?(response.status.to_i) && response.body.present?
+  end
+
+  class << self
+    def connection(refresh = false)
+      con = super
+      con.site = site
+      con
+    end
+
+    def site
+      URI("#{service_url(service)}/#{ActsAsTenant.current_tenant&.tenant&.path}")
+    end
+
+    def headers
+      super.merge('X-Forwarded-Host' => ActsAsTenant.current_tenant.tenant.host)
+    end
   end
 end

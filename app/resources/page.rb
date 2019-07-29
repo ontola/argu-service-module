@@ -11,6 +11,14 @@ class Page < ActiveResourceModel
     false
   end
 
+  def tenant
+    @tenant ||=
+      OpenStruct.new(
+        host: iri_prefix.split('/').first,
+        path: iri_prefix.split('/')[1..-1].join('/')
+      )
+  end
+
   class << self
     def default
       new(iri_prefix: "app.#{ENV['HOSTNAME']}/argu", database_schema: 'argu')

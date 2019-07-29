@@ -60,18 +60,18 @@ module Argu
       )
     end
 
-    def create_favorite(root_id, iri)
+    def create_favorite(iri)
       api_request(
         :argu,
         :post,
-        expand_uri_template(:favorites_iri, root_id: root_id),
+        expand_uri_template(:favorites_iri),
         body: {iri: iri},
         headers: {accept: 'application/json'}
       )
     end
 
     def create_membership(token)
-      group_iri = expand_uri_template(:groups_iri, id: token.group_id, root_id: token.root_id)
+      group_iri = expand_uri_template(:groups_iri, id: token.group_id)
       api_request(
         :argu,
         :post,
@@ -108,7 +108,7 @@ module Argu
     end
 
     def get_tenant(iri)
-      result = api_request(:argu, :get, expand_uri_template(:spi_find_tenant, iri: iri), token: service_token)
+      result = raw_api_request(:argu, :get, expand_uri_template(:spi_find_tenant, iri: iri), token: service_token)
       body = JSON.parse(result.body)
       Page.new(body)
     rescue OAuth2::Error
@@ -116,9 +116,7 @@ module Argu
     end
 
     def get_tenants # rubocop:disable Naming/AccessorMethodName
-      result = ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || Page.default) do
-        api_request(:argu, :get, '/spi/tenants', token: service_token)
-      end
+      result = raw_api_request(:argu, :get, '/_public/spi/tenants', token: service_token)
       JSON.parse(result.body)['schemas']
     end
 
@@ -137,9 +135,8 @@ module Argu
     private
 
     def api_request(service, method, path, opts = {})
-      token = opts.delete(:token)
       opts[:headers] = default_headers.merge(opts[:headers] || {})
-      service(service, token: token || user_token).request(method, path, opts)
+      raw_api_request(service, method, path_with_prefix(path), opts)
     end
 
     def create_user_request(email, r)
@@ -154,7 +151,8 @@ module Argu
 
     def default_headers
       {
-        'X-Forwarded-Host': Rails.application.config.host_name
+        'X-Forwarded-Host': ActsAsTenant.current_tenant.tenant.host,
+        'X-Forwarded-Proto': 'https'
       }
     end
 
@@ -165,6 +163,17 @@ module Argu
         cookies[split[0]] = CGI.unescape(split[1])
       end
       cookies
+    end
+
+    def path_with_prefix(path)
+      uri = URI("https://#{ActsAsTenant.current_tenant.iri_prefix}#{path}")
+      [uri.path, uri.query.presence].compact.join('?')
+    end
+
+    def raw_api_request(service, method, path, opts = {})
+      token = opts.delete(:token)
+      service(service, token: token || user_token)
+        .request(method, path, opts)
     end
 
     def user_from_response(response, email)

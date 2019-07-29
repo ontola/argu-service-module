@@ -9,26 +9,41 @@ class TenantMiddleware
     @app = app
   end
 
-  def call(env) # rubocop:disable Metrics/AbcSize
+  def call(env)
     request = Rack::Request.new(env)
-    ActsAsTenant.current_tenant = TenantFinder.from_request(request)
-    Rails.logger.debug ActsAsTenant.current_tenant ? "Tenant: #{ActsAsTenant.current_tenant.url}" : 'No tenant found'
-    return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
 
-    RequestStore.store[:old_frontend] = old_frontend?(env)
+    if tenantized_url?(env)
+      tenantize(env, request)
 
-    handle_missing_tenant if ActsAsTenant.current_tenant.blank?
+      return not_found unless ActsAsTenant.current_tenant || handle_missing_tenant
+      return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
+    else
+      Apartment::Tenant.switch!('public')
+    end
 
-    rewrite_path(env, request)
     @app.call(env)
   end
 
   private
 
   def handle_missing_tenant
-    raise 'No tenant found' unless RequestStore.store[:old_frontend]
+    return false unless RequestStore.store[:old_frontend]
 
     Apartment::Tenant.switch!('argu')
+    true
+  end
+
+  def log_tenant
+    fe = RequestStore.store[:old_frontend] ? 'old' : 'new'
+    if ActsAsTenant.current_tenant
+      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}. Frontend: #{fe}"
+    else
+      Rails.logger.debug "No tenant found. Frontend: #{fe}"
+    end
+  end
+
+  def not_found
+    [404, {'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def old_frontend?(env)
@@ -51,6 +66,21 @@ class TenantMiddleware
 
   def rewrite_path(env, request)
     return if ActsAsTenant.current_tenant.nil? || ActsAsTenant.current_tenant.iri_prefix == request.host
+
     env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '')
+  end
+
+  def tenantize(env, request)
+    ActsAsTenant.current_tenant = TenantFinder.from_request(request)
+
+    RequestStore.store[:old_frontend] = old_frontend?(env)
+
+    log_tenant
+
+    rewrite_path(env, request)
+  end
+
+  def tenantized_url?(env)
+    !env['PATH_INFO'].start_with?('/_public/')
   end
 end

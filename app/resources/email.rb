@@ -2,7 +2,7 @@
 
 class Email < ActiveResourceModel
   self.collection_name = 'email/emails'
-  self.site = URI(service_url(:email))
+  self.service = :email
 
   %w[opened delivered clicked bounced dropped].each do |event|
     define_method "#{event}?" do

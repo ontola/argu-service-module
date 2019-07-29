@@ -17,7 +17,7 @@ module TestMocks
 
   def as_guest_with_account(with_access_token = true)
     token = with_access_token ? as_guest : generate_guest_token_mock
-    stub_request(:post, expand_service_url(:argu, '/users'))
+    stub_request(:post, expand_service_url(:argu, '/argu/users'))
       .with(headers: {'Authorization' => "Bearer #{token}"})
       .to_return(
         status: 422,
@@ -36,7 +36,7 @@ module TestMocks
 
   def as_guest_without_account(email)
     token = generate_guest_token_mock
-    stub_request(:post, expand_service_url(:argu, '/users'))
+    stub_request(:post, expand_service_url(:argu, '/argu/users'))
       .with(headers: {'Authorization' => "Bearer #{token}"})
       .to_return(
         status: 201,
@@ -53,29 +53,26 @@ module TestMocks
   end
 
   def find_tenant_mock
-    stub_request(:get, %r{#{expand_service_url(:argu, '/spi/find_tenant')}\?iri=www.example.com\/argu\/tokens.*})
-      .with(
-        headers: {
-          'Authorization' => "Bearer #{ENV['SERVICE_TOKEN']}",
-          'X-Forwarded-Host' => ENV['HOSTNAME']
-        }
-      ).to_return(
-        status: 200,
-        body: {
-          iri_prefix: "app.#{ENV['HOSTNAME']}/argu",
-          uuid: TEST_ROOT_ID,
-          accent_background_color: '#475668',
-          accent_color: '#FFFFFF',
-          navbar_background: '#475668',
-          navbar_color: '#FFFFFF',
-          database_schema: 'argu'
-        }.to_json
-      )
+    stub_request(
+      :get,
+      %r{#{expand_service_url(:argu, '/_public/spi/find_tenant')}\?iri=www.example.com\/argu\/(tokens|email|spi).*}
+    ).to_return(
+      status: 200,
+      body: {
+        iri_prefix: "app.#{ENV['HOSTNAME']}/argu",
+        uuid: TEST_ROOT_ID,
+        accent_background_color: '#475668',
+        accent_color: '#FFFFFF',
+        navbar_background: '#475668',
+        navbar_color: '#FFFFFF',
+        database_schema: 'argu'
+      }.to_json
+    )
   end
 
   def generate_guest_token_mock
     token = doorkeeper_token('guest')
-    stub_request(:post, expand_service_url(:argu, '/spi/oauth/token'))
+    stub_request(:post, expand_service_url(:argu, '/argu/spi/oauth/token'))
       .to_return(
         status: 201,
         body: {access_token: token}.to_json
@@ -87,7 +84,7 @@ module TestMocks
     opts[:confirmed] ||= true
     opts[:secondary_emails] ||= []
     opts[:token] ||= ENV['SERVICE_TOKEN']
-    opts[:url] ||= expand_service_url(:argu, "/#{opts[:root] || TEST_ROOT_ID}/u/#{id}")
+    opts[:url] ||= expand_service_url(:argu, "/argu/u/#{id}")
     opts[:email] ||= "user#{id}@email.com"
     headers = {'Accept': 'application/vnd.api+json'}
     headers['Authorization'] = "Bearer #{opts[:token]}" if opts[:token]
@@ -106,7 +103,7 @@ module TestMocks
   end
 
   def create_membership_mock(opts = {})
-    stub_request(:post, expand_service_url(:argu, "/#{TEST_ROOT_ID}/g/#{opts[:group_id]}/group_memberships"))
+    stub_request(:post, expand_service_url(:argu, "/argu/g/#{opts[:group_id]}/group_memberships"))
       .with(
         body: {
           token: opts[:secret]
@@ -144,7 +141,7 @@ module TestMocks
   end
 
   def create_favorite_mock(opts = {})
-    stub_request(:post, expand_service_url(:argu, "/#{TEST_ROOT_ID}/favorites"))
+    stub_request(:post, expand_service_url(:argu, '/argu/favorites'))
       .with(body: {iri: opts[:iri]})
       .to_return(status: opts[:status] || 201)
   end
@@ -152,19 +149,19 @@ module TestMocks
   def emails_mock(type, id, event = 'create')
     stub_request(
       :get,
-      expand_service_url(:email, '/email/emails', event: event, resource_id: id, resource_type: type)
+      expand_service_url(:email, '/argu/email/emails', event: event, resource_id: id, resource_type: type)
     ).to_return(status: 200, body: [].to_json)
   end
 
   def email_check_mock(email, exists)
-    stub_request(:get, expand_service_url(:argu, '/spi/email_addresses', email: email))
+    stub_request(:get, expand_service_url(:argu, '/argu/spi/email_addresses', email: email))
       .to_return(status: exists ? 200 : 404)
   end
 
-  def group_mock(id, root_id: TEST_ROOT_ID)
+  def group_mock(id)
     stub_request(
       :get,
-      expand_service_url(:argu, ['', root_id, :g, id].compact.join('/'))
+      expand_service_url(:argu, ['/argu', :g, id].compact.join('/'))
     ).to_return(
       status: 200,
       body: {
@@ -199,7 +196,7 @@ module TestMocks
   end
 
   def confirm_email_mock(email)
-    stub_request(:put, expand_service_url(:argu, '/users/confirm'))
+    stub_request(:put, expand_service_url(:argu, '/argu/users/confirm'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end
@@ -211,7 +208,7 @@ module TestMocks
       resource_iri: iri,
       resource_type: type
     }.delete_if { |_k, v| v.nil? }
-    stub_request(:get, expand_service_url(:argu, '/spi/authorize', params)).to_return(status: 200)
+    stub_request(:get, expand_service_url(:argu, '/argu/spi/authorize', params)).to_return(status: 200)
   end
 
   def unauthorized_mock(type: nil, id: nil, iri: nil, action: nil)
@@ -221,7 +218,7 @@ module TestMocks
       resource_iri: iri,
       resource_type: type
     }.delete_if { |_k, v| v.nil? }
-    stub_request(:get, expand_service_url(:argu, '/spi/authorize', params)).to_return(status: 403)
+    stub_request(:get, expand_service_url(:argu, '/argu/spi/authorize', params)).to_return(status: 403)
   end
 
   def not_found_mock(url)
