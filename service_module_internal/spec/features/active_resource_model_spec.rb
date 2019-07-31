@@ -6,6 +6,10 @@ describe Resource do
   describe 'json_api parsing' do
     let(:resource) { described_class.find(1) }
 
+    before do
+      ActsAsTenant.current_tenant = Page.new(iri_prefix: 'example.com', database_schema: 'argu')
+    end
+
     it { expect(resource.id).to eq('resource_id') }
     it { expect(resource.attr1).to eq('attribute 1') }
     it { expect(resource.parent.id).to eq('ping') }
