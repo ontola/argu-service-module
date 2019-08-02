@@ -16,6 +16,7 @@ require 'webmock/rspec'
 require 'argu/test_helpers'
 require 'argu/test_mocks'
 require 'support/iri_helpers'
+require 'sidekiq/testing'
 
 Sidekiq::Testing.server_middleware do |chain|
   chain.add ActsAsTenant::Sidekiq::Server
