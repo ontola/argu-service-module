@@ -48,18 +48,18 @@ class CurrentUser
 
     private
 
-    def attributes_from_token(token) # rubocop:disable Metrics/MethodLength
+    def attributes_from_token(token)
       token_data = decode_token(token)
+      attrs = {token: token, scopes: token_data['scopes'] || []}
       user_data = token_data['user']
-      {
-        token: token,
-        email: user_data['email'],
-        id: user_data['id'],
-        iri: user_data['@id'] && RDF::DynamicURI(user_data['@id']),
-        scopes: token_data['scopes'] || [],
-        type: user_data['type'],
-        language: user_data['language']
-      }
+      return attrs if user_data.blank?
+
+      attrs[:email] = user_data['email']
+      attrs[:id] = user_data['id']
+      attrs[:iri] = user_data['@id'] && RDF::DynamicURI(user_data['@id'])
+      attrs[:type] = user_data['type']
+      attrs[:language] = user_data['language']
+      attrs
     end
   end
 end
