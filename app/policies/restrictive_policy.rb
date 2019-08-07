@@ -3,6 +3,7 @@
 class RestrictivePolicy
   class Scope
     attr_reader :context, :scope
+    alias user_context context
 
     def initialize(context, scope)
       @context = context
@@ -16,6 +17,7 @@ class RestrictivePolicy
   delegate :export_scope?, :service_scope?, :system_scope?,
            to: :context,
            allow_nil: true
+  alias user_context context
 
   def initialize(context, record)
     @context = context
