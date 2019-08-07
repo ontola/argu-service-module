@@ -101,7 +101,7 @@ module Argu
         :argu,
         :post,
         expand_uri_template(:spi_oauth_token),
-        token: service_token,
+        token: user_token || service_token,
         body: {scope: :guest, r: r}
       )
       @user_token = JSON.parse(result.body)['access_token']

@@ -12,7 +12,7 @@ module Argu
       end
 
       def current_user
-        @current_user ||= CurrentUser.from_token(user_token) || CurrentUser.from_token(generate_guest_token)
+        @current_user ||= user_from_token || guest_user
       end
 
       def user_context
@@ -33,6 +33,12 @@ module Argu
         @user_token = api.generate_guest_token(r: r_for_guest_token)
       end
 
+      def guest_user
+        token = generate_guest_token
+        response.headers['New-Authorization'] = token
+        CurrentUser.from_token(token)
+      end
+
       def r_for_guest_token
         request.original_url
       end
@@ -43,6 +49,11 @@ module Argu
 
       def token_from_header
         request.headers['Authorization'][7..-1] if request.headers['Authorization'].downcase.start_with?('bearer ')
+      end
+
+      def user_from_token
+        user = CurrentUser.from_token(user_token)
+        user if user&.id&.present?
       end
 
       def user_token
