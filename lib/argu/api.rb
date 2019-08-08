@@ -156,15 +156,6 @@ module Argu
       }
     end
 
-    def parsed_cookies(response)
-      cookies = {}
-      response.headers['set-cookie']&.split(',')&.each do |cookie|
-        split = cookie.strip.split(';')[0].strip.split('=')
-        cookies[split[0]] = CGI.unescape(split[1])
-      end
-      cookies
-    end
-
     def path_with_prefix(path)
       uri = URI("https://#{ActsAsTenant.current_tenant.iri_prefix}#{path}")
       [uri.path, uri.query.presence].compact.join('?')
@@ -186,7 +177,7 @@ module Argu
     end
 
     def set_argu_client_token_cookie(token, expires = nil)
-      cookie_jar['argu_client_token'] = {
+      cookie_jar.encrypted['argu_client_token'] = {
         expires: expires,
         value: token,
         secure: Rails.env.staging? || Rails.env.production?,
@@ -196,7 +187,7 @@ module Argu
     end
 
     def update_user_token(response)
-      set_argu_client_token_cookie(parsed_cookies(response)['argu_client_token'])
+      set_argu_client_token_cookie(response.headers['New-Authorization'])
       @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
       Bugsnag.notify('No new user token received') if @user_token.blank?
     end
