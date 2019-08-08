@@ -15,7 +15,7 @@ class TenantMiddleware
     if tenantized_url?(env)
       tenantize(env, request)
 
-      return not_found unless ActsAsTenant.current_tenant || handle_missing_tenant
+      return tenant_is_missing(request) unless ActsAsTenant.current_tenant || handle_missing_tenant
       return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
     else
       Apartment::Tenant.switch!('public')
@@ -25,6 +25,10 @@ class TenantMiddleware
   end
 
   private
+
+  def fallback_location
+    "#{Rails.application.config.frontend_url}/argu"
+  end
 
   def handle_missing_tenant
     return false unless RequestStore.store[:old_frontend]
@@ -40,10 +44,6 @@ class TenantMiddleware
     else
       Rails.logger.debug "No tenant found. Frontend: #{fe}"
     end
-  end
-
-  def not_found
-    [404, {'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def old_frontend?(env)
@@ -68,6 +68,14 @@ class TenantMiddleware
     return if ActsAsTenant.current_tenant.nil? || ActsAsTenant.current_tenant.iri_prefix == request.host
 
     env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '')
+  end
+
+  def tenant_is_missing(request)
+    if request.url.chomp('/') == Rails.application.config.frontend_url
+      [301, {'Location' => fallback_location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
+    else
+      [404, {'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
+    end
   end
 
   def tenantize(env, request)
