@@ -9,6 +9,7 @@ module NS
   META = RDF::Vocabulary.new('https://argu.co/ns/meta#')
   ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/')
   ORI = RDF::Vocabulary.new('https://id.openraadsinformatie.nl/')
+  RIVM = RDF::Vocabulary.new('https://argu.co/ns/rivm#')
 
   AS = RDF::Vocabulary.new('https://www.w3.org/ns/activitystreams#')
   BIBFRAME = RDF::Vocabulary.new('http://bibframe.org/vocab/')
