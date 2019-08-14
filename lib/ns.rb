@@ -19,6 +19,7 @@ module NS
   DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
   DC = RDF::Vocabulary.new('http://purl.org/dc/terms/')
   DBPEDIA = RDF::Vocabulary.new('http://dbpedia.org/resource/')
+  FHIR = RDF::Vocabulary.new('http://hl7.org/fhir/')
   FOAF = RDF::Vocabulary.new('http://xmlns.com/foaf/0.1/')
   GEO = RDF::Vocabulary.new('http://www.w3.org/2003/01/geo/wgs84_pos#')
   HTTP = RDF::Vocabulary.new('http://www.w3.org/2011/http#')
