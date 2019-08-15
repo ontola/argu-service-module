@@ -17,8 +17,10 @@ module ActsAsTenant
         if msg.key?('acts_as_tenant')
           tenant = Page.new(msg['acts_as_tenant'])
 
-          ActsAsTenant.with_tenant(tenant) do
-            yield
+          Apartment::Tenant.switch(tenant.database_schema) do
+            ActsAsTenant.with_tenant(tenant) do
+              yield
+            end
           end
         else
           yield

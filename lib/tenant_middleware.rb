@@ -11,40 +11,43 @@ class TenantMiddleware
 
   def call(env)
     request = Rack::Request.new(env)
+    fallback = 'public'
 
     if tenantized_url?(env)
       tenantize(env, request)
 
-      return tenant_is_missing(request) unless ActsAsTenant.current_tenant || handle_missing_tenant
+      return tenant_is_missing(request) if tenant_missing?
       return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
-    else
-      Apartment::Tenant.switch!('public')
+
+      fallback = 'argu'
     end
 
     I18n.locale = I18n.default_locale
 
-    @app.call(env)
+    call_app(env, fallback)
   end
 
   private
+
+  def call_app(env, fallback)
+    Apartment::Tenant.switch(ActsAsTenant.current_tenant&.database_schema || fallback) do
+      log_tenant
+
+      @app.call(env)
+    end
+  end
 
   def fallback_location
     "#{Rails.application.config.frontend_url}/argu"
   end
 
-  def handle_missing_tenant
-    return false unless RequestStore.store[:old_frontend]
-
-    Apartment::Tenant.switch!('argu')
-    true
-  end
-
   def log_tenant
     fe = RequestStore.store[:old_frontend] ? 'old' : 'new'
+    schema = Apartment::Tenant.current
     if ActsAsTenant.current_tenant
-      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}. Frontend: #{fe}"
+      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}. Frontend: #{fe}. Schema: #{schema}"
     else
-      Rails.logger.debug "No tenant found. Frontend: #{fe}"
+      Rails.logger.debug "No tenant found. Frontend: #{fe}. Schema: #{schema}"
     end
   end
 
@@ -80,12 +83,14 @@ class TenantMiddleware
     end
   end
 
+  def tenant_missing?
+    ActsAsTenant.current_tenant.blank? && !RequestStore.store[:old_frontend]
+  end
+
   def tenantize(env, request)
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
 
     RequestStore.store[:old_frontend] = old_frontend?(env)
-
-    log_tenant
 
     rewrite_path(env, request)
   end
