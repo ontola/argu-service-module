@@ -21,6 +21,8 @@ class TenantMiddleware
       Apartment::Tenant.switch!('public')
     end
 
+    I18n.locale = I18n.default_locale
+
     @app.call(env)
   end
 
