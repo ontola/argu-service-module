@@ -6,17 +6,7 @@ class DataEvent
   include LinkedRails::Model
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
 
-  def id
-    nil
-  end
-
-  def publish
-    Connection.publish('events', json)
-  end
-
-  private
-
-  def json
+  def as_json(_opts = {})
     ActiveModelSerializers::SerializableResource
       .new(
         self,
@@ -25,7 +15,15 @@ class DataEvent
         key_transform: :camel_lower,
         scope: UserContext.new(doorkeeper_scopes: %w[service])
       )
-      .to_json
+      .as_json
+  end
+
+  def id
+    nil
+  end
+
+  def publish
+    Connection.publish('events', to_json)
   end
 
   class << self
