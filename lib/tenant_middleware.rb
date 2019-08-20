@@ -12,11 +12,11 @@ class TenantMiddleware
   def call(env)
     request = Rack::Request.new(env)
 
-    if tenantized_url?(env)
-      tenantize(env, request)
-
+    if tenantize(env, request)
       return tenant_is_missing(request) unless ActsAsTenant.current_tenant || handle_missing_tenant
       return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
+
+      rewrite_path(env, request)
     else
       Apartment::Tenant.switch!('public')
     end
@@ -56,7 +56,7 @@ class TenantMiddleware
 
   def redirect_to_new_frontend?(request)
     tenant = ActsAsTenant.current_tenant
-    tenant&.use_new_frontend && !request.url.include?("://#{tenant.iri_prefix}")
+    RequestStore.store[:old_frontend] && tenant&.use_new_frontend && !request.url.include?("://#{tenant.iri_prefix}")
   end
 
   def redirect_to_new_frontend(request)
@@ -69,7 +69,7 @@ class TenantMiddleware
   def rewrite_path(env, request)
     return if ActsAsTenant.current_tenant.nil? || ActsAsTenant.current_tenant.iri_prefix == request.host
 
-    env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '')
+    env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '/')
   end
 
   def tenant_is_missing(request)
@@ -81,13 +81,15 @@ class TenantMiddleware
   end
 
   def tenantize(env, request)
+    return false unless tenantized_url?(env)
+
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
 
     RequestStore.store[:old_frontend] = old_frontend?(env)
 
     log_tenant
 
-    rewrite_path(env, request)
+    true
   end
 
   def tenantized_url?(env)
