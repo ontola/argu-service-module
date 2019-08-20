@@ -7,10 +7,6 @@ class Page < ActiveResourceModel
     iri_prefix.split('/').last.presence || iri_prefix
   end
 
-  def use_new_frontend
-    false
-  end
-
   def tenant
     @tenant ||=
       OpenStruct.new(
