@@ -6,6 +6,7 @@ module Argu
   class API # rubocop:disable Metrics/ClassLength
     include ServiceHelper
     include UriTemplateHelper
+    include JWTHelper
     attr_reader :cookie_jar
 
     def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
@@ -130,6 +131,20 @@ module Argu
         resource_id: group_id,
         action: 'is_member'
       )
+    end
+
+    def verify_token(token, group_id)
+      api_request(
+        :token,
+        :get,
+        expand_uri_template(:verify_token, jwt: sign_payload(secret: token, group_id: group_id)),
+        token: service_token
+      )
+      true
+    rescue OAuth2::Error => e
+      Bugsnag.notify(e)
+
+      false
     end
 
     private
