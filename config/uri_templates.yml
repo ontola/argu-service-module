@@ -32,6 +32,8 @@ container_nodes_collection_iri: "{/parent_iri*}/container_nodes{?display,filter%
 creative_works_iri: "{/root_id}/creative_works{/id}"
 current_actors_iri: "/c_a"
 custom_menu_items_iri: "{/parent_iri*}/menus/{menu_type}#custom_{id}"
+dashboards_collection_canonical: "{/parent_iri*}/dashboards{?display,filter%5B%5D,page,page_size,type,before}"
+dashboards_collection_iri: "{/parent_iri*}/dashboards{?display,filter%5B%5D,page,page_size,type,before}"
 decisions_iri: "{/parent_iri*}/decision{/id}"
 decisions_collection_canonical: "{/parent_iri*}/decision{?display,page,type,before,state}"
 decisions_collection_iri: "{/parent_iri*}/decision{?display,page,type,before,state}"
