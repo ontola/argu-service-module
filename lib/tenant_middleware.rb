@@ -93,6 +93,6 @@ class TenantMiddleware
   end
 
   def tenantized_url?(env)
-    !env['PATH_INFO'].start_with?('/_public/')
+    !env['PATH_INFO'].start_with?(['', Rails.application.routes.default_scope, '_public', ''].compact.join('/'))
   end
 end
