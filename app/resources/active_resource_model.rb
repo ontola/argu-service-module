@@ -48,6 +48,14 @@ class ActiveResourceModel < ActiveResource::Base
       con
     end
 
+    def prefix(_options = {})
+      site.path.ends_with?('/') ? site.path : "#{site.path}/"
+    end
+
+    def prefix_source
+      prefix
+    end
+
     def site
       URI("#{service_url(service)}/#{ActsAsTenant.current_tenant&.tenant&.path}")
     end
