@@ -2,6 +2,8 @@
 
 class Collection
   module CounterCache
+    attr_writer :counter_cache_column
+
     def total_count
       @total_count ||= count_from_cache_column || super
     end
@@ -20,7 +22,9 @@ class Collection
     def counter_cache_column
       return counter_cache_for_filter if filter&.count == 1
       return if filtered?
-      @counter_cache_column ||= counter_cache_column_name
+      return @counter_cache_column if instance_variable_defined?(:@counter_cache_column)
+
+      @counter_cache_column = counter_cache_column_name
     end
 
     def counter_cache_column_name
