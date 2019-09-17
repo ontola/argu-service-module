@@ -12,11 +12,11 @@ class Collection
 
     def count_from_cache_column
       return count_from_counter_culture if counter_culture_column
-      parent.children_count(counter_cache_column) if counter_cache_column
+      parent&.children_count(counter_cache_column) if counter_cache_column
     end
 
     def count_from_counter_culture
-      parent.send(counter_culture_column)
+      parent&.send(counter_culture_column)
     end
 
     def counter_cache_column
