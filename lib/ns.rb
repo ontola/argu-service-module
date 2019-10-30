@@ -1,41 +1,27 @@
 # frozen_string_literal: true
 
 require 'rdf'
+require 'rdf/vocab'
 
 module NS
   ARGU = RDF::Vocabulary.new('https://argu.co/ns/core#')
   MAPPING = RDF::Vocabulary.new('https://argu.co/voc/mapping/')
   MEETING = RDF::Vocabulary.new('https://argu.co/ns/meeting/')
   META = RDF::Vocabulary.new('https://argu.co/ns/meta#')
-  ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/')
   ORI = RDF::Vocabulary.new('https://id.openraadsinformatie.nl/')
   RIVM = RDF::Vocabulary.new('https://argu.co/ns/rivm#')
 
-  AS = RDF::Vocabulary.new('https://www.w3.org/ns/activitystreams#')
-  BIBFRAME = RDF::Vocabulary.new('http://bibframe.org/vocab/')
-  BIBO = RDF::Vocabulary.new('http://purl.org/ontology/bibo/')
   BIO = RDF::Vocabulary.new('http://purl.org/vocab/bio/0.1/')
-  CC = RDF::Vocabulary.new('http://creativecommons.org/ns#')
   CUBE = RDF::Vocabulary.new('http://purl.org/linked-data/cube#')
   DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
-  DC = RDF::Vocabulary.new('http://purl.org/dc/terms/')
   DBPEDIA = RDF::Vocabulary.new('http://dbpedia.org/resource/')
   FHIR = RDF::Vocabulary.new('http://hl7.org/fhir/')
-  FOAF = RDF::Vocabulary.new('http://xmlns.com/foaf/0.1/')
-  GEO = RDF::Vocabulary.new('http://www.w3.org/2003/01/geo/wgs84_pos#')
-  HTTP = RDF::Vocabulary.new('http://www.w3.org/2011/http#')
   HYDRA = RDF::Vocabulary.new('http://www.w3.org/ns/hydra/core#')
-  LL = RDF::Vocabulary.new('http://purl.org/link-lib/')
   NCAL = RDF::Vocabulary.new('http://www.semanticdesktop.org/ontologies/2007/04/02/ncal#')
   OPENGOV = RDF::Vocabulary.new('http://www.w3.org/ns/opengov#')
-  ORG = RDF::Vocabulary.new('http://www.w3.org/ns/org#')
   P = RDF::Vocabulary.new('http://www.wikidata.org/prop/')
   PAV = RDF::Vocabulary.new('http://purl.org/pav/')
   PERSON = RDF::Vocabulary.new('http://www.w3.org/ns/person#')
-  PROV = RDF::Vocabulary.new('http://www.w3.org/ns/prov#')
-  SCHEMA = RDF::Vocabulary.new('http://schema.org/')
-  SH = RDF::Vocabulary.new('http://www.w3.org/ns/shacl#')
-  SKOS = RDF::Vocabulary.new('http://www.w3.org/2004/02/skos/core#')
   TIME = RDF::Vocabulary.new('http://www.w3.org/2006/time#')
   WDATA = RDF::Vocabulary.new('https://www.wikidata.org/wiki/Special:EntityData/')
   WD = RDF::Vocabulary.new('http://www.wikidata.org/entity/')
@@ -45,8 +31,72 @@ module NS
   WDT = RDF::Vocabulary.new('http://www.wikidata.org/prop/direct/')
   XMLNS = RDF::Vocabulary.new('http://www.w3.org/2000/xmlns/')
 
+  LL = LinkedRails::Vocab::LL
+  ONTOLA = LinkedRails::Vocab::ONTOLA
+
+  ACL = RDF::Vocab::ACL
+  AS = RDF::Vocab::AS
+  BF2 = RDF::Vocab::BF2
+  BIBFRAME = RDF::Vocab::Bibframe
+  BIBO = RDF::Vocab::BIBO
+  CC = RDF::Vocab::CC
+  CERT = RDF::Vocab::CERT
+  CNT = RDF::Vocab::CNT
+  DATACITE = RDF::Vocab::DataCite
+  DC = RDF::Vocab::DC
+  DC11 = RDF::Vocab::DC11
+  DCAT = RDF::Vocab::DCAT
+  DCMITYPE = RDF::Vocab::DCMIType
+  DOAP = RDF::Vocab::DOAP
+  DWC = RDF::Vocab::DWC
+  EDM = RDF::Vocab::EDM
+  EBUCORE = RDF::Vocab::EBUCore
+  EXIF = RDF::Vocab::EXIF
+  FCREPO4 = RDF::Vocab::Fcrepo4
+  FOAF = RDF::Vocab::FOAF
+  GEO = RDF::Vocab::GEO
+  GR = RDF::Vocab::GR
+  HT = RDF::Vocab::HT
+  ICAL = RDF::Vocab::ICAL
+  IDENTIFIERS = RDF::Vocab::Identifiers
+  IIIF = RDF::Vocab::IIIF
+  JSONLD = RDF::Vocab::JSONLD
+  LDP = RDF::Vocab::LDP
+  LRMI = RDF::Vocab::LRMI
+  MA = RDF::Vocab::MA
+  MADS = RDF::Vocab::MADS
+  MARCRELATORS = RDF::Vocab::MARCRelators
+  MO = RDF::Vocab::MO
+  MODS = RDF::Vocab::MODS
+  NFO = RDF::Vocab::NFO
+  OA = RDF::Vocab::OA
+  OG = RDF::Vocab::OG
+  OGC = RDF::Vocab::OGC
+  ORE = RDF::Vocab::ORE
+  ORG = RDF::Vocab::ORG
   OWL = RDF::OWL
+  PPLAN = RDF::Vocab::PPLAN
+  PREMIS = RDF::Vocab::PREMIS
+  PREMISEVENTTYPE = RDF::Vocab::PremisEventType
+  PROV = RDF::Vocab::PROV
   RDFS = RDF::RDFS
   RDFV = RDF::RDFV
+  RSA = RDF::Vocab::RSA
+  RSS = RDF::Vocab::RSS
+  SCHEMA = RDF::Vocab::SCHEMA
+  SH = RDF::Vocab::SH
+  SIOC = RDF::Vocab::SIOC
+  SIOCSERVICES = RDF::Vocab::SiocServices
+  SKOS = RDF::Vocab::SKOS
+  SKOSXL = RDF::Vocab::SKOSXL
+  V = RDF::Vocab::V
+  VCARD = RDF::Vocab::VCARD
+  VMD = RDF::Vocab::VMD
+  VOID = RDF::Vocab::VOID
+  VS = RDF::Vocab::VS
+  WOT = RDF::Vocab::WOT
+  WDRS = RDF::Vocab::WDRS
+  XHTML = RDF::Vocab::XHTML
+  XHV = RDF::Vocab::XHV
   XSD = RDF::XSD
 end
