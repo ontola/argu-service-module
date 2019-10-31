@@ -52,10 +52,10 @@ module TestMocks
     user_mock(id, opts)
   end
 
-  def find_tenant_mock
+  def find_tenant_mock(iri = 'www.example.com\/argu\/(tokens|email|spi).*')
     stub_request(
       :get,
-      %r{#{expand_service_url(:argu, '/_public/spi/find_tenant')}\?iri=www.example.com\/argu\/(tokens|email|spi).*}
+      /#{expand_service_url(:argu, '/_public/spi/find_tenant')}\?iri=#{iri}/
     ).to_return(
       status: 200,
       body: {
