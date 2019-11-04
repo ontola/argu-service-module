@@ -20,6 +20,10 @@ module UriTemplateHelper
     )
   end
 
+  def current_vote_iri(object)
+    iri_from_template(:vote_iri, parent_iri: split_iri_segments(object.iri_path))
+  end
+
   # @return [String]
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
