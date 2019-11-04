@@ -81,8 +81,7 @@ module Argu
 
       def expect_view_members(parent, count)
         member_sequence = expect_included(expect_relationship('memberSequence', size: 1, parent: parent)['data']['id'])
-        ids = view_member_ids(member_sequence, count)
-        expect_included(ids) unless count.zero?
+        view_member_ids(member_sequence, count)
       end
 
       def view_member_ids(parent, count)
