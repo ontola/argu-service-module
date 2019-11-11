@@ -33,6 +33,7 @@ module NS
 
   LL = LinkedRails::Vocab::LL
   ONTOLA = LinkedRails::Vocab::ONTOLA
+  SP = LinkedRails::Vocab::SP
 
   ACL = RDF::Vocab::ACL
   AS = RDF::Vocab::AS
