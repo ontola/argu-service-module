@@ -2,8 +2,8 @@ en:
   active_response:
     actions:
       create:
-        success: "%{type} succesvol aangemaakt"
+        success: "%{type} created successfully"
       update:
-        success: "%{type} succesvol opgeslagen"
+        success: "%{type} saved successfully"
       destroy:
-        success: "%{type} succesvol verwijderd"
+        success: "%{type} deleted successfully"
