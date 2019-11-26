@@ -84,7 +84,7 @@ module UriTemplateHelper
     iri = parent.try(:iri_path) || parent
     opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
     opts[:only_path] = true
-    opts[:fragment] = opts.delete(:tab) unless RequestStore.store[:old_frontend]
+    opts[:fragment] = opts.delete(:tab) if opts[:tab] && !RequestStore.store[:old_frontend]
     expand_uri_template(:settings_iri, opts)
   end
 
