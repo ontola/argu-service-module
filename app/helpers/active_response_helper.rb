@@ -22,10 +22,10 @@ module ActiveResponseHelper
   end
 
   def create_meta
-    data = []
+    data = super
     return data if index_collection.blank?
     meta_replace_collection_count(data, index_collection.unfiltered)
-    authenticated_resource.applicable_filters.each do |key, value|
+    current_resource.applicable_filters.each do |key, value|
       meta_replace_collection_count(data, index_collection.unfiltered.new_child(filter: {key => value}))
     end
     data
@@ -53,10 +53,10 @@ module ActiveResponseHelper
   end
 
   def destroy_meta
-    data = []
+    data = super
     return data if index_collection.blank?
     meta_replace_collection_count(data, index_collection.unfiltered)
-    authenticated_resource.applicable_filters.each do |key, value|
+    current_resource.applicable_filters.each do |key, value|
       meta_replace_collection_count(data, index_collection.unfiltered.new_child(filter: {key => value}))
     end
     data
