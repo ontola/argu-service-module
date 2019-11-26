@@ -38,7 +38,7 @@ class BroadcastWorker
   private
 
   def cache_resource?
-    ENV['CACHE_DIRECTORY'] && resource.cache_nquads
+    ENV['CACHE_DIRECTORY'] && resource.try(:cache_nquads)
   end
 
   def data_event_from_attrs(attrs)
