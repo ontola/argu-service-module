@@ -17,7 +17,7 @@ class Page < ActiveResourceModel
 
   class << self
     def default
-      new(iri_prefix: "app.#{ENV['HOSTNAME']}/argu", database_schema: 'argu')
+      new(iri_prefix: "app.#{ENV['HOSTNAME']}/argu", database_schema: 'argu', display_name: 'Argu')
     end
   end
 end

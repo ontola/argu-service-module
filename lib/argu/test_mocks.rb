@@ -59,14 +59,15 @@ module TestMocks
     ).to_return(
       status: 200,
       body: {
-        iri_prefix: "app.#{ENV['HOSTNAME']}/argu",
-        uuid: TEST_ROOT_ID,
         accent_background_color: '#475668',
         accent_color: '#FFFFFF',
+        database_schema: 'argu',
+        display_name: 'Page name',
+        iri_prefix: "app.#{ENV['HOSTNAME']}/argu",
         navbar_background: '#475668',
         navbar_color: '#FFFFFF',
-        database_schema: 'argu',
-        use_new_frontend: false
+        use_new_frontend: false,
+        uuid: TEST_ROOT_ID
       }.to_json
     )
   end
