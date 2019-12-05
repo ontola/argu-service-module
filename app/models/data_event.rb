@@ -21,7 +21,7 @@ class DataEvent # rubocop:disable Metrics/ClassLength
   end
 
   def nquads
-    serializable_resource(:rdf, resource, %w[guest afe])
+    serializable_resource(:rdf, resource, %w[guest afe], include: resource.class.try(:preview_includes))
       .adapter
       .dump(:nquads)
   end
