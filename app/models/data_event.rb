@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-class DataEvent # rubocop:disable Metrics/ClassLength
+class DataEvent
   extend JsonApiHelper
+  include SerializationHelper
   include ActiveModel::Model
   include LinkedRails::Model
   attr_accessor :affected_resources, :changes, :event, :resource, :resource_id, :resource_type
@@ -20,25 +21,8 @@ class DataEvent # rubocop:disable Metrics/ClassLength
     nil
   end
 
-  def nquads
-    serializable_resource(:rdf, resource, %w[guest afe], include: resource.class.try(:preview_includes))
-      .adapter
-      .dump(:nquads)
-  end
-
   def publish
     Connection.publish('events', to_json)
-  end
-
-  private
-
-  def serializable_resource(format, resource, scopes, opts = {})
-    ActiveModelSerializers::SerializableResource
-      .new(resource, opts.merge(adapter: format, scope: user_context(scopes)))
-  end
-
-  def user_context(scopes)
-    UserContext.new(doorkeeper_scopes: scopes)
   end
 
   class << self

@@ -18,6 +18,8 @@ LinkedRails.controller_parent_class = 'ParentableController'
 LinkedRails.policy_parent_class = 'RestrictivePolicy'
 LinkedRails.serializer_parent_class = 'BaseSerializer'
 
+LinkedRails.vocabulary_class = 'Vocabulary'
+
 module LinkedRailsDynamicIRI
   def actions_iri
     RDF::DynamicURI(super)
