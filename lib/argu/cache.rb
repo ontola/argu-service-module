@@ -31,7 +31,7 @@ module Argu
     end
 
     def cache_resource?
-      ENV['CACHE_DIRECTORY'] && resource.try(:cache_resource?)
+      ENV['CACHE_DIRECTORY']
     end
 
     def create_symlink
@@ -45,10 +45,12 @@ module Argu
     end
 
     def data(adapter_type, format, adapter_opts)
-      if adapter_type == :rdf
-        adapter(adapter_type, adapter_opts).dump(RDF::Format.for(file_extension: format).symbols.first)
-      else
-        adapter(adapter_type, adapter_opts).to_json
+      ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || resource.try(:root)) do
+        if adapter_type == :rdf
+          adapter(adapter_type, adapter_opts).dump(RDF::Format.for(file_extension: format).symbols.first)
+        else
+          adapter(adapter_type, adapter_opts).to_json
+        end
       end
     end
 

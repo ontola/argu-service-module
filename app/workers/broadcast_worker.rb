@@ -14,7 +14,7 @@ class BroadcastWorker
 
     self.data_event = data_event_from_attrs(attrs)
 
-    write_nquads
+    write_to_cache
     publish_data_event
   end
 
@@ -22,8 +22,8 @@ class BroadcastWorker
     self.data_event = data_event_from_attrs(resource: resource)
   end
 
-  def write_nquads
-    Argu::Cache.new.write(resource, :rdf, :nq)
+  def write_to_cache
+    resource.try(:write_to_cache, Argu::Cache.new)
   end
 
   private
