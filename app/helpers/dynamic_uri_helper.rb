@@ -18,7 +18,7 @@ module DynamicUriHelper
   end
 
   def rewrite(uri, tenant = ActsAsTenant.current_tenant, old_frontend: RequestStore.store[:old_frontend])
-    return uri if tenant.nil?
+    return uri if tenant.nil? || uri.to_s.include?("#{Rails.application.config.host_name}/i/")
 
     uri.to_s.sub("://#{Rails.application.config.host_name}", "://#{tenant_prefix(tenant, old_frontend)}")
   end
