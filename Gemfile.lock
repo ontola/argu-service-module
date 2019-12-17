@@ -28,8 +28,8 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: 72d8f0045500177bb01a00374245f93f89ddeab5
-  ref: 72d8f0045500177bb01a00374245f93f89ddeab5
+  revision: 686488c96620b54843b2a29de59428fa93ec198b
+  ref: 686488c96620b54843b2a29de59428fa93ec198b
   specs:
     linked_rails (0.0.0)
       active_response
@@ -110,7 +110,7 @@ GEM
     amq-protocol (2.1.0)
     arel (9.0.0)
     ast (2.3.0)
-    builder (3.2.3)
+    builder (3.2.4)
     bunny (2.6.3)
       amq-protocol (>= 2.0.1)
     case_transform (0.2)
@@ -227,7 +227,7 @@ GEM
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
     rake (13.0.1)
-    rdf (3.0.13)
+    rdf (3.1.0)
       hamster (~> 3.0)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (2.2.1)
@@ -250,8 +250,8 @@ GEM
     rdf-turtle (3.0.6)
       ebnf (~> 1.1)
       rdf (~> 3.0)
-    rdf-vocab (3.0.14)
-      rdf (~> 3.0, >= 3.0.11)
+    rdf-vocab (3.1.0)
+      rdf (~> 3.1)
     rdf-xsd (3.0.1)
       rdf (~> 3.0)
     redis (4.1.2)
@@ -313,7 +313,7 @@ GEM
     sxp (1.0.2)
       rdf (~> 3.0)
     temple (0.8.1)
-    thor (0.20.3)
+    thor (1.0.0)
     thread_safe (0.3.6)
     tilt (2.0.9)
     tzinfo (1.2.5)
