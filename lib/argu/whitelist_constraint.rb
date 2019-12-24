@@ -7,9 +7,17 @@ module Argu
     WHITELIST = ENV['INT_IP_WHITELIST']&.split(',')&.map { |ip| IPAddr.new(ip) } || []
 
     def matches?(request)
-      [IPAddr.new(request.ip), IPAddr.new(request.remote_ip)].all? do |req_ip|
-        WHITELIST.any? { |ip| ip.include?(req_ip) }
+      ip = request_ip(request.ip)
+      remote_ip = request_ip(request.remote_ip)
+      [ip, remote_ip].all? do |req_ip|
+        WHITELIST.any? { |allowed_ip| allowed_ip.include?(req_ip) }
       end
+    end
+
+    def request_ip(ip)
+      Bugsnag.notify("#{ip} is not a string but a #{ip.class}") unless ip.is_a?(String)
+
+      IPAddr.new(ip)
     end
   end
 end
