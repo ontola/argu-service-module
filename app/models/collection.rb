@@ -12,6 +12,14 @@ class Collection < LinkedRails::Collection
     @total_count = nil
   end
 
+  def iri(opts = {})
+    return super if ActsAsTenant.current_tenant.present? || parent.blank?
+    return @iri if @iri && opts.blank?
+    iri = ActsAsTenant.with_tenant(parent.root) { super }
+    @iri = iri if opts.blank?
+    iri
+  end
+
   def iri_opts
     opts = super
     iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path)) if parent
