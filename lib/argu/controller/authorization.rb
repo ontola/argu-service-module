@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'argu/errors/forbidden'
-
 module Argu
   module Controller
     module Authorization

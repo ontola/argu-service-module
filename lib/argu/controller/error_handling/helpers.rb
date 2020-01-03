@@ -7,7 +7,7 @@ module Argu
     module ErrorHandling
       module Helpers
         def error_id(e)
-          Argu::Errors::TYPES[e.class.to_s].try(:[], :id) || 'SERVER_ERROR'
+          Argu::Errors::ERROR_TYPES[e.class.to_s].try(:[], :id) || 'SERVER_ERROR'
         end
 
         def error_mode(exception)
@@ -17,7 +17,7 @@ module Argu
         end
 
         def error_status(e)
-          Argu::Errors::TYPES[e.class.to_s].try(:[], :status) || 500
+          Argu::Errors::ERROR_TYPES[e.class.to_s].try(:[], :status) || 500
         end
 
         def user_with_r(r)

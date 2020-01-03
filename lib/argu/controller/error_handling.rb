@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'argu/controller/error_handling/data_structures'
-require 'argu/controller/error_handling/handlers'
-require 'argu/controller/error_handling/helpers'
-
 module Argu
   module Controller
     # The generic Argu error handling code. Currently a mess from different error
