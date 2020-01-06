@@ -3,7 +3,7 @@
 require 'uri_template'
 require 'argu'
 
-class ApiController < ActionController::API
+class APIController < ActionController::API
   include ActiveResponse::Controller
   include LinkedRails::Controller
   include Argu::Controller::Authentication
@@ -11,7 +11,7 @@ class ApiController < ActionController::API
   include Argu::Controller::ErrorHandling
 
   include ActionController::MimeResponds
-  include JsonApiHelper
+  include JsonAPIHelper
   include UrlHelper
   serialization_scope :user_context
 

@@ -3,7 +3,7 @@
 module Argu
   module TestHelpers
     module RequestHelpers
-      include JsonApiHelper
+      include JsonAPIHelper
 
       def expect_attributes(keys, index = nil)
         attrs = index.present? ? parsed_body.dig('data', index, 'attributes') : parsed_body.dig('data', 'attributes')

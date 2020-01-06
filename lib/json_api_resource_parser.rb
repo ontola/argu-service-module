@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class JsonApiResourceParser
-  include JsonApiHelper
+  include JsonAPIHelper
 
   def initialize(body)
     @body = body

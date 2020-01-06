@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DataEvent
-  extend JsonApiHelper
+  extend JsonAPIHelper
   include SerializationHelper
   include ActiveModel::Model
   include LinkedRails::Model

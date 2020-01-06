@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module JsonApiHelper
+module JsonAPIHelper
   # @param [Integer] status HTTP response code
   # @param [Array<Hash, String>] errors A list of errors
-  # @return [Hash] JSONApi error hash to use in a render method
+  # @return [Hash] JSONAPI error hash to use in a render method
   def json_api_error(status, errors = nil)
     {
       json: {
