@@ -30,7 +30,7 @@ class Collection < LinkedRails::Collection
 
   def canonical_iri_opts
     opts = iri_opts
-    opts[:parent_iri] = parent.try(:canonical_iri_path) || parent&.iri_path
+    opts[:parent_iri] = split_iri_segments(parent.try(:canonical_iri_path) || parent&.iri_path)
     opts
   end
 
