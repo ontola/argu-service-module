@@ -23,10 +23,18 @@ class TenantMiddleware
 
     I18n.locale = I18n.default_locale
 
-    @app.call(env)
+    call_app(env)
   end
 
   private
+
+  def call_app(env)
+    status, headers, response = @app.call(env)
+
+    headers['Manifest'] = "#{ActsAsTenant.current_tenant.iri}/manifest.json" if ActsAsTenant.current_tenant
+
+    [status, headers, response]
+  end
 
   def fallback_location
     "#{Rails.application.config.frontend_url}/argu"
