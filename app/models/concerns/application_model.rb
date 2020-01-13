@@ -33,11 +33,11 @@ module ApplicationModel
     {id: to_param, :"#{self.class.name.underscore}_id" => to_param}
   end
 
-  def resource_added_delta
+  def added_delta
     []
   end
 
-  def resource_removed_delta
+  def removed_delta
     []
   end
 
