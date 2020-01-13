@@ -28,7 +28,7 @@ module UriTemplateHelper
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
     raise "Uri template #{template} is missing" unless tmpl
-    path = tmpl.expand(args)
+    path = tmpl.expand(args_for_uri_template(args))
     args[:with_hostname] ? path_with_hostname(path) : path
   end
 
@@ -101,5 +101,19 @@ module UriTemplateHelper
       opts[:only_path] = true
       expand_uri_template("#{method}_iri", opts)
     end
+  end
+
+  private
+
+  def args_for_uri_template(args)
+    Hash[
+      args.map do |key, value|
+        if value.is_a?(Hash)
+          ["#{key}%5B%5D", value.keys.map { |value_key| "#{value_key}=#{value[value_key]}" }]
+        else
+          [key, value]
+        end
+      end
+    ]
   end
 end
