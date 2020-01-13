@@ -29,7 +29,7 @@ module Argu
         end
 
         def error_response_json(e, status: nil)
-          render json_error(status ||  error_status(e), json_error_hash(e))
+          render json_error(status || error_status(e), json_error_hash(e))
         end
 
         def error_response_json_api(e, status: nil)
@@ -50,16 +50,15 @@ module Argu
           handle_error(e)
         end
 
-        def handle_error(e)
+        def handle_error(e) # rubocop:disable Metrics/AbcSize
           error_mode(e)
           respond_to do |format|
             format.html { error_response(e, :html) }
             format.js { error_response(e, :js) }
             format.json { error_response_json(e) }
             format.json_api { error_response_json_api(e) }
-            RDF_CONTENT_TYPES.each do |type|
-              format.send(type) { error_response_serializer(e, type) }
-            end
+            RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(e, type) } }
+            format.any { head(error_status(e)) }
           end
         end
 
