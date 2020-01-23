@@ -7,6 +7,22 @@ class Collection < LinkedRails::Collection
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
+  def action_triples(scope) # rubocop:disable Metrics/AbcSize
+    return super unless association_class.to_s == 'Discussion'
+
+    triples = super
+    Discussion.descendants.each do |klass|
+      next unless parent.respond_to?("#{klass.to_s.underscore}_collection")
+
+      uri = RDF::URI(parent.send("#{klass.to_s.underscore}_collection").iri_template.expand(iri_opts))
+      uri.path += '/new'
+      uri.to_s
+
+      triples << [iri, NS::ONTOLA[:createAction], iri_with_root(uri)]
+    end
+    triples
+  end
+
   def clear_total_count
     parent&.reload
     @total_count = nil
