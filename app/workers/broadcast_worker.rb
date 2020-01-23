@@ -7,7 +7,9 @@ class BroadcastWorker
 
   def perform(attrs = {})
     attrs = attrs.with_indifferent_access
-    attrs[:resource] = attrs[:resource_type].classify.constantize.find(attrs[:resource_id])
+    attrs[:resource] = resource_from_attrs(attrs)
+    return if attrs[:resource].blank?
+
     attrs[:resource_id] = attrs[:resource].iri if attrs[:resource].respond_to?(:iri)
 
     self.data_event = data_event_from_attrs(attrs)
@@ -36,5 +38,9 @@ class BroadcastWorker
 
   def resource
     data_event.resource
+  end
+
+  def resource_from_attrs(attrs)
+    attrs[:resource_type].classify.constantize.find_by(id: attrs[:resource_id])
   end
 end
