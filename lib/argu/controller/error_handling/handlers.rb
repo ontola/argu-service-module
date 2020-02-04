@@ -16,18 +16,6 @@ module Argu
           !%w[GET HEAD].include?(request.method)
         end
 
-        def error_response_html(e, view: nil)
-          respond_to?(:flash) && flash[:alert] = e.message
-          status ||= error_status(e)
-          view ||= "status/#{status}"
-          send_file lookup_context.find_template(view).identifier, disposition: :inline, status: status
-        end
-
-        def error_response_js(e, status: nil)
-          status ||= error_status(e)
-          render status: status, json: json_error_hash(e)
-        end
-
         def error_response_json(e, status: nil)
           render json_error(status || error_status(e), json_error_hash(e))
         end
@@ -43,11 +31,9 @@ module Argu
           handle_error(e)
         end
 
-        def handle_error(e) # rubocop:disable Metrics/AbcSize
+        def handle_error(e)
           error_mode(e)
           respond_to do |format|
-            format.html { error_response(e, :html) }
-            format.js { error_response(e, :js) }
             format.json { error_response_json(e) }
             format.json_api { error_response_json_api(e) }
             RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(e, type) } }
@@ -67,11 +53,6 @@ module Argu
         def handle_oauth_error(e)
           Bugsnag.notify(e)
           handle_error(StandardError.new(e.response.body))
-        end
-
-        def handle_record_not_unique_html(_e)
-          flash[:warning] = t('errors.record_not_unique')
-          redirect_back(fallback_location: root_path)
         end
 
         def respond_with_422?(resources)

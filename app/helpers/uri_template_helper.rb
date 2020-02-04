@@ -36,14 +36,6 @@ module UriTemplateHelper
     RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
   end
 
-  def link_to(name = nil, options = nil, html_options = nil, &block)
-    name = name.try(:iri)&.to_s || name
-    name = name.to_s if name.is_a?(RDF::URI)
-    options = options.try(:iri)&.to_s || options
-    options = options.to_s if options.is_a?(RDF::URI)
-    super
-  end
-
   # @return [String]
   def path_with_hostname(path)
     "#{Rails.application.config.origin}#{path}"
