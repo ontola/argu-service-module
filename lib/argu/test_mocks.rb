@@ -234,7 +234,7 @@ module TestMocks
     sign_payload(
       exp: exp.to_i,
       iat: Time.current.iso8601(5),
-      scopes: use_legacy_frontend? ? [type] : [type, :afe],
+      scopes: type,
       user: {
         type: type,
         '@id': expand_uri_template("#{registered ? :users : :guest_users}_iri", id: 1, with_hostname: true),

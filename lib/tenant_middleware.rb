@@ -13,8 +13,7 @@ class TenantMiddleware
     request = Rack::Request.new(env)
 
     if tenantize(env, request)
-      return tenant_is_missing(request) unless ActsAsTenant.current_tenant || handle_missing_tenant
-      return redirect_to_new_frontend(request) if redirect_to_new_frontend?(request)
+      return tenant_is_missing(request) unless ActsAsTenant.current_tenant
 
       rewrite_path(env, request)
     else
@@ -40,38 +39,12 @@ class TenantMiddleware
     "#{Rails.application.config.frontend_url}/argu"
   end
 
-  def handle_missing_tenant
-    return false unless RequestStore.store[:old_frontend]
-
-    Apartment::Tenant.switch!('argu')
-    true
-  end
-
   def log_tenant
-    fe = RequestStore.store[:old_frontend] ? 'old' : 'new'
     if ActsAsTenant.current_tenant
-      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}. Frontend: #{fe}"
+      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}"
     else
-      Rails.logger.debug "No tenant found. Frontend: #{fe}"
+      Rails.logger.debug 'No tenant found'
     end
-  end
-
-  def old_frontend?(env)
-    env['HTTP_AUTHORIZATION'].blank? || !decode_token(env['HTTP_AUTHORIZATION'][7..-1])['scopes'].include?('afe')
-  rescue JWT::DecodeError
-    true
-  end
-
-  def redirect_to_new_frontend?(request)
-    tenant = ActsAsTenant.current_tenant
-    RequestStore.store[:old_frontend] && tenant&.use_new_frontend && !request.url.include?("://#{tenant.iri_prefix}")
-  end
-
-  def redirect_to_new_frontend(request)
-    tenant = ActsAsTenant.current_tenant
-    old = [Rails.application.config.host_name, tenant.url].join('/')
-    new = tenant.iri_prefix
-    [301, {'Location' => request.url.sub(old, new), 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def rewrite_path(env, request)
@@ -92,8 +65,6 @@ class TenantMiddleware
     return false unless tenantized_url?(env)
 
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
-
-    RequestStore.store[:old_frontend] = old_frontend?(env)
 
     log_tenant
 

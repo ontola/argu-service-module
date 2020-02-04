@@ -101,9 +101,7 @@ class DataEvent
     end
 
     def serialize_changes(resource)
-      if resource.respond_to?(:iri)
-        iri = RDF::URI(DynamicUriHelper.rewrite(DynamicUriHelper.revert(resource.iri), old_frontend: false))
-      end
+      iri = resource.try(:iri)
 
       [
         {

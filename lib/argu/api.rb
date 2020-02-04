@@ -191,18 +191,7 @@ module Argu
       CurrentUser.from_response(user_token, User.new(attributes))
     end
 
-    def set_argu_client_token_cookie(token, expires = nil)
-      cookie_jar.encrypted['argu_client_token'] = {
-        expires: expires,
-        value: token,
-        secure: Rails.env.staging? || Rails.env.production?,
-        httponly: true,
-        domain: Rails.env.staging? ? nil : :all
-      }
-    end
-
     def update_user_token(response)
-      set_argu_client_token_cookie(response.headers['New-Authorization'])
       @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
       Bugsnag.notify('No new user token received') if @user_token.blank?
     end

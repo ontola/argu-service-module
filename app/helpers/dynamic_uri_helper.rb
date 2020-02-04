@@ -3,23 +3,13 @@
 module DynamicUriHelper
   module_function
 
-  def old_frontend_prefix(tenant)
-    "#{Rails.application.config.host_name}/#{tenant.url}"
+  def tenant_prefix(tenant)
+    tenant.iri_prefix
   end
 
-  def tenant_prefix(tenant, old_frontend)
-    old_frontend ? DynamicUriHelper.old_frontend_prefix(tenant) : tenant.iri_prefix
-  end
-
-  def revert(uri, tenant = ActsAsTenant.current_tenant, old_frontend: RequestStore.store[:old_frontend])
-    return uri if tenant.nil?
-
-    uri.to_s.sub("://#{tenant_prefix(tenant, old_frontend)}", "://#{Rails.application.config.host_name}")
-  end
-
-  def rewrite(uri, tenant = ActsAsTenant.current_tenant, old_frontend: RequestStore.store[:old_frontend])
+  def rewrite(uri, tenant = ActsAsTenant.current_tenant)
     return uri if tenant.nil? || uri.to_s.include?("#{Rails.application.config.host_name}/i/")
 
-    uri.to_s.sub("://#{Rails.application.config.host_name}", "://#{tenant_prefix(tenant, old_frontend)}")
+    uri.to_s.sub("://#{Rails.application.config.host_name}", "://#{tenant_prefix(tenant)}")
   end
 end

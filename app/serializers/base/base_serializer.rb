@@ -6,7 +6,7 @@ class BaseSerializer < ActiveModel::Serializer
 
   class_attribute :_enums
 
-  delegate :afe_request?, :export_scope?, :service_scope?, :system_scope?,
+  delegate :export_scope?, :service_scope?, :system_scope?,
            to: :scope,
            allow_nil: true
 
