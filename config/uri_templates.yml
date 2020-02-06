@@ -21,7 +21,7 @@ categories_collection_iri: "{/parent_iri*}/categories{?display,filter%5B%5D*,pag
 comments_iri: "{/root_id}/c{/id}{?destroy,parent_id}"
 comments_collection_canonical: "{/parent_iri*}/comments{?display,filter%5B%5D*,page,page_size,type,before}"
 comments_collection_iri: "{/parent_iri*}/c{?display,filter%5B%5D*,page,page_size,type,before}"
-confirmations_iri: "/users/confirmation{?user%5Bemail%5D}"
+confirmations_iri: "/users/confirmation{?user%5Bemail%5D,confirmation_token}"
 conversions_iri: "{/parent_iri*}/conversion"
 conversions_collection_canonical: "{/parent_iri*}/conversion{?display,filter%5B%5D*,page,page_size,type,before}"
 conversions_collection_iri: "{/parent_iri*}/conversion{?display,filter%5B%5D*,page,page_size,type,before}"
