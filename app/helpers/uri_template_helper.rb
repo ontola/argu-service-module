@@ -33,7 +33,9 @@ module UriTemplateHelper
   end
 
   def iri_from_template(template, opts = {})
-    RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
+    ActsAsTenant.with_tenant(opts.delete(:root) || ActsAsTenant.current_tenant) do
+      RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
+    end
   end
 
   # @return [String]
