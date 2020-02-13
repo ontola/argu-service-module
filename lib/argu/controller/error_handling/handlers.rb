@@ -36,13 +36,6 @@ module Argu
           render json_api_error(status || error_status(e), json_error_hash(e))
         end
 
-        def error_response_serializer(e, type, status: nil)
-          status ||= error_status(e)
-          error = error_resource(status, e)
-          add_error_snackbar(error) if add_error_snackbar?(error)
-          render type => error.graph, status: status
-        end
-
         def handle_and_report_error(e)
           raise if Rails.env.development? || Rails.env.test?
           Bugsnag.notify(e)
