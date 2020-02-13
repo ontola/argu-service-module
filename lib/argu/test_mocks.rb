@@ -63,7 +63,7 @@ module TestMocks
         accent_color: '#FFFFFF',
         database_schema: 'argu',
         display_name: 'Page name',
-        iri_prefix: "app.#{ENV['HOSTNAME']}/argu",
+        iri_prefix: "#{ENV['HOSTNAME']}/argu",
         navbar_background: '#475668',
         navbar_color: '#FFFFFF',
         use_new_frontend: false,
@@ -113,7 +113,7 @@ module TestMocks
       )
       .to_return(
         status: opts[:response] || 201,
-        headers: {location: argu_url('/group_memberships/1')},
+        headers: {location: argu_url('/argu/group_memberships/1')},
         body: {
           data: {
             id: 1,
@@ -171,7 +171,7 @@ module TestMocks
           id: 1,
           type: 'groups',
           attributes: {
-            iri: argu_url('/argu/g/1'),
+            iri: argu_url('/argug/1'),
             display_name: "Group#{id}"
           },
           relationships: {
