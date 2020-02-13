@@ -97,13 +97,19 @@ module Argu
       false
     end
 
-    def generate_guest_token(r: nil)
+    def generate_guest_token(r: nil) # rubocop:disable Metrics/MethodLength
       result = api_request(
         :argu,
         :post,
-        expand_uri_template(:spi_oauth_token),
+        expand_uri_template(:oauth_token),
         token: user_token || service_token,
-        body: {scope: :guest, r: r}
+        body: {
+          client_id: ENV['ARGU_APP_ID'],
+          client_secret: ENV['ARGU_APP_SECRET'],
+          grant_type: :client_credentials,
+          scope: :guest,
+          r: r
+        }
       )
       @user_token = JSON.parse(result.body)['access_token']
     end

@@ -74,7 +74,7 @@ module TestMocks
 
   def generate_guest_token_mock
     token = doorkeeper_token('guest')
-    stub_request(:post, expand_service_url(:argu, '/argu/spi/oauth/token'))
+    stub_request(:post, expand_service_url(:argu, '/argu/oauth/token'))
       .to_return(
         status: 201,
         body: {access_token: token}.to_json
