@@ -2,8 +2,10 @@
 
 module ActiveResource
   class Base
+    include LinkedRails::Model
+
     def iri_path
-      @iri_path ||= iri.gsub(Rails.application.config.origin, '') if respond_to?(:iri)
+      @iri_path ||= iri.to_s.split(ActsAsTenant.current_tenant.iri).last if respond_to?(:iri)
     end
 
     def uuid

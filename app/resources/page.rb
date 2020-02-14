@@ -3,6 +3,10 @@
 class Page < ActiveResourceModel
   include LinkedRails::Model
 
+  def iri
+    RDF::URI("https://#{iri_prefix}")
+  end
+
   def url
     iri_prefix.split('/').last.presence || iri_prefix
   end
