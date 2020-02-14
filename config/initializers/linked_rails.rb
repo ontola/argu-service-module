@@ -38,7 +38,7 @@ module LinkedRailsDynamicIRI
   end
 end
 
-LinkedRails::Model::Iri.send(:prepend, LinkedRailsDynamicIRI)
+LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
 
 LinkedRails::Translate.translations_for(:property, :description) do |object|
   if object.model_attribute.present?

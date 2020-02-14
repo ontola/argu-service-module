@@ -31,6 +31,7 @@ class Collection < LinkedRails::Collection
   def iri(opts = {})
     return super if ActsAsTenant.current_tenant.present? || parent.blank?
     return @iri if @iri && opts.blank?
+
     iri = ActsAsTenant.with_tenant(parent.root) { super }
     @iri = iri if opts.blank?
     iri
@@ -52,6 +53,7 @@ class Collection < LinkedRails::Collection
 
   def canonical_iri_template_name
     return @canonical_iri_template_name if @canonical_iri_template_name
+
     canonical_name ||= @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
     @canonical_iri_template_name = uri_template(canonical_name) ? canonical_name : iri_template_name
   end

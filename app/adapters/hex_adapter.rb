@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HexAdapter < ActiveModelSerializers::Adapter::RDF
+class HexAdapter < ActiveModelSerializers::Adapter::RDF # rubocop:disable Metrics/ClassLength
   def dump
     repository.map { |s| Oj.fast_generate(s) }.join("\n")
   end
@@ -41,19 +41,23 @@ class HexAdapter < ActiveModelSerializers::Adapter::RDF
       .gsub('/', ActiveModelSerializers.config.jsonapi_namespace_separator)
   end
 
-  def normalized_object(object) # rubocop:disable Metrics/MethodLength
+  def normalized_object(object)
     case object
     when ::RDF::Term
       object
     when ::RDF::List
-      list = object.statements
-      object.statements.each { |s| add_statement(s) }
-      list.first.subject
+      list_to_statements(object)
     when ActiveSupport::TimeWithZone
       ::RDF::Literal(object.to_datetime)
     else
       ::RDF::Literal(object)
     end
+  end
+
+  def list_to_statements(object)
+    list = object.statements
+    object.statements.each { |s| add_statement(s) }
+    list.first.subject
   end
 
   def object_datatype(obj)

@@ -43,6 +43,7 @@ class CurrentUser
 
     def from_token(token)
       return if token.nil?
+
       new(attributes_from_token(token))
     end
 

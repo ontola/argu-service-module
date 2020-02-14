@@ -6,8 +6,8 @@ module Argu
     # classes with inconsistent attributes.
     module ErrorHandling
       module Helpers
-        def error_id(e)
-          Argu::Errors::ERROR_TYPES[e.class.to_s].try(:[], :id) || 'SERVER_ERROR'
+        def error_id(error)
+          Argu::Errors::ERROR_TYPES[error.class.to_s].try(:[], :id) || 'SERVER_ERROR'
         end
 
         def error_mode(exception)
@@ -16,12 +16,12 @@ module Argu
           @_uc = nil
         end
 
-        def error_status(e)
-          Argu::Errors::ERROR_TYPES[e.class.to_s].try(:[], :status) || 500
+        def error_status(error)
+          Argu::Errors::ERROR_TYPES[error.class.to_s].try(:[], :status) || 500
         end
 
-        def user_with_r(r)
-          User.new(r: r, shortname: Shortname.new)
+        def user_with_r(redirect)
+          User.new(r: redirect, shortname: Shortname.new)
         end
       end
     end

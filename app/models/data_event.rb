@@ -70,6 +70,7 @@ class DataEvent
 
     def event_from_resource(resource)
       return if resource.nil?
+
       if new_resource?(resource)
         'create'
       elsif resource.destroyed?

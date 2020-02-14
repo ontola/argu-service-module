@@ -10,6 +10,7 @@ module ActiveResource
 
     def uuid
       return attributes[:uuid] unless respond_to?(:canonical_iri) && canonical_iri&.to_s&.include?('/edges/')
+
       @uuid ||= canonical_iri.split('/edges/').last
     end
   end

@@ -26,6 +26,7 @@ class ActiveResourceModel < ActiveResource::Base
 
   def load_attributes_from_response(response)
     return unless load_attributes_from_response?(response)
+
     load(self.class.format.decode(response.body), true, true)
     @persisted = true
   end

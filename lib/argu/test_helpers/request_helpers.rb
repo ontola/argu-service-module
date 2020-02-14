@@ -11,20 +11,20 @@ module Argu
         expect(keys.map(&:to_s) - attrs.keys).to be_empty
       end
 
-      def expect_data_size(n)
-        expect(parsed_body['data'].size).to eq(n)
+      def expect_data_size(number)
+        expect(parsed_body['data'].size).to eq(number)
       end
 
       def expect_default_view
-        @default_view ||= expect_included(expect_relationship('defaultView')['data']['id'])
+        @expect_default_view ||= expect_included(expect_relationship('defaultView')['data']['id'])
       end
 
       def expect_error_message(msg, index = 0)
         expect(parsed_body['errors'][index]['message']).to eq(msg)
       end
 
-      def expect_error_size(n)
-        expect(parsed_body['errors'].size).to eq(n)
+      def expect_error_size(number)
+        expect(parsed_body['errors'].size).to eq(number)
       end
 
       def expect_included(id)
@@ -86,6 +86,7 @@ module Argu
 
       def view_member_ids(parent, count)
         return expect_no_relationship('members', parent: parent) if count.zero?
+
         members = expect_relationship('members', parent: parent, size: count)
         members['data'].map { |m| m['id'] }
       end

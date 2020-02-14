@@ -7,6 +7,7 @@ class Connection
 
   def connection
     return @connection if @connection&.open?
+
     connection = Bunny.new
     connection.start
     @connection = connection
@@ -16,6 +17,7 @@ class Connection
   # @param [String] body The string to publish
   def publish(name, body)
     return if Rails.env.test?
+
     with_channel do |channel|
       channel
         .fanout(name, durable: true)

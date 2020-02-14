@@ -15,7 +15,7 @@ module Argu
       self.adapter_opts = adapter_opts
       self.adapter_type = adapter_type
       self.format = format
-      self.timestamp = Time.current.strftime('%Y%m%dT%H%M') # rubocop:disable Style/FormatStringToken
+      self.timestamp = Time.current.strftime('%Y%m%dT%H%M')
 
       write_cache if cache_resource?
     end

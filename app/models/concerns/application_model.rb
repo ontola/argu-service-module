@@ -14,7 +14,7 @@ module ApplicationModel
   def canonical_iri_opts
     return iri_opts unless respond_to?(:id)
 
-    {id: id, :"#{self.class.name.underscore}_id" => id}
+    {id: id, "#{self.class.name.underscore}_id": id}
   end
 
   def class_name
@@ -30,7 +30,7 @@ module ApplicationModel
   end
 
   def iri_opts
-    {id: to_param, :"#{self.class.name.underscore}_id" => to_param}
+    {id: to_param, "#{self.class.name.underscore}_id": to_param}
   end
 
   def added_delta

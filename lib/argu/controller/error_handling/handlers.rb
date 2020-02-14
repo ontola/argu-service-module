@@ -16,43 +16,45 @@ module Argu
           !%w[GET HEAD].include?(request.method)
         end
 
-        def error_response_json(e, status: nil)
-          render json_error(status || error_status(e), json_error_hash(e))
+        def error_response_json(error, status: nil)
+          render json_error(status || error_status(error), json_error_hash(error))
         end
 
-        def error_response_json_api(e, status: nil)
-          render json_api_error(status || error_status(e), json_error_hash(e))
+        def error_response_json_api(error, status: nil)
+          render json_api_error(status || error_status(error), json_error_hash(error))
         end
 
-        def handle_and_report_error(e)
+        def handle_and_report_error(error)
           raise if Rails.env.development? || Rails.env.test?
-          Bugsnag.notify(e)
+
+          Bugsnag.notify(error)
           raise if response_body
-          handle_error(e)
+
+          handle_error(error)
         end
 
-        def handle_error(e)
-          error_mode(e)
+        def handle_error(error)
+          error_mode(error)
           respond_to do |format|
-            format.json { error_response_json(e) }
-            format.json_api { error_response_json_api(e) }
-            RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(e, type) } }
-            format.any { head(error_status(e)) }
+            format.json { error_response_json(error) }
+            format.json_api { error_response_json_api(error) }
+            RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(error, type) } }
+            format.any { head(error_status(error)) }
           end
         end
 
-        def error_resource(status, e)
-          LinkedRails.rdf_error_class.new(status, request.original_url, e)
+        def error_resource(status, error)
+          LinkedRails.rdf_error_class.new(status, request.original_url, error)
         end
 
-        def error_response(e, format)
-          method = "handle_#{e.class.name.demodulize.underscore}_#{format}"
-          respond_to?(method, :include_private) ? send(method, e) : send("error_response_#{format}", e)
+        def error_response(error, format)
+          method = "handle_#{error.class.name.demodulize.underscore}_#{format}"
+          respond_to?(method, :include_private) ? send(method, error) : send("error_response_#{format}", error)
         end
 
-        def handle_oauth_error(e)
-          Bugsnag.notify(e)
-          handle_error(StandardError.new(e.response.body))
+        def handle_oauth_error(error)
+          Bugsnag.notify(error)
+          handle_error(StandardError.new(error.response.body))
         end
 
         def respond_with_422?(resources)

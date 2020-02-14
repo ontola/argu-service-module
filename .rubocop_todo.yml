@@ -6,6 +6,10 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
 Metrics/AbcSize:
   Exclude:
     - 'lib/argu/test_helpers/request_helpers.rb'
@@ -27,4 +31,10 @@ Metrics/MethodLength:
   - 'lib/argu/test_mocks.rb'
 
 RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/LetSetup:
   Enabled: false

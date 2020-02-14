@@ -17,8 +17,10 @@ class JsonApiResourceParser
 
   def parse_record(record)
     return if record.nil?
+
     identifier = "#{record['type']}_#{record['id']}"
     return @parsed_records[identifier] if @parsed_records.key?(identifier)
+
     parsed_record = json_api_included_resource(@body, record.is_a?(String) ? {id: record} : record) || record
     # Store a temporary representation of the record to prevent a
     # recursive loop when parsing the relationship in the next line

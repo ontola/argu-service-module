@@ -48,6 +48,7 @@ module JsonAPIHelper
   def json_api_params(params)
     raise ActionController::UnpermittedParameters.new(%w[type]) if json_api_wrong_type(params)
     raise ActionController::ParameterMissing.new(:attributes) if params['data']['attributes'].blank?
+
     json_api_to_action_parameters(params)
   end
 

@@ -24,20 +24,20 @@ module Broadcastable
     previous_changes.each_pair { |k, v| add_broadcastable_change(k, v) }
   end
 
-  def add_broadcastable_change(k, v) # rubocop:disable Metrics/AbcSize
-    if !broadcastable_changes.key?(k)
-      broadcastable_changes[k] = [safe_dup(v[0]), safe_dup(v[1])]
-    elsif broadcastable_changes[k][0] == v[1]
-      broadcastable_changes.delete(k)
+  def add_broadcastable_change(key, val) # rubocop:disable Metrics/AbcSize
+    if !broadcastable_changes.key?(key)
+      broadcastable_changes[key] = [safe_dup(val[0]), safe_dup(val[1])]
+    elsif broadcastable_changes[key][0] == val[1]
+      broadcastable_changes.delete(key)
     else
-      broadcastable_changes[k][1] = safe_dup(v[1])
+      broadcastable_changes[key][1] = safe_dup(val[1])
     end
   end
 
-  def safe_dup(v)
-    v.dup
+  def safe_dup(val)
+    val.dup
   rescue TypeError
-    v
+    val
   end
 
   def should_broadcast_changes

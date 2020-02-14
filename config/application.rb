@@ -49,7 +49,7 @@ module Service
     config.autoload_paths += %W[#{config.root}/app/responders]
     config.autoload_paths += Dir["#{config.root}/app/enhancements/**/"]
 
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = config.host_name
     ActiveModelSerializers.config.key_transform = :camel_lower

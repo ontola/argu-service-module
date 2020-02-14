@@ -6,6 +6,7 @@ module ActiveModelSerializers
       class ResourceIdentifier
         def type_for(serializer, transform_options)
           return serializer._type.call(serializer.object) if serializer._type.respond_to?(:call)
+
           self.class.type_for(serializer, serializer._type, transform_options)
         end
       end

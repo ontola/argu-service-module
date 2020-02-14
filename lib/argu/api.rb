@@ -80,8 +80,8 @@ module Argu
       )
     end
 
-    def create_user(email, r: nil)
-      response = create_user_request(email, r)
+    def create_user(email, redirect: nil)
+      response = create_user_request(email, redirect)
       update_user_token(response)
       user_from_response(response, email)
     rescue OAuth2::Error
@@ -95,19 +95,13 @@ module Argu
       false
     end
 
-    def generate_guest_token(r: nil) # rubocop:disable Metrics/MethodLength
+    def generate_guest_token(redirect: nil)
       result = api_request(
         :argu,
         :post,
         expand_uri_template(:oauth_token),
         token: user_token || service_token,
-        body: {
-          client_id: ENV['ARGU_APP_ID'],
-          client_secret: ENV['ARGU_APP_SECRET'],
-          grant_type: :client_credentials,
-          scope: :guest,
-          r: r
-        }
+        body: guest_token_params(redirect)
       )
       @user_token = JSON.parse(result.body)['access_token']
     end
@@ -158,12 +152,12 @@ module Argu
       raw_api_request(service, method, path_with_prefix(path), opts)
     end
 
-    def create_user_request(email, r)
+    def create_user_request(email, redirect)
       api_request(
         :argu,
         :post,
         expand_uri_template(:user_registration),
-        body: {user: {email: email}, r: r},
+        body: {user: {email: email}, r: redirect},
         headers: {accept: 'application/json'}
       )
     end
@@ -172,6 +166,16 @@ module Argu
       {
         'X-Forwarded-Host': ActsAsTenant.current_tenant.tenant.host,
         'X-Forwarded-Proto': 'https'
+      }
+    end
+
+    def guest_token_params(redirect)
+      {
+        client_id: ENV['ARGU_APP_ID'],
+        client_secret: ENV['ARGU_APP_SECRET'],
+        grant_type: :client_credentials,
+        scope: :guest,
+        r: redirect
       }
     end
 

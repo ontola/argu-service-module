@@ -3,24 +3,6 @@
 require_relative '../spec_helper'
 
 describe Resource do
-  describe 'json_api parsing' do
-    let(:resource) { described_class.find(1) }
-
-    before do
-      ActsAsTenant.current_tenant = Page.new(iri_prefix: 'example.com', database_schema: 'argu')
-    end
-
-    it { expect(resource.id).to eq('resource_id') }
-    it { expect(resource.attr1).to eq('attribute 1') }
-    it { expect(resource.parent.id).to eq('ping') }
-    it { expect(resource.parent.attr_one).to eq('I am ping') }
-    it { expect(resource.parent.parent.id).to eq('pong') }
-    it { expect(resource.parent.parent.attr_one).to eq('I am pong') }
-    it { expect(resource.parent.parent.parent.id).to eq('ping') }
-    it { expect(resource.parent2.id).to eq('ping') }
-    it { expect(resource.parent2.attr_one).to eq('I am ping') }
-  end
-
   before do
     extend ServiceHelper
 
@@ -84,5 +66,23 @@ describe Resource do
           ]
         }.to_json
       )
+  end
+
+  describe 'json_api parsing' do
+    let(:resource) { described_class.find(1) }
+
+    before do
+      ActsAsTenant.current_tenant = Page.new(iri_prefix: 'example.com', database_schema: 'argu')
+    end
+
+    it { expect(resource.id).to eq('resource_id') }
+    it { expect(resource.attr1).to eq('attribute 1') }
+    it { expect(resource.parent.id).to eq('ping') }
+    it { expect(resource.parent.attr_one).to eq('I am ping') }
+    it { expect(resource.parent.parent.id).to eq('pong') }
+    it { expect(resource.parent.parent.attr_one).to eq('I am pong') }
+    it { expect(resource.parent.parent.parent.id).to eq('ping') }
+    it { expect(resource.parent2.id).to eq('ping') }
+    it { expect(resource.parent2.attr_one).to eq('I am ping') }
   end
 end

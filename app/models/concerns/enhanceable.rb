@@ -22,6 +22,7 @@ module Enhanceable
     def enhance(enhancement, only: [], except: [])
       self.enhancements ||= superclass.try(:enhancements)&.dup || []
       return if enhancements.include?(enhancement)
+
       self.enhancements += [enhancement]
       execute_enhancers(enhancement, enhancers_for(enhancement, only, except))
     end

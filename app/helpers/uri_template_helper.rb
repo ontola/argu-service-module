@@ -28,6 +28,7 @@ module UriTemplateHelper
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
     raise "Uri template #{template} is missing" unless tmpl
+
     path = tmpl.expand(args_for_uri_template(args))
     args[:with_hostname] ? path_with_hostname(path) : path
   end
@@ -46,6 +47,7 @@ module UriTemplateHelper
   # @return [Array<String>]
   def split_iri_segments(iri)
     return if iri.blank?
+
     iri.to_s.split('/').map(&:presence).compact.presence
   end
 

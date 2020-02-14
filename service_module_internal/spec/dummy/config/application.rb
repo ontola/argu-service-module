@@ -32,7 +32,7 @@ module Dummy
     config.filter_parameters += [:password]
     config.uri_templates =
       Hash[
-        YAML.safe_load(File.read(File.expand_path('../../config/uri_templates.yml', __FILE__)))
+        YAML.safe_load(File.read(File.expand_path('../config/uri_templates.yml', __dir__)))
           .map { |k, v| [k, URITemplate.new(v)] }
       ].with_indifferent_access.freeze
     secrets.jwt_encryption_token = 'secret'
