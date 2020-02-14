@@ -23,7 +23,7 @@ class BroadcastWorker
   end
 
   def write_to_cache
-    resource.try(:write_to_cache, Argu::Cache.new)
+    resource.try(:write_to_cache)
   end
 
   private
