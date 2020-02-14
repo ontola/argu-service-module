@@ -23,8 +23,7 @@ class APIController < ActionController::API
   def api
     @api ||= Argu::API.new(
       service_token: ENV['SERVICE_TOKEN'],
-      user_token: user_token,
-      cookie_jar: request.cookie_jar
+      user_token: user_token
     )
   end
 

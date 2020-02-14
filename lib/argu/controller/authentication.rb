@@ -43,12 +43,8 @@ module Argu
         request.original_url
       end
 
-      def token_from_cookie
-        request.cookie_jar.encrypted['argu_client_token']
-      end
-
       def token_from_header
-        request.headers['Authorization'][7..-1] if request.headers['Authorization'].downcase.start_with?('bearer ')
+        request.headers['Authorization'][7..-1] if request.headers['Authorization']&.downcase&.start_with?('bearer ')
       end
 
       def user_from_token
@@ -57,7 +53,7 @@ module Argu
       end
 
       def user_token
-        @user_token ||= authorization_header? ? token_from_header : token_from_cookie
+        @user_token ||= token_from_header
       end
     end
   end

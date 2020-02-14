@@ -7,12 +7,10 @@ module Argu
     include ServiceHelper
     include UriTemplateHelper
     include JWTHelper
-    attr_reader :cookie_jar
 
-    def initialize(service_token: nil, user_token: nil, cookie_jar: nil)
+    def initialize(service_token: nil, user_token: nil)
       @service_token = service_token
       @user_token = user_token
-      @cookie_jar = cookie_jar
     end
     attr_reader :service_token, :user_token
 
@@ -198,7 +196,7 @@ module Argu
     end
 
     def update_user_token(response)
-      @user_token = response.headers['new-authorization'] || cookie_jar.encrypted[:argu_client_token]
+      @user_token = response.headers['new-authorization']
       Bugsnag.notify('No new user token received') if @user_token.blank?
     end
   end
