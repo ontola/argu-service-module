@@ -4,7 +4,8 @@ module DynamicUriHelper
   module_function
 
   def tenant_prefix(tenant)
-    tenant.iri_prefix
+    tenant.iri_prefix.presence ||
+      raise("No iri_prefix (#{tenant.iri_prefix.class}) for #{tenant.iri}\n#{tenant.inspect}\n#{tenant.tenant.inspect}")
   end
 
   def rewrite(uri, tenant = ActsAsTenant.current_tenant)
