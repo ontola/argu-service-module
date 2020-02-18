@@ -6,7 +6,7 @@ module Argu
     attr_accessor :adapter_opts, :adapter_type, :directory, :format, :resource, :timestamp, :user_context
 
     def initialize(opts = {})
-      self.user_context = create_user_context(%w[guest afe])
+      self.user_context = create_user_context(%w[guest cache])
       self.directory = opts[:directory] || ENV['CACHE_DIRECTORY']
     end
 
@@ -47,10 +47,13 @@ module Argu
 
     def data(adapter_type, format, adapter_opts)
       ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || resource.try(:root)) do
-        if adapter_type == :rdf
-          adapter(adapter_type, adapter_opts).dump(RDF::Format.for(file_extension: format).symbols.first)
+        adapter_for_type = adapter(adapter_type, adapter_opts)
+        if adapter_type == :hex_adapter
+          adapter_for_type.dump
+        elsif adapter_type == :rdf
+          adapter_for_type.dump(RDF::Format.for(file_extension: format).symbols.first)
         else
-          adapter(adapter_type, adapter_opts).to_json
+          adapter_for_type.to_json
         end
       end
     end
