@@ -3,10 +3,11 @@
 module Argu
   class Cache
     include SerializationHelper
-    attr_accessor :adapter_opts, :adapter_type, :format, :resource, :timestamp, :user_context
+    attr_accessor :adapter_opts, :adapter_type, :directory, :format, :resource, :timestamp, :user_context
 
-    def initialize
+    def initialize(opts = {})
       self.user_context = create_user_context(%w[guest afe])
+      self.directory = opts[:directory] || ENV['CACHE_DIRECTORY']
     end
 
     def write(resource, adapter_type, format, adapter_opts = {})
@@ -31,7 +32,7 @@ module Argu
     end
 
     def cache_resource?
-      ENV['CACHE_DIRECTORY']
+      directory.present?
     end
 
     def create_symlink
@@ -69,7 +70,7 @@ module Argu
     end
 
     def storage_dir(version)
-      "#{ENV['CACHE_DIRECTORY']}/latest/#{Digest::MD5.hexdigest(resource.iri).scan(/.{,8}/).join('/')}#{version}"
+      "#{directory}/latest/#{Digest::MD5.hexdigest(resource.iri).scan(/.{,8}/).join('/')}#{version}"
     end
 
     def write_cache
@@ -81,6 +82,7 @@ module Argu
       create_symlink
 
       Rails.logger.info "Written to #{file_name(format)}"
+      file_name(format)
     end
 
     def write_file(adapter_type, format, adapter_opts)
