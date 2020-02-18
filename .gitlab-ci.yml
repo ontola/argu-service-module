@@ -1,0 +1,15 @@
+image: ruby:2.6.3
+
+cache:
+  paths:
+    - vendor/
+
+build:
+  stage: build
+  script:
+    - bundle install --deployment --path vendor/bundle
+    - bundle exec rubocop
+    - bundle exec rspec --pattern service_module_internal/**/*_spec.rb
+
+stages:
+  - build
