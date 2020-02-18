@@ -233,7 +233,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     registered = type == 'user'
     sign_payload(
       exp: exp.to_i,
-      iat: Time.current.iso8601(5),
+      iat: Time.current.to_i,
       scopes: type,
       user: {
         type: type,
