@@ -6,6 +6,6 @@ module JWTHelper
   end
 
   def decode_token(token, _verify = false)
-    JWT.decode(token, Rails.application.secrets.jwt_encryption_token, algorithm: 'HS256')[0]
+    JWT.decode(token, Rails.application.secrets.jwt_encryption_token, true, algorithms: %w[HS256 HS512])[0]
   end
 end
