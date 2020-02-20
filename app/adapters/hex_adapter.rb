@@ -80,11 +80,11 @@ class HexAdapter < ActiveModelSerializers::Adapter::RDF # rubocop:disable Metric
     end
   end
 
-  def rdf_array_to_hex(statement)
+  def rdf_array_to_hex(statement) # rubocop:disable Metrics/AbcSize
     obj = normalized_object(statement[2])
     [
       object_value(statement[0]),
-      statement[1].value,
+      statement[1].is_a?(String) ? statement[1] : statement[1].value,
       object_value(obj),
       object_datatype(obj),
       obj.try(:language) || '',
@@ -93,15 +93,14 @@ class HexAdapter < ActiveModelSerializers::Adapter::RDF # rubocop:disable Metric
   end
 
   def rdf_statement_to_hex(statement)
-    obj = normalized_object(statement.object)
-    [
-      object_value(statement.subject),
-      statement.predicate.value,
-      object_value(obj),
-      object_datatype(obj),
-      obj.try(:language) || '',
-      statement.graph_name&.value || ::RDF::Serializers.config.default_graph.value
-    ]
+    rdf_array_to_hex(
+      [
+        statement.subject,
+        statement.predicate,
+        statement.object,
+        statement.graph_name
+      ]
+    )
   end
 
   def repository
