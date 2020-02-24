@@ -3,6 +3,10 @@
 class Page < ActiveResourceModel
   include LinkedRails::Model
 
+  def from
+    "#{display_name.split(',').first} <noreply@argu.co>"
+  end
+
   def iri
     RDF::URI("https://#{iri_prefix}")
   end
