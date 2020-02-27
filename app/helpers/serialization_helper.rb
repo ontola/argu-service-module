@@ -7,6 +7,6 @@ module SerializationHelper
   end
 
   def create_user_context(scopes, opts = {})
-    UserContext.new({doorkeeper_scopes: scopes}.merge(opts))
+    UserContext.new(**{doorkeeper_scopes: scopes}.merge(opts))
   end
 end

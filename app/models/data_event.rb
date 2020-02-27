@@ -81,7 +81,7 @@ class DataEvent
     end
 
     def filtered_attributes(attributes)
-      ActionDispatch::Http::ParameterFilter
+      ActiveSupport::ParameterFilter
         .new(Rails.application.config.filter_parameters)
         .filter(attributes)
     end
