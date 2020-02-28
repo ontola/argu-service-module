@@ -19,6 +19,8 @@ LinkedRails.serializer_parent_class = 'BaseSerializer'
 
 LinkedRails.vocabulary_class = 'Vocabulary'
 
+LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
+
 module LinkedRailsDynamicIRI
   def actions_iri
     RDF::DynamicURI(super)
