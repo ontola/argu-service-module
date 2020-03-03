@@ -14,6 +14,7 @@ class TenantMiddleware
 
     if tenantize(env, request)
       return tenant_is_missing(request) unless ActsAsTenant.current_tenant
+      return redirect_correct_iri_prefix(request.url) if wrong_iri_prefix?(request)
 
       rewrite_path(env, request)
     else
@@ -36,7 +37,7 @@ class TenantMiddleware
   end
 
   def fallback_location
-    "#{Rails.application.config.frontend_url}/argu"
+    "#{Rails.application.config.origin}/argu"
   end
 
   def log_tenant
@@ -53,8 +54,18 @@ class TenantMiddleware
     env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '/')
   end
 
+  def redirect_correct_iri_prefix(requested_url)
+    url = ActsAsTenant.current_tenant.url.downcase
+    iri = ActsAsTenant.current_tenant.iri
+    location = requested_url
+                 .downcase
+                 .sub("#{Rails.application.config.frontend_url}/#{url}", iri)
+                 .sub("#{Rails.application.config.origin}/#{url}", iri)
+    [301, {'Location' => location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
+  end
+
   def tenant_is_missing(request)
-    if request.url.chomp('/') == Rails.application.config.frontend_url
+    if request.url.chomp('/') == Rails.application.config.origin
       [301, {'Location' => fallback_location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
     else
       [404, {'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
@@ -73,5 +84,9 @@ class TenantMiddleware
 
   def tenantized_url?(env)
     !env['PATH_INFO'].start_with?(['', Rails.application.routes.default_scope, '_public', ''].compact.join('/'))
+  end
+
+  def wrong_iri_prefix?(request)
+    ![URI(request.url).host, URI(request.url).path].join('').starts_with?(ActsAsTenant.current_tenant.iri_prefix)
   end
 end
