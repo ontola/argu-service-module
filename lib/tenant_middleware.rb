@@ -15,8 +15,6 @@ class TenantMiddleware
     if tenantize(env, request)
       return tenant_is_missing(request) unless ActsAsTenant.current_tenant
       return redirect_correct_iri_prefix(request.url) if wrong_iri_prefix?(request)
-
-      rewrite_path(env, request)
     else
       Apartment::Tenant.switch!('public')
     end
@@ -46,12 +44,6 @@ class TenantMiddleware
     else
       Rails.logger.debug 'No tenant found'
     end
-  end
-
-  def rewrite_path(env, request)
-    return if ActsAsTenant.current_tenant.nil? || ActsAsTenant.current_tenant.iri_prefix == request.host
-
-    env['PATH_INFO'].gsub!(%r{(\/(#{ActsAsTenant.current_tenant.url}|#{ActsAsTenant.current_tenant.uuid}))(\/|$)}i, '/')
   end
 
   def redirect_correct_iri_prefix(requested_url)
