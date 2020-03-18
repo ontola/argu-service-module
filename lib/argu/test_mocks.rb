@@ -52,7 +52,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     user_mock(id, opts)
   end
 
-  def find_tenant_mock(iri = 'www.example.com\/argu\/(tokens|email|spi).*')
+  def find_tenant_mock(iri = "#{ENV['HOSTNAME']}\/argu\/(tokens|email|spi).*")
     stub_request(
       :get,
       /#{expand_service_url(:argu, '/_public/spi/find_tenant')}\?iri=#{iri}/
