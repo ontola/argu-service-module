@@ -80,9 +80,9 @@ module Argu
       )
     end
 
-    def create_user(email, redirect: nil)
+    def create_user(email, headers: nil, redirect: nil)
       response = create_user_request(email, redirect)
-      update_user_token(response)
+      update_user_token(headers, response)
       user_from_response(response, email)
     rescue OAuth2::Error
       nil
@@ -103,7 +103,10 @@ module Argu
         token: user_token || service_token,
         body: guest_token_params(redirect)
       )
-      @user_token = JSON.parse(result.body)['access_token']
+      parsed_body = JSON.parse(result.body)
+      @user_token = parsed_body['access_token']
+
+      parsed_body
     end
 
     def get_tenant(iri)
@@ -173,7 +176,7 @@ module Argu
       {
         client_id: ENV['ARGU_APP_ID'],
         client_secret: ENV['ARGU_APP_SECRET'],
-        grant_type: :client_credentials,
+        grant_type: :password,
         scope: :guest,
         r: redirect
       }
@@ -199,9 +202,12 @@ module Argu
       CurrentUser.from_response(user_token, User.new(attributes))
     end
 
-    def update_user_token(response)
+    def update_user_token(headers, response)
       @user_token = response.headers['new-authorization']
       Bugsnag.notify('No new user token received') if @user_token.blank?
+
+      headers['new-authorization'] = response.headers['new-authorization']
+      headers['new-refresh-token'] = response.headers['new-refresh-token']
     end
   end
 end

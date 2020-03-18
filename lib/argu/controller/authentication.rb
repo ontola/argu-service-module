@@ -30,13 +30,17 @@ module Argu
       end
 
       def generate_guest_token
-        @user_token = api.generate_guest_token(redirect: r_for_guest_token)
+        token_response = api.generate_guest_token(redirect: r_for_guest_token)
+        @user_token = token_response['access_token']
+
+        response.headers['New-Authorization'] = @user_token
+        response.headers['New-Refresh-Token'] = token_response['refresh_token']
+
+        token_response
       end
 
       def guest_user
-        token = generate_guest_token
-        response.headers['New-Authorization'] = token
-        CurrentUser.from_token(token)
+        CurrentUser.from_token(generate_guest_token['access_token'])
       end
 
       def r_for_guest_token
