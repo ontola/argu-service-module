@@ -58,13 +58,16 @@ class TenantMiddleware
   end
 
   def redirect_correct_iri_prefix(requested_url)
-    url = ActsAsTenant.current_tenant.url.downcase
+    url = shortname_in_url(requested_url)
     iri = ActsAsTenant.current_tenant.iri
-    location = requested_url
-                 .downcase
-                 .sub("#{Rails.application.config.frontend_url}/#{url}", iri)
-                 .sub("#{Rails.application.config.origin}/#{url}", iri)
+    location = requested_url.downcase.sub("#{Rails.application.config.origin}/#{url.downcase}", iri)
     [301, {'Location' => location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
+  end
+
+  def shortname_in_url(url)
+    ActsAsTenant.current_tenant.shortnames.pluck(:shortname).detect do |shortname|
+      url.downcase.include?("#{Rails.application.config.origin}/#{shortname.downcase}")
+    end
   end
 
   def tenant_is_missing(request)
