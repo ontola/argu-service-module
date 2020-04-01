@@ -59,16 +59,6 @@ module Argu
       )
     end
 
-    def create_favorite(iri)
-      api_request(
-        :argu,
-        :post,
-        expand_uri_template(:favorites_iri),
-        body: {iri: iri},
-        headers: {accept: 'application/json'}
-      )
-    end
-
     def create_membership(token)
       group_iri = expand_uri_template(:groups_iri, id: token.group_id)
       api_request(
