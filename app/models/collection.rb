@@ -7,18 +7,14 @@ class Collection < LinkedRails::Collection
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
-  def action_triples(scope) # rubocop:disable Metrics/AbcSize
+  def action_triples(scope)
     return super unless association_class.to_s == 'Discussion'
 
     triples = super
     Discussion.descendants.each do |klass|
       next unless parent.respond_to?("#{klass.to_s.underscore}_collection")
 
-      uri = RDF::URI(parent.send("#{klass.to_s.underscore}_collection").iri_template.expand(iri_opts))
-      uri.path += '/new'
-      uri.to_s
-
-      triples << [iri, NS::ONTOLA[:createAction], iri_with_root(uri)]
+      triples << [iri, NS::ONTOLA[:createAction], iri_with_root(sanitized_action_url(klass))]
     end
     triples
   end
@@ -72,6 +68,13 @@ class Collection < LinkedRails::Collection
 
   def parent_uri_template_opts
     @parent_uri_template_opts.respond_to?(:call) ? @parent_uri_template_opts.call(parent) : @parent_uri_template_opts
+  end
+
+  def sanitized_action_url(klass)
+    uri = RDF::URI(parent.send("#{klass.to_s.underscore}_collection").iri_template.expand(iri_opts))
+    uri.path += '/new'
+    uri.query = Rack::Utils.parse_nested_query(uri.query).except('display', 'sort').to_param.presence
+    uri
   end
 
   class << self
