@@ -45,6 +45,15 @@ module JsonAPIHelper
       &.find { |r| r[:id] == resource[:id] && (resource[:type].nil? || r[:type] == resource[:type]) }
   end
 
+  # The params, deserialized when format is json_api method is not safe
+  # @example Resource params from json_api request
+  #   params = {
+  #     data: {type: 'motions', attributes: {body: 'body'}},
+  #     relationships: {relation: {data: {type: 'motions', id: motion.id}}}
+  #   }
+  #   params # => {motion: {body: 'body', relation_type: 'motions', relation_id: 1}}
+  # @example Resource params from LD request
+  # @return [Hash] The params
   def json_api_params(params)
     raise ActionController::UnpermittedParameters.new(%w[type]) if json_api_wrong_type(params)
     raise ActionController::ParameterMissing.new(:attributes) if params['data']['attributes'].blank?
@@ -81,6 +90,10 @@ module JsonAPIHelper
     hash.merge!(json_api_parse_relationships(relationships, options))
 
     hash
+  end
+
+  def parse_json_api_params?(params)
+    request.format.json_api? && params[:data].present?
   end
 
   private
