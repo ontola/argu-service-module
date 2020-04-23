@@ -39,7 +39,7 @@ describe DataEvent do
       [
         {
           id: "http://app.argu.localtest/argu/records/#{expected_id}",
-          type: 'records',
+          type: 'record',
           attributes: {'attr1' => %w[was is], 'attr2' => [nil, 'new'], 'password' => '[FILTERED]'}
         }.with_indifferent_access
       ]

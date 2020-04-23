@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CollectionSerializer < LinkedRails::CollectionSerializer
-  def iri_template
+  attribute :iri_template, predicate: NS::ONTOLA[:iriTemplate] do |object|
     object.iri_template.to_s.gsub('{/parent_iri*}', object.parent&.iri || ActsAsTenant.current_tenant.iri)
   end
 end

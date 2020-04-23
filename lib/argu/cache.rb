@@ -22,13 +22,12 @@ module Argu
 
     private
 
-    def adapter(adapter_type, opts)
+    def serializer(opts)
       serializable_resource(
-        adapter_type,
         resource,
         nil,
         {include: resource.class.try(:preview_includes), scope: user_context}.merge(opts)
-      ).adapter
+      )
     end
 
     def cache_resource?
@@ -47,9 +46,9 @@ module Argu
 
     def data(adapter_type, format, adapter_opts)
       ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || resource.try(:root)) do
-        adapter_for_type = adapter(adapter_type, adapter_opts)
+        adapter_for_type = serializer(adapter_opts)
         if adapter_type == :hex_adapter
-          adapter_for_type.dump
+          adapter_for_type.dump(:hndjson)
         elsif adapter_type == :rdf
           adapter_for_type.dump(RDF::Format.for(file_extension: format).symbols.first)
         else

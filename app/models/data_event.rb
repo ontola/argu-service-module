@@ -9,11 +9,9 @@ class DataEvent
 
   def as_json(_opts = {})
     serializable_resource(
-      :json_api,
       self,
       %w[service],
-      include: event == 'destroy' ? nil : :resource,
-      key_transform: :camel_lower
+      include: event == 'destroy' ? nil : [:resource]
     ).as_json
   end
 
@@ -114,7 +112,7 @@ class DataEvent
     end
 
     def type_from_resource(resource)
-      resource.class.name.pluralize.camelize(:lower)
+      resource.class.name.singularize.underscore
     end
   end
 end

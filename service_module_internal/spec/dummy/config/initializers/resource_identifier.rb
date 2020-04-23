@@ -1,1 +1,0 @@
-../../../../../config/initializers/resource_identifier.rb

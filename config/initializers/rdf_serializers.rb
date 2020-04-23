@@ -15,3 +15,5 @@ RDF_CONTENT_TYPES = %i[n3 nt nq ttl jsonld rdf hndjson].freeze
 
 # Only content-types which are rendered with the rdf adapter
 RDF::Serializers::Renderers.register(%i[n3 ntriples nquads turtle jsonld rdf], opts)
+
+RDF::Serializers::Renderers.add_renderer(:hndjson, 'application/hex+x-ndjson', :hndjson, opts)

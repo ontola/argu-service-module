@@ -52,6 +52,5 @@ module Service
     config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = config.host_name
-    ActiveModelSerializers.config.key_transform = :camel_lower
   end
 end

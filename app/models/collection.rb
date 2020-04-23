@@ -14,7 +14,7 @@ class Collection < LinkedRails::Collection
     Discussion.descendants.each do |klass|
       next unless parent.respond_to?("#{klass.to_s.underscore}_collection")
 
-      triples << [iri, NS::ONTOLA[:createAction], iri_with_root(sanitized_action_url(klass))]
+      triples << RDF::Statement.new(iri, NS::ONTOLA[:createAction], iri_with_root(sanitized_action_url(klass)))
     end
     triples
   end

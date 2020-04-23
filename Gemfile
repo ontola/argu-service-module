@@ -2,15 +2,15 @@
 
 source 'https://rubygems.org'
 
-gem 'active_model_serializers', '~> 0.10.7'
 gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
 gem 'activerecord'
 gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource'
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
+gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi'
 gem 'json-ld'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', ref: '99c156367566e69076f50c66340f12d8d59a136c'
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'core-127-fast-serializers'
 gem 'oauth2'
 gem 'oj'
 gem 'pragmatic_context'
@@ -21,7 +21,7 @@ gem 'rdf'
 gem 'rdf-n3'
 gem 'rdf-rdfa'
 gem 'rdf-rdfxml'
-gem 'rdf-serializers', git: 'https://github.com/argu-co/rdf-serializers', branch: 'master'
+gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch: 'fast-jsonapi'
 gem 'rdf-turtle'
 gem 'rdf-vocab'
 gem 'rfc-822', '~> 0.4.1'
