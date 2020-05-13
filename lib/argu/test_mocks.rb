@@ -142,12 +142,6 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
       )
   end
 
-  def create_favorite_mock(opts = {})
-    stub_request(:post, expand_service_url(:argu, '/argu/favorites'))
-      .with(body: {iri: opts[:iri]})
-      .to_return(status: opts[:status] || 201)
-  end
-
   def emails_mock(type, id, event = 'create')
     stub_request(
       :get,
