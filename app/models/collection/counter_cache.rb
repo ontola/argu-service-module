@@ -30,7 +30,7 @@ class Collection
 
     def counter_cache_column_name
       key = association.to_s
-      key = key[7..-1] if key.starts_with?('active_')
+      key = key[7..] if key.starts_with?('active_')
       opts = association_class.try(:counter_cache_options)
       key if opts && (opts == true || opts.keys.include?(key.to_sym))
     end

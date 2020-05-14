@@ -19,7 +19,7 @@ class Page < ActiveResourceModel
     @tenant ||=
       OpenStruct.new(
         host: iri_prefix.split('/').first,
-        path: iri_prefix.split('/')[1..-1].join('/')
+        path: iri_prefix.split('/')[1..].join('/')
       )
   end
 

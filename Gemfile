@@ -10,7 +10,7 @@ gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch:
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
 gem 'json-ld'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', ref: '5401fbdbcbb2714bd4d2197b0c604334e11c27f2'
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', ref: '99c156367566e69076f50c66340f12d8d59a136c'
 gem 'oauth2'
 gem 'oj'
 gem 'pragmatic_context'

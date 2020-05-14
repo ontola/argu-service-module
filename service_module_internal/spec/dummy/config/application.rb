@@ -31,10 +31,9 @@ module Dummy
     config.oauth_url = ENV['OAUTH_URL']
     config.filter_parameters += [:password]
     config.uri_templates =
-      Hash[
-        YAML.safe_load(File.read(File.expand_path('../config/uri_templates.yml', __dir__)))
-          .map { |k, v| [k, URITemplate.new(v)] }
-      ].with_indifferent_access.freeze
+      YAML.safe_load(File.read(File.expand_path('../config/uri_templates.yml', __dir__)))
+        .transform_values { |v| URITemplate.new(v) }
+        .with_indifferent_access.freeze
     secrets.jwt_encryption_token = 'secret'
 
     config.middleware.use LinkedRails::Middleware::LinkedDataParams

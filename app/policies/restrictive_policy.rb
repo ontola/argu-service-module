@@ -13,6 +13,7 @@ class RestrictivePolicy
   end
 
   attr_reader :user_context, :record
+
   delegate :export_scope?, :service_scope?, :system_scope?,
            to: :user_context,
            allow_nil: true

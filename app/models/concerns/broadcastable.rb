@@ -5,6 +5,7 @@ module Broadcastable
 
   included do
     attr_accessor :broadcastable_changes
+
     after_commit :publish_data_event, if: :should_broadcast_changes
     after_initialize :reset_broadcastable_changes
     after_save :add_broadcastable_changes

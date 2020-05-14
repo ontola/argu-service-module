@@ -48,7 +48,7 @@ module Argu
       end
 
       def token_from_header
-        request.headers['Authorization'][7..-1] if request.headers['Authorization']&.downcase&.start_with?('bearer ')
+        request.headers['Authorization'][7..] if request.headers['Authorization']&.downcase&.start_with?('bearer ')
       end
 
       def user_from_token
