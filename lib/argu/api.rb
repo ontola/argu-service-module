@@ -187,7 +187,7 @@ module Argu
       attributes = JSON.parse(response.body)
       attributes['included'] = [
         {attributes: {email: email, primary: true}}
-          .merge(attributes.dig('data', 'relationships', 'emailAddresses', 'data').first)
+          .merge(attributes.dig('data', 'relationships', 'email_addresses', 'data').first)
       ]
       CurrentUser.from_response(user_token, User.new(attributes))
     end

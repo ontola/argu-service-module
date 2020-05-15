@@ -117,14 +117,14 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
         body: {
           data: {
             id: 1,
-            type: 'group_memberships',
+            type: 'group_membership',
             attributes: {
             },
             relationships: {
               group: {
                 data: {
                   id: 1,
-                  type: 'groups'
+                  type: 'group'
                 }
               }
             }
@@ -132,9 +132,9 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
           included: [
             {
               id: 1,
-              type: 'groups',
+              type: 'group',
               attributes: {
-                displayName: 'group_name'
+                display_name: 'group_name'
               }
             }
           ]
@@ -163,7 +163,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
       body: {
         data: {
           id: 1,
-          type: 'groups',
+          type: 'group',
           attributes: {
             iri: argu_url('/argug/1'),
             display_name: "Group#{id}"
@@ -172,7 +172,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
             organization: {
               data: {
                 id: 1,
-                type: 'organizations'
+                type: 'organization'
               }
             }
           }
@@ -180,9 +180,9 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
         included: [
           {
             id: 1,
-            type: 'organizations',
+            type: 'organization',
             attributes: {
-              displayName: 'Organization Name',
+              display_name: 'Organization Name',
               iri: argu_url('/argu')
             }
           }
@@ -248,12 +248,12 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
       .map do |e, i|
       {
         id: "https://argu.dev/u/#{id}/email/#{i}",
-        type: 'emailAddresses',
+        type: 'email_address',
         attributes: {
           '@type' => 'argu:Email',
           email: e[:email],
           primary: i.zero?,
-          confirmedAt: e[:confirmed] ? Time.current : nil
+          confirmed_at: e[:confirmed] ? Time.current : nil
         }
       }
     end
@@ -262,7 +262,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
   def included_profile_photo(id = '1')
     {
       id: id,
-      type: 'photos',
+      type: 'photo',
       attributes: {
         thumbnail: nil
       }
@@ -272,31 +272,31 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
   def user_data(id, email, language = NS::ARGU['locale/en'], secondary_emails = [])
     {
       id: NS::ARGU["u/#{id}"],
-      type: 'users',
+      type: 'user',
       attributes: {
         '@context': {
           schema: 'http://schema.org/',
           hydra: 'http://www.w3.org/ns/hydra/core#',
           argu: 'https://argu.co/ns/core#',
-          createdAt: 'http://schema.org/dateCreated',
-          updatedAt: 'http://schema.org/dateModified',
-          displayName: 'schema:name',
+          created_at: 'http://schema.org/dateCreated',
+          updated_at: 'http://schema.org/dateModified',
+          display_name: 'schema:name',
           about: 'schema:description',
           '@vocab': 'http://schema.org/'
         },
         '@type': 'schema:Person',
-        potentialAction: nil,
-        displayName: "User#{id}",
+        potential_action: nil,
+        display_name: "User#{id}",
         about: '',
         url: "user#{id}",
         email: email,
         language: language
       },
       relationships: {
-        defaultProfilePhoto: {
+        default_profile_photo: {
           data: {
             id: '1',
-            type: 'photos'
+            type: 'photo'
           },
           links: {
             self: {
@@ -308,9 +308,9 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
             }
           }
         },
-        emailAddresses: {
+        email_addresses: {
           data: Array.new((secondary_emails.count + 1)) do |i|
-            {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'emailAddresses'}
+            {id: "https://argu.dev/u/#{id}/email/#{i}", type: 'email_address'}
           end
         }
       },

@@ -16,7 +16,7 @@ module Argu
       end
 
       def expect_default_view
-        @expect_default_view ||= expect_included(expect_relationship('defaultView')['data']['id'])
+        @expect_default_view ||= expect_included(expect_relationship('default_view')['data']['id'])
       end
 
       def expect_error_message(msg, index = 0)
@@ -80,7 +80,7 @@ module Argu
       end
 
       def expect_view_members(parent, count)
-        member_sequence = expect_included(expect_relationship('memberSequence', size: 1, parent: parent)['data']['id'])
+        member_sequence = expect_included(expect_relationship('member_sequence', size: 1, parent: parent)['data']['id'])
         view_member_ids(member_sequence, count)
       end
 
