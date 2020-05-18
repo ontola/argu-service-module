@@ -29,9 +29,11 @@ RSpec.configure do |config|
   config.include TestMocks
   config.include IriHelpers
 
-  config.before do
+  config.before(:each, type: :request) do
     host! ENV['HOSTNAME']
+  end
 
+  config.before do
     Apartment::Tenant.create('argu') unless ApplicationRecord.connection.schema_exists?('argu')
     Apartment::Tenant.switch!('argu')
     find_tenant_mock
