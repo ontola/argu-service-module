@@ -3,17 +3,16 @@
 module Argu
   class Cache
     include SerializationHelper
-    attr_accessor :adapter_opts, :adapter_type, :directory, :format, :resource, :timestamp, :user_context
+    attr_accessor :adapter_opts, :directory, :format, :resource, :timestamp, :user_context
 
     def initialize(opts = {})
       self.user_context = create_user_context(%w[guest cache])
       self.directory = opts[:directory] || ENV['CACHE_DIRECTORY']
     end
 
-    def write(resource, adapter_type, format, adapter_opts = {})
+    def write(resource, format, adapter_opts = {})
       self.resource = resource
       self.adapter_opts = adapter_opts
-      self.adapter_type = adapter_type
       self.format = format
       self.timestamp = Time.current.strftime('%Y%m%dT%H%M')
 
@@ -44,15 +43,13 @@ module Argu
       storage_dir(timestamp)
     end
 
-    def data(adapter_type, format, adapter_opts)
+    def data(format, adapter_opts)
       ActsAsTenant.with_tenant(ActsAsTenant.current_tenant || resource.try(:root)) do
         adapter_for_type = serializer(adapter_opts)
-        if adapter_type == :hex_adapter
-          adapter_for_type.dump(:hndjson)
-        elsif adapter_type == :rdf
-          adapter_for_type.dump(RDF::Format.for(file_extension: format).symbols.first)
+        if format == :json
+          Oj.dump(adapter_for_type.serializable_hash[:data][:attributes], mode: :compat)
         else
-          adapter_for_type.to_json
+          adapter_for_type.dump(format)
         end
       end
     end
@@ -78,7 +75,7 @@ module Argu
     def write_cache
       FileUtils.mkdir_p current_dir
 
-      write_file(adapter_type, format, adapter_opts)
+      write_file(format, adapter_opts)
 
       delete_latest_dir
       create_symlink
@@ -87,8 +84,8 @@ module Argu
       file_name(format)
     end
 
-    def write_file(adapter_type, format, adapter_opts)
-      File.open(file_name(format), 'w') { |file| file.write(data(adapter_type, format, adapter_opts)) }
+    def write_file(format, adapter_opts)
+      File.open(file_name(format), 'w') { |file| file.write(data(format, adapter_opts)) }
     end
   end
 end
