@@ -18,9 +18,9 @@ GIT
 
 GIT
   remote: https://github.com/fast-jsonapi/fast_jsonapi
-  revision: ac34aa22f7882f54cb7cab352489930c012e1e1b
+  revision: 2de80d48896751d30fb410e042fd21a710100423
   specs:
-    fast_jsonapi (1.7.1)
+    fast_jsonapi (1.7.2)
       activesupport (>= 4.2)
 
 GIT
@@ -33,8 +33,8 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: e028ce260925d30a2e27596b4cff34780626b616
-  branch: core-127-fast-serializers
+  revision: aa2addbbea5ef4ddec7670a1cddece6e93eb3ada
+  branch: filtering
   specs:
     linked_rails (0.0.0)
       active_response
@@ -47,7 +47,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/rdf-serializers
-  revision: afe876f027ecaa6a30b02ca0666d1d211d6b5c8a
+  revision: 690d4ed3468ca27fa236b0ea62bdfc954e34c9a5
   branch: fast-jsonapi
   specs:
     rdf-serializers (0.0.7)
