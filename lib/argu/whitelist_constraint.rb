@@ -15,7 +15,10 @@ module Argu
     end
 
     def request_ip(ip)
-      Bugsnag.notify("#{ip} is not a string but a #{ip.class}") unless ip.is_a?(String)
+      unless ip.is_a?(String) && ip.present?
+        Bugsnag.notify("#{ip} is not a string but a #{ip.class}")
+        return nil
+      end
 
       IPAddr.new(ip)
     end
