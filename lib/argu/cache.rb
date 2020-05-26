@@ -3,10 +3,9 @@
 module Argu
   class Cache
     include SerializationHelper
-    attr_accessor :adapter_opts, :directory, :format, :resource, :timestamp, :user_context
+    attr_accessor :adapter_opts, :directory, :format, :resource, :timestamp
 
     def initialize(opts = {})
-      self.user_context = create_user_context(%w[guest cache])
       self.directory = opts[:directory] || ENV['CACHE_DIRECTORY']
     end
 
@@ -24,8 +23,8 @@ module Argu
     def serializer(opts)
       serializable_resource(
         resource,
-        nil,
-        {include: resource.class.try(:preview_includes), scope: user_context}.merge(opts)
+        %w[guest cache],
+        {include: resource.class.try(:preview_includes)}.merge(opts)
       )
     end
 
