@@ -21,7 +21,7 @@ class Connection
     with_channel do |channel|
       channel
         .fanout(name, durable: true)
-        .publish(body, persistent: true)
+        .publish(body, persistent: true, expiration: 3.months.to_i * 1000)
     end
     connection.close
   end
