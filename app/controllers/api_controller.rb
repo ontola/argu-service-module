@@ -32,7 +32,7 @@ class APIController < ActionController::API
   end
 
   def set_locale
-    I18n.locale = current_user&.language&.gsub("#{NS::ARGU[:locale]}/", '') || I18n.default_locale
+    I18n.locale = current_user&.language || I18n.default_locale
   end
 
   def success_message_translation_opts

@@ -269,7 +269,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     }
   end
 
-  def user_data(id, email, language = NS::ARGU['locale/en'], secondary_emails = [])
+  def user_data(id, email, language = NS::ARGU['language#en'], secondary_emails = [])
     {
       id: NS::ARGU["u/#{id}"],
       type: 'user',
