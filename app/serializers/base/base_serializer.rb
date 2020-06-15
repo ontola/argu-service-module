@@ -14,13 +14,16 @@ class BaseSerializer
 
   class << self
     # overwrite of LinkedRails::Serializer to enable arrays
-    def enum_value(key, enum_opts, object)
+    def enum_value(key, object)
+      options = enum_options(key)
+      return if options.blank?
+
       raw_value = object.send(key)
 
       if raw_value.is_a?(Array)
-        raw_value.map { |v| enum_opts[v.to_sym].try(:[], :iri) }
+        raw_value.map { |v| options[v.to_sym].try(:iri) }
       elsif raw_value.present?
-        enum_opts[raw_value&.to_sym].try(:[], :iri)
+        options[raw_value].try(:iri)
       end
     end
 
