@@ -3,7 +3,7 @@
 class BroadcastWorker
   include Sidekiq::Worker
 
-  attr_accessor :data_event
+  attr_accessor :cache, :data_event
 
   def perform(attrs = {})
     attrs = attrs.with_indifferent_access
@@ -14,7 +14,9 @@ class BroadcastWorker
 
     self.data_event = data_event_from_attrs(attrs)
 
-    write_to_cache
+    self.cache = Argu::Cache.new
+
+    invalidate_cache
     publish_data_event
   end
 
@@ -22,8 +24,8 @@ class BroadcastWorker
     self.data_event = data_event_from_attrs(resource: resource)
   end
 
-  def write_to_cache
-    resource.try(:write_to_cache)
+  def invalidate_cache
+    resource.try(:invalidate_cache, @cache)
   end
 
   private
