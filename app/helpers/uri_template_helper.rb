@@ -2,8 +2,13 @@
 
 module UriTemplateHelper
   # @return [RDF::URI]
-  def actors_iri(parent)
-    iri_from_template(:actors_iri, parent_iri: split_iri_segments(parent.iri_path))
+  def current_actor_iri
+    iri_from_template(:current_actors_iri)
+  end
+
+  # @return [RDF::URI]
+  def actors_iri
+    iri_from_template(:actors_iri)
   end
 
   # @return [RDF::URI]

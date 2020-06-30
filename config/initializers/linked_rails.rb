@@ -46,9 +46,9 @@ LinkedRails::Translate.translations_for(:property, :description) do |object|
     I18n.t(
       "#{object.model_name.to_s.tableize}.form.#{object.model_attribute}.description",
       default: [
-        :"formtastic.placeholders.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.placeholders.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
         :"formtastic.placeholders.#{object.model_attribute}",
-        :"formtastic.hints.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.hints.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
         :"formtastic.hints.#{object.model_attribute}",
         ''
       ]
@@ -59,9 +59,9 @@ end
 LinkedRails::Translate.translations_for(:property, :label) do |object|
   if object.model_attribute.present?
     I18n.t(
-      "#{object.model_name.to_s.tableize}.form.#{object.model_attribute}.label",
+      "#{object.model_class.to_s.tableize}.form.#{object.model_attribute}.label",
       default: [
-        :"formtastic.labels.#{object.model_name.to_s.downcase.singularize}.#{object.model_attribute}",
+        :"formtastic.labels.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
         :"formtastic.labels.#{object.model_attribute}",
         ''
       ]

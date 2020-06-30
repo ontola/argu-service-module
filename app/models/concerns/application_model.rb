@@ -7,8 +7,12 @@ module ApplicationModel
     include IRITemplateHelper
   end
 
-  def build_child(klass)
-    ChildHelper.child_instance(self, klass)
+  def build_child(klass, opts = {})
+    ChildHelper.child_instance(self, klass, opts)
+  end
+
+  def canonical_iri
+    super if persisted?
   end
 
   def canonical_iri_opts
@@ -42,6 +46,10 @@ module ApplicationModel
   end
 
   module ClassMethods
+    def build_new(opts = {})
+      ChildHelper.child_instance(nil, self, opts)
+    end
+
     def class_name
       name.tableize
     end

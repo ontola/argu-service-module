@@ -31,6 +31,7 @@ module NS
   WDT = RDF::Vocabulary.new('http://www.wikidata.org/prop/direct/')
   XMLNS = RDF::Vocabulary.new('http://www.w3.org/2000/xmlns/')
 
+  LIBRO = LinkedRails::Vocab::LIBRO
   LL = LinkedRails::Vocab::LL
   ONTOLA = LinkedRails::Vocab::ONTOLA
   FORM = LinkedRails::Vocab::FORM

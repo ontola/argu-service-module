@@ -6,5 +6,4 @@ class CollectionFilter < LinkedRails::Collection::Filter
   def iri(_opts = {})
     self
   end
-  alias canonical_iri iri
 end
