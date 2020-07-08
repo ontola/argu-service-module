@@ -26,9 +26,6 @@ module ActiveResponseHelper
     return data if index_collection.blank?
 
     meta_replace_collection_count(data, index_collection.unfiltered)
-    current_resource.applicable_filters.each do |key, value|
-      meta_replace_collection_count(data, index_collection.unfiltered.new_child(filter: {key => value}))
-    end
     data
   end
 
@@ -58,9 +55,6 @@ module ActiveResponseHelper
     return data if index_collection.blank?
 
     meta_replace_collection_count(data, index_collection.unfiltered)
-    current_resource.applicable_filters.each do |key, value|
-      meta_replace_collection_count(data, index_collection.unfiltered.new_child(filter: {key => value}))
-    end
     data
   end
 
