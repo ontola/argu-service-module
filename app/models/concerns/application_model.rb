@@ -47,7 +47,11 @@ module ApplicationModel
 
   module ClassMethods
     def build_new(opts = {})
-      ChildHelper.child_instance(nil, self, opts)
+      new(attribute_for_new(opts))
+    end
+
+    def attribute_for_new(_opts)
+      {}
     end
 
     def class_name

@@ -1,19 +1,39 @@
 # frozen_string_literal: true
 
 class ApplicationForm < LinkedRails::Form
-  include UriTemplateHelper
+  extend UriTemplateHelper
 
   class << self
+    def form_iri
+      RDF::DynamicURI(
+        LinkedRails.iri(path: [
+          '',
+          Rails.application.config.try(:iri_suffix),
+          :forms,
+          to_s.sub('Form', '').tableize
+        ].compact.join('/'))
+      )
+    end
+
+    def form_options_iri(attr)
+      lambda do
+        LinkedRails.iri(path: [
+          '',
+          Rails.application.config.try(:iri_suffix),
+          :enums,
+          model_class.to_s.tableize,
+          attr
+        ].compact.join('/'))
+      end
+    end
+
     private
 
-    def actor_selector
-      {
-        custom: true,
-        datatype: NS::XSD[:string],
-        default_value: -> { user_context.user.iri },
-        max_count: 1,
-        sh_in: -> { actors_iri(target.root) }
-      }
+    def actor_selector(attr = :creator)
+      field attr,
+            datatype: NS::XSD[:string],
+            max_count: 1,
+            sh_in: -> { actors_iri }
     end
   end
 end

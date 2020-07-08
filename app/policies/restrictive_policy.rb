@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class RestrictivePolicy
+  include LinkedRails::Policy
+
   class Scope
     attr_reader :user_context, :scope
 
@@ -24,10 +26,6 @@ class RestrictivePolicy
   end
 
   def create?
-    false
-  end
-
-  def create_child?(_raw_klass)
     false
   end
 
