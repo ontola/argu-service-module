@@ -8,7 +8,7 @@ gem 'activeresource', git: 'https://github.com/ArthurWD/activeresource'
 gem 'acts_as_tenant', git: 'https://github.com/ArthurWD/acts_as_tenant', branch: :master
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
-gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi'
+gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2de80d48896751'
 gem 'json-ld'
 gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'filtering'
 gem 'oauth2'

@@ -18,9 +18,10 @@ GIT
 
 GIT
   remote: https://github.com/fast-jsonapi/fast_jsonapi
-  revision: 3ff69ccce1a75fb0210874dba1b77f05a79ec8f2
+  revision: 2de80d48896751d30fb410e042fd21a710100423
+  ref: 2de80d48896751
   specs:
-    fast_jsonapi (2.0.0)
+    fast_jsonapi (1.7.2)
       activesupport (>= 4.2)
 
 GIT
@@ -33,7 +34,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: 82d6f23f23045278d98a742f01182bced00232cf
+  revision: 1ccd8774c3777d6e306efbbf0a3f6ee9463eb95e
   branch: filtering
   specs:
     linked_rails (0.0.0)
@@ -47,7 +48,7 @@ GIT
 
 GIT
   remote: https://github.com/ontola/rdf-serializers
-  revision: 4a8b234a06213a61f4406fc1564e998cf8c3620e
+  revision: e74faf784d4a80341891593acfb896a204e1082c
   branch: fast-jsonapi
   specs:
     rdf-serializers (0.0.7)
@@ -160,7 +161,7 @@ GEM
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
     link_header (0.0.8)
-    loofah (2.5.0)
+    loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -178,7 +179,7 @@ GEM
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
     nio4r (2.5.2)
-    nokogiri (1.10.9)
+    nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     oauth2 (1.3.0)
       faraday (>= 0.8, < 0.11)
@@ -196,7 +197,7 @@ GEM
     public_suffix (2.0.5)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-protection (2.0.5)
       rack
     rack-test (1.1.0)
@@ -229,7 +230,7 @@ GEM
       thor (>= 0.20.3, < 2.0)
     rainbow (3.0.0)
     rake (13.0.1)
-    rdf (3.1.2)
+    rdf (3.1.4)
       hamster (~> 3.0)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (2.2.1)
@@ -336,7 +337,7 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
-    zeitwerk (2.3.0)
+    zeitwerk (2.3.1)
 
 PLATFORMS
   ruby
