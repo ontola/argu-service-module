@@ -47,7 +47,7 @@ module ApplicationModel
 
   module ClassMethods
     def build_new(opts = {})
-      new(attribute_for_new(opts))
+      ChildHelper.child_instance(opts[:collection].try(:parent), self, opts)
     end
 
     def attribute_for_new(_opts)
