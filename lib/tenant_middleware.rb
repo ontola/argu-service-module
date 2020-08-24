@@ -65,7 +65,7 @@ class TenantMiddleware
   end
 
   def shortname_in_url(url)
-    ActsAsTenant.current_tenant.shortnames.pluck(:shortname).detect do |shortname|
+    ActsAsTenant.current_tenant.all_shortnames.detect do |shortname|
       url.downcase.include?("#{Rails.application.config.origin}/#{shortname.downcase}")
     end
   end

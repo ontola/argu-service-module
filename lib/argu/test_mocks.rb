@@ -52,7 +52,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     user_mock(id, opts)
   end
 
-  def find_tenant_mock(iri = "#{ENV['HOSTNAME']}\/argu\/(tokens|email|spi).*")
+  def find_tenant_mock(iri = "#{ENV['HOSTNAME']}\/argu\/(tokens|email|spi).*", prefix: nil, shortnames: %w[argu])
     stub_request(
       :get,
       /#{expand_service_url(:argu, '/_public/spi/find_tenant')}\?iri=#{iri}/
@@ -61,12 +61,12 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
       body: {
         accent_background_color: '#475668',
         accent_color: '#FFFFFF',
+        all_shortnames: shortnames,
         database_schema: 'argu',
         display_name: 'Page name',
-        iri_prefix: "#{ENV['HOSTNAME']}/argu",
+        iri_prefix: prefix || "#{ENV['HOSTNAME']}/argu",
         navbar_background: '#475668',
         navbar_color: '#FFFFFF',
-        use_new_frontend: false,
         uuid: TEST_ROOT_ID
       }.to_json
     )
