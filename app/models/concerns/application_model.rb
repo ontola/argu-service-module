@@ -50,10 +50,6 @@ module ApplicationModel
       ChildHelper.child_instance(opts[:collection].try(:parent), self, opts)
     end
 
-    def attribute_for_new(_opts)
-      {}
-    end
-
     def class_name
       name.tableize
     end

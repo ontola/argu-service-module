@@ -15,6 +15,10 @@ class ActiveResourceModel < ActiveResource::Base
 
   class_attribute :service, default: :argu
 
+  def build_child(klass, opts = {})
+    ChildHelper.child_instance(self, klass, opts)
+  end
+
   def load(attributes, remove_root = false, persisted = false)
     attributes = JsonApiResourceParser.new(attributes).parse if (attributes.keys & %w[data attributes]).any?
     super
@@ -43,6 +47,14 @@ class ActiveResourceModel < ActiveResource::Base
   end
 
   class << self
+    def attributes_for_new(_opts)
+      {}
+    end
+
+    def build_new(opts = {})
+      ChildHelper.child_instance(opts[:collection].try(:parent), self, opts)
+    end
+
     def connection(refresh = false)
       con = super
       con.site = site
