@@ -9,16 +9,16 @@ module Argu
     def matches?(request)
       ip = request_ip(request.ip)
       remote_ip = request_ip(request.remote_ip)
+
+      Bugsnag.notify("#{request.ip} is not present") unless ip
+
       [ip, remote_ip].all? do |req_ip|
         WHITELIST.any? { |allowed_ip| allowed_ip.include?(req_ip) }
       end
     end
 
     def request_ip(ip)
-      unless ip.is_a?(String) && ip.present?
-        Bugsnag.notify("#{ip} is not a string but a #{ip.class}")
-        return nil
-      end
+      return nil unless ip.is_a?(String) && ip.present?
 
       IPAddr.new(ip)
     end
