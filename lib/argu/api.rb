@@ -150,7 +150,7 @@ module Argu
         :argu,
         :post,
         expand_uri_template(:user_registration),
-        body: {user: {email: email}, r: redirect},
+        body: {user: {email: email}, redirect_url: redirect},
         headers: {accept: 'application/json'}
       )
     end
@@ -168,7 +168,7 @@ module Argu
         client_secret: ENV['ARGU_APP_SECRET'],
         grant_type: :password,
         scope: :guest,
-        r: redirect
+        redirect_url: redirect
       }
     end
 
