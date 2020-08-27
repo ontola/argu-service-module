@@ -21,15 +21,15 @@ LinkedRails.vocabulary_class = 'Vocabulary'
 
 LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
+module LinkedRails
+  class << self
+    def iri(opts = {})
+      RDF::DynamicURI(RDF::URI(**{scheme: LinkedRails.scheme, host: LinkedRails.host}.merge(opts)))
+    end
+  end
+end
+
 module LinkedRailsDynamicIRI
-  def actions_iri
-    RDF::DynamicURI(super)
-  end
-
-  def canonical_iri_path(opts = {})
-    root_relative_canonical_iri(opts).to_s
-  end
-
   def iri_with_root(_opts = {})
     RDF::DynamicURI(super)
   end

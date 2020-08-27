@@ -21,6 +21,10 @@ module ApplicationModel
     {id: id, "#{self.class.name.underscore}_id": id}
   end
 
+  def canonical_iri_path(opts = {})
+    root_relative_canonical_iri(opts).to_s
+  end
+
   def class_name
     self.class.name.tableize
   end
