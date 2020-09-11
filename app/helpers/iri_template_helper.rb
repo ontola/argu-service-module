@@ -15,7 +15,7 @@ module IRITemplateHelper
   end
 
   def iri_template
-    uri_template(iri_template_name)
+    uri_template(iri_template_name) || super
   end
 
   def iri_template_name
