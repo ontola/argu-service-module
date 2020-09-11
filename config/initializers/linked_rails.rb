@@ -21,6 +21,11 @@ LinkedRails.vocabulary_class = 'Vocabulary'
 
 LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
+if defined?(LinkedRails::Auth)
+  LinkedRails.confirmation_class = 'Users::Confirmation'
+  LinkedRails.registration_form_class = 'Users::RegistrationForm'
+end
+
 module LinkedRails
   class << self
     def iri(opts = {})
