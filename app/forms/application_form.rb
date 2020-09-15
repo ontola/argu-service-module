@@ -5,13 +5,13 @@ class ApplicationForm < LinkedRails::Form
 
   class << self
     def form_iri
-      RDF::DynamicURI(
-        LinkedRails.iri(path: [
+      LinkedRails.iri(
+        path: [
           '',
           Rails.application.config.try(:iri_suffix),
           :forms,
           to_s.sub('Form', '').tableize
-        ].compact.join('/'))
+        ].compact.join('/')
       )
     end
 
