@@ -12,9 +12,18 @@ module Argu
 
       Bugsnag.notify("#{request.ip} is not present") unless ip
 
-      [ip, remote_ip].all? do |req_ip|
+      allowed = [ip, remote_ip].all? do |req_ip|
         WHITELIST.any? { |allowed_ip| allowed_ip.include?(req_ip) }
       end
+      log_verdict(allowed, request, ip, remote_ip)
+      allowed
+    end
+
+    def log_verdict(allowed, request, ip, remote_ip)
+      return if Rails.env.production?
+
+      verdict = allowed ? 'pass' : 'fail'
+      Rails.logger.debug("[WhitelistConstraint] #{verdict} for #{request.url} by ip: #{ip}, remote ip: #{remote_ip}")
     end
 
     def request_ip(ip)
