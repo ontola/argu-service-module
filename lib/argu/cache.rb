@@ -2,14 +2,178 @@
 
 module Argu
   class Cache
-    include DeltaHelper
+    SLICE_SIZE = 20
 
-    def write(delta)
-      Argu::Redis.publish(ENV['CACHE_CHANNEL'], hex_delta(delta))
+    extend DeltaHelper
+    extend RDF::Serializers::HextupleSerializer
+
+    class << self
+      def invalidate(iri)
+        write([invalidate_resource(iri)])
+      end
+
+      def invalidate_all
+        invalidate(NS::SP.Variable)
+      end
+
+      def warm
+        Apartment::Tenant.each do
+          Page.find_each do |page|
+            Warmer.warm(page)
+          end
+        end
+      end
+
+      def write(delta)
+        Argu::Redis.publish(ENV['CACHE_CHANNEL'], hex_delta(delta))
+      end
+
+      private
+
+      def invalidate_resource(iri)
+        [NS::SP.Variable, NS::SP.Variable, NS::SP.Variable, NS::ONTOLA["invalidate?graph=#{CGI.escape(iri)}"]]
+      end
     end
 
-    def scope
-      @scope ||= UserContext.new(user: GuestUser.new, doorkeeper_scopes: %w[guest])
+    class Warmer # rubocop:disable Metrics/ClassLength
+      class << self
+        def warm(page)
+          ActsAsTenant.with_tenant(page) do
+            warm_iris(page.iri, collect_iris)
+          end
+        end
+
+        private
+
+        def bulk_request(iris, website)
+          iris.each_slice(SLICE_SIZE).flat_map do |resources|
+            # rubocop:disable Rails/Output
+            $stdout.write '*'
+            party = bulk_request_batch(resources, website)
+
+            $stdout.write "\b." if party.response.code == '200'
+
+            if party.response.code != '200'
+              $stdout.write "\be"
+              "Received status #{party.response.code} on resources [#{resources.join(', ')}]"
+            end
+            # rubocop:enable Rails/Output
+          end
+        end
+
+        def bulk_request_batch(resources, website)
+          url = 'http://apex_rs.svc.cluster.local:3030/link-lib/bulk'
+          opts = {
+            body: {resource: resources},
+            headers: bulk_request_headers(website)
+          }
+
+          HTTParty.post(url, opts)
+        end
+
+        def bulk_request_headers(website)
+          {
+            'Accept-Language': 'en',
+            'Website-IRI': website.to_s,
+            'X-Forwarded-Host': website.host,
+            'X-Forwarded-Proto': 'https'
+          }
+        end
+
+        def collect_iris
+          static_iris + dynamic_iris
+        end
+
+        def dynamic_iris
+          Rails.logger.info("Collecting IRIs for website #{ActsAsTenant.current_tenant.iri}")
+
+          objects = Edge.all.flat_map { |o| traverse(o, o.class.show_includes, :show_includes) }
+          objects
+            .map { |o| o&.try(:iri) }
+            .filter { |o| o.is_a?(RDF::URI) }
+        end
+
+        def resolve_array(obj, include, deep_includes)
+          include.uniq.flat_map do |i|
+            include_map = deep_includes ? i.class.try(deep_includes) : i
+            traverse(obj, include_map || i)
+          end
+        end
+
+        def resolve_collection_value(obj, include, deep_includes)
+          return unless obj.is_a?(Collection)
+
+          obj.parent.send(obj.association).all.flat_map do |member|
+            include_map = deep_includes ? member.class.try(deep_includes) : include
+            traverse(member, include_map || include)
+          end
+        rescue StandardError => e
+          Rails.logger.warn("Caught error: #{e}")
+        end
+
+        def resolve_hash(obj, include, deep_includes)
+          include.flat_map do |k, v|
+            nested_obj = obj.try(k)
+            include_map = deep_includes ? nested_obj.class.try(deep_includes) : v
+            traverse(nested_obj, include_map || v)
+          rescue StandardError => e
+            Rails.logger.warn("Caught error: #{e}")
+          end
+        end
+
+        def resolve_path(obj, include)
+          include.to_s.split('.').reduce([obj]) { |objs, prop| objs + [objs.try(prop)] }
+        rescue StandardError => e
+          Rails.logger.warn("Caught error: #{e}, include: #{include.class.name}(#{include})")
+        end
+
+        def resolve_value(obj, include, deep_includes) # rubocop:disable Metrics/MethodLength
+          if include.is_a?(Symbol) || include.is_a?(String)
+            resolve_path(obj, include)
+          elsif include.is_a?(Array)
+            resolve_array(obj, include, deep_includes)
+          elsif include.is_a?(Hash)
+            resolve_hash(obj, include, deep_includes)
+          elsif include.nil?
+            nil
+          else
+            throw "Unexpected include type '#{include.class.name}' (value was: #{include})"
+          end
+        end
+
+        def static_iris
+          [
+            RDF::URI('https://argu.co/ns/core')
+          ]
+        end
+
+        def traverse(obj, include, deep_includes = nil)
+          return unless obj
+
+          result = resolve_value(obj, include, deep_includes)
+          nested = resolve_collection_value(obj, include, deep_includes)
+
+          [
+            obj,
+            result,
+            nested
+          ].flatten.compact.uniq
+        end
+
+        def warm_iris(website, iris) # rubocop:disable Metrics/AbcSize
+          Rails.logger.info(
+            "Warming up to #{iris.length} resources for website #{website} in #{(iris.length / SLICE_SIZE).ceil} steps"
+          )
+          # rubocop:disable Rails/Output
+          $stdout.write '['
+          errors = bulk_request(iris, website)
+          $stdout.write "]\n"
+          # rubocop:enable Rails/Output
+
+          Rails.logger.warn("Errors while warming: #{errors.join("\n")}") if errors.present?
+          Rails.logger.info('Finished warming cache')
+        end
+      end
     end
   end
 end
