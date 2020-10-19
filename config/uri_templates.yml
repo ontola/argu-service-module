@@ -216,7 +216,6 @@ widgets_collection_iri: "{/parent_iri*}/widgets{?display,filter%5B%5D*,sort%5B%5
 new_vote: "{/voteable_path*}/votes/new{?confirm,redirect_url,vote%5Bfor%5D}"
 new_pasword: "/users/password/new"
 user_confirmation: "/users/confirmation{?confirmation_token}"
-user_confirm: "/users/confirm"
 user_connect: "/u{/id}/connect{?token}"
 user_registration: "/users"
 user_set_password: "/users/password/edit{?reset_password_token}"

@@ -192,7 +192,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
   end
 
   def confirm_email_mock(email)
-    stub_request(:put, expand_service_url(:argu, '/argu/users/confirm'))
+    stub_request(:put, expand_service_url(:argu, '/argu/users/confirmation'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end

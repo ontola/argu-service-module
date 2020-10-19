@@ -29,7 +29,7 @@ module Argu
       api_request(
         :argu,
         :put,
-        expand_uri_template(:user_confirm),
+        expand_uri_template(:user_confirmation),
         token: service_token,
         body: {email: email},
         headers: {accept: 'application/json'}
