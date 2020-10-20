@@ -2,6 +2,7 @@
 
 # Our own wrapper for redis, to make stuff like error handling and host initialisation easier.
 module Argu
+  # rubocop:disable Metrics/ClassLength
   class Redis
     # Argu configured redis instance, use this by default.
     def self.redis_instance(opts = {})
@@ -63,6 +64,12 @@ module Argu
       opts[:redis] ||= redis_instance(opts[:redis_opts] || {})
 
       opts[:redis].persist(key)
+    rescue ::Redis::CannotConnectError => e
+      rescue_redis_connection_error(e)
+    end
+
+    def self.publish(channel, message, redis: ::Redis.new)
+      redis.publish(channel, message)
     rescue ::Redis::CannotConnectError => e
       rescue_redis_connection_error(e)
     end
@@ -135,4 +142,5 @@ module Argu
       nil
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
