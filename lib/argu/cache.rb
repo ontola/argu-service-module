@@ -76,12 +76,13 @@ module Argu
             'Accept-Language': 'en',
             'Website-IRI': website.to_s,
             'X-Forwarded-Host': website.host,
-            'X-Forwarded-Proto': 'https'
+            'X-Forwarded-Proto': 'https',
+            'X-Forwarded-Ssl': 'on'
           }
         end
 
         def collect_iris
-          static_iris + dynamic_iris
+          static_iris + form_iris + dynamic_iris
         end
 
         def dynamic_iris
@@ -91,6 +92,16 @@ module Argu
           objects
             .map { |o| o&.try(:iri) }
             .filter { |o| o.is_a?(RDF::URI) }
+        end
+
+        def form_iris
+          Rails.logger.info('Collecting form IRIs')
+
+          LinkedRails::Form
+            .descendants
+            .map do |klass|
+            klass.new.iri
+          end
         end
 
         def resolve_array(obj, include, deep_includes)
