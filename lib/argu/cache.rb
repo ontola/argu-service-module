@@ -25,7 +25,7 @@ module Argu
       end
 
       def write(delta)
-        Argu::Redis.publish(ENV['CACHE_CHANNEL'], hex_delta(delta))
+        RedisPublishWorker.perform_async(ENV['CACHE_CHANNEL'], hex_delta(delta), 1)
       end
 
       private
@@ -62,7 +62,7 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = 'http://apex_rs.svc.cluster.local:3030/link-lib/bulk'
+          url = 'http://apex-rs.svc.cluster.local:3030/link-lib/bulk'
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)
