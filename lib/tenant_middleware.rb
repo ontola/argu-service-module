@@ -42,7 +42,7 @@ class TenantMiddleware
 
   def log_tenant
     if ActsAsTenant.current_tenant
-      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.url}"
+      Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.iri}"
     else
       Rails.logger.debug 'No tenant found'
     end
