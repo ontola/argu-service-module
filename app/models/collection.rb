@@ -7,7 +7,7 @@ class Collection < LinkedRails::Collection
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
-  def action_triples(scope)
+  def action_triples
     return super unless association_class.to_s == 'Discussion'
 
     triples = super
