@@ -21,6 +21,8 @@ LinkedRails.vocabulary_class = 'Vocabulary'
 
 LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
+LinkedRails.whitelisted_spi_ips = ENV['INT_IP_WHITELIST']&.split(',')&.map { |ip| IPAddr.new(ip) } || []
+
 if defined?(LinkedRails::Auth)
   LinkedRails.confirmation_class = 'Users::Confirmation'
   LinkedRails.registration_form_class = 'Users::RegistrationForm'
