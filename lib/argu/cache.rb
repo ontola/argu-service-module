@@ -154,7 +154,7 @@ module Argu
 
         def static_iris
           [
-            RDF::URI('https://argu.co/ns/core')
+            Vocabulary.new.iri
           ]
         end
 
