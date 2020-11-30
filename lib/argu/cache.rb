@@ -25,6 +25,10 @@ module Argu
       end
 
       def write(delta)
+        Timeout.timeout(5) do
+          RedisPublishWorker.new.perform(ENV['CACHE_CHANNEL'], hex_delta(delta), 1)
+        end
+      rescue StandardError
         RedisPublishWorker.perform_async(ENV['CACHE_CHANNEL'], hex_delta(delta), 1)
       end
 
