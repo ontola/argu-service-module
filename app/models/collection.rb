@@ -7,6 +7,8 @@ class Collection < LinkedRails::Collection
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
+  delegate :searchable_aggregations, to: :association_class
+
   def action_triples
     return super unless association_class.to_s == 'Discussion'
 
@@ -37,6 +39,17 @@ class Collection < LinkedRails::Collection
     opts = super
     iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path)) if parent
     opts.merge(parent_uri_template_opts || {})
+  end
+
+  def search_result(opts = {})
+    SearchResult.new(
+      opts.merge(
+        parent: self,
+        association_class: association_class,
+        parent_uri_template: :search_results_iri,
+        parent_uri_template_canonical: :search_results_iri
+      )
+    )
   end
 
   private
