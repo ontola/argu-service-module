@@ -19,6 +19,9 @@ Argu::Errors::WrongPassword:
 Argu::Errors::NoPassword:
   id: 'NO_PASSWORD'
   status: 422
+Argu::Errors::Expired:
+  id: 'GONE'
+  status: 410
 ActiveRecord::RecordNotFound:
   id: 'NOT_FOUND'
   status: 404
