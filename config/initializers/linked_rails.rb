@@ -51,7 +51,7 @@ LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
 LinkedRails::Translate.translations_for(:property, :description) do |object|
   if object.model_attribute.present?
     I18n.t(
-      "#{object.model_name.to_s.tableize}.form.#{object.model_attribute}.description",
+      "#{object.model_class.to_s.tableize}.form.#{object.model_attribute}.description",
       default: [
         :"formtastic.placeholders.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
         :"formtastic.placeholders.#{object.model_attribute}",
