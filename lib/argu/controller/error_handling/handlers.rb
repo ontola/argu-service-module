@@ -8,14 +8,6 @@ module Argu
       module Handlers
         include LinkedRails::Helpers::OntolaActionsHelper
 
-        def add_error_snackbar(error)
-          add_exec_action_header(response.headers, ontola_snackbar_action(error.error.message))
-        end
-
-        def add_error_snackbar?(_error)
-          !%w[GET HEAD].include?(request.method)
-        end
-
         def error_response_json(error, status: nil)
           render json_error(status || error_status(error), json_error_hash(error))
         end
@@ -41,10 +33,6 @@ module Argu
             RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(error, type) } }
             format.any { head(error_status(error)) }
           end
-        end
-
-        def error_resource(status, error)
-          LinkedRails.rdf_error_class.new(status, request.original_url, error)
         end
 
         def error_response(error, format)
