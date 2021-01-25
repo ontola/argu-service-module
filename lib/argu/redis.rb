@@ -11,10 +11,10 @@ module Argu
       ::Redis.new(opts)
     end
 
-    def self.exists(key, opts = {})
+    def self.exists?(key, opts = {})
       opts[:redis] ||= redis_instance(opts[:redis_opts] || {})
 
-      opts[:redis].exists(key)
+      opts[:redis].exists?(key)
     rescue ::Redis::CannotConnectError => e
       rescue_redis_connection_error(e)
     end
