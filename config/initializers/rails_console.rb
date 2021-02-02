@@ -9,12 +9,23 @@ module Rails
       available = %w[public] + Apartment.tenant_names
       available_str = available.map.with_index { |tenant, index| "#{index}: #{tenant}" }.join(', ')
 
-      until available.include?(current)
+      if ENV['SKIP_APARTMENT']
         Rails.logger.info(
-          ActiveSupport::LogSubscriber.new.send(:color, "Set Apartment tenant: (#{available_str})", :yellow)
+          ActiveSupport::LogSubscriber.new.send(
+            :color,
+            "Available tenants: (#{available_str}). Use `st 'schema'` to switch",
+            :yellow
+          )
         )
-        current = STDIN.gets.chomp
-        current = available[current.to_i] if current.scan(/\D/).empty?
+        current = 'argu'
+      else
+        until available.include?(current)
+          Rails.logger.info(
+            ActiveSupport::LogSubscriber.new.send(:color, "Set Apartment tenant: (#{available_str})", :yellow)
+          )
+          current = STDIN.gets.chomp
+          current = available[current.to_i] if current.scan(/\D/).empty?
+        end
       end
 
       Apartment::Tenant.switch! current
