@@ -38,6 +38,10 @@ module UriTemplateHelper
     args[:with_hostname] ? path_with_hostname(path) : path
   end
 
+  def font_awesome_iri(icon)
+    RDF::URI("http://fontawesome.io/icon/#{icon.sub('fa-', '')}")
+  end
+
   def iri_from_template(template, opts = {})
     ActsAsTenant.with_tenant(opts.delete(:root) || ActsAsTenant.current_tenant) do
       RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
