@@ -50,12 +50,14 @@ LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
 
 LinkedRails::Translate.translations_for(:property, :description) do |object|
   if object.model_attribute.present?
+    model_key = object.model_class.to_s.demodulize.tableize
+
     I18n.t(
-      "#{object.model_class.to_s.tableize}.form.#{object.model_attribute}.description",
+      "#{model_key}.form.#{object.model_attribute}.description",
       default: [
-        :"formtastic.placeholders.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
+        :"formtastic.placeholders.#{model_key.singularize}.#{object.model_attribute}",
         :"formtastic.placeholders.#{object.model_attribute}",
-        :"formtastic.hints.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
+        :"formtastic.hints.#{model_key.singularize}.#{object.model_attribute}",
         :"formtastic.hints.#{object.model_attribute}",
         ''
       ]
@@ -65,10 +67,12 @@ end
 
 LinkedRails::Translate.translations_for(:property, :label) do |object|
   if object.model_attribute.present?
+    model_key = object.model_class.to_s.demodulize.tableize
+
     I18n.t(
-      "#{object.model_class.to_s.tableize}.form.#{object.model_attribute}.label",
+      "#{model_key}.form.#{object.model_attribute}.label",
       default: [
-        :"formtastic.labels.#{object.model_class.to_s.tableize.singularize}.#{object.model_attribute}",
+        :"formtastic.labels.#{model_key.singularize}.#{object.model_attribute}",
         :"formtastic.labels.#{object.model_attribute}",
         ''
       ]
