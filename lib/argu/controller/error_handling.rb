@@ -12,11 +12,9 @@ module Argu
       include Helpers
 
       included do
-        rescue_from StandardError, with: :handle_and_report_error
         rescue_from Argu::Errors::Unauthorized, with: :handle_error
         rescue_from Argu::Errors::Forbidden, with: :handle_error
-        rescue_from Argu::Errors::Expired, with: :handle_error
-        rescue_from ActiveRecord::RecordNotFound, with: :handle_error
+        rescue_from Argu::Errors::Forbidden, with: :handle_error
         rescue_from ActiveRecord::RecordNotUnique, with: :handle_error
         rescue_from ActionController::BadRequest, with: :handle_error
         rescue_from ActionController::ParameterMissing, with: :handle_error

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module JWTHelper
-  def sign_payload(payload)
-    JWT.encode payload, Rails.application.secrets.jwt_encryption_token, 'HS256'
+  def sign_payload(payload, algorithm = Doorkeeper::JWT.configuration.encryption_method.to_s.upcase)
+    JWT.encode payload, Rails.application.secrets.jwt_encryption_token, algorithm
   end
 
   def decode_token(token, secret: Rails.application.secrets.jwt_encryption_token, verify: true)
