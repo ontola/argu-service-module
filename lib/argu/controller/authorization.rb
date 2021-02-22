@@ -18,7 +18,7 @@ module Argu
       private
 
       def authorize(record, query = nil, *opts)
-        query ||= params[:action].to_s + '?'
+        query ||= action_query
 
         @_pundit_policy_authorized = true
 
@@ -32,7 +32,12 @@ module Argu
       end
 
       def authorize_action
-        authorize current_resource || new_resource, "#{params[:action].chomp('!')}?"
+        authorize current_resource || new_resource, action_query
+      end
+
+      def action_query
+        self.class.action_queries[params[:action].chomp('!').to_sym] ||
+          raise(Pundit::AuthorizationNotPerformedError.new(self.class))
       end
 
       def skip_verify_policy_authorized(sure = false)
@@ -52,6 +57,19 @@ module Argu
       end
 
       module ClassMethods
+        def action_queries
+          @action_queries ||= {
+            create: :create?,
+            new: :new?,
+            show: :show?,
+            index: :index?,
+            edit: :edit?,
+            update: :update?,
+            destroy: :destroy?,
+            delete: :delete?
+          }.freeze
+        end
+
         private
 
         def authorize(user, record, query)
