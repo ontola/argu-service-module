@@ -32,7 +32,7 @@ module Argu
       end
 
       def authorize_action
-        authorize current_resource || new_resource, action_query
+        authorize current_resource!, action_query
       end
 
       def action_query
