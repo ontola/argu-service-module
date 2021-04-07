@@ -9,6 +9,7 @@ gem 'acts_as_tenant', git: 'https://github.com/ErwinM/acts_as_tenant', ref: '1ba
 gem 'bunny', '~> 2.6.1'
 gem 'combustion', '~> 0.5.5'
 gem 'doorkeeper'
+gem 'doorkeeper-jwt'
 gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2de80d48896751'
 gem 'json-ld'
 gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: 'apex-rs'

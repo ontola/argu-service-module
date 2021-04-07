@@ -377,6 +377,7 @@ DEPENDENCIES
   bunny (~> 2.6.1)
   combustion (~> 0.5.5)
   doorkeeper
+  doorkeeper-jwt
   fast_jsonapi!
   json-ld
   linked_rails!
