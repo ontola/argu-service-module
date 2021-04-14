@@ -34,6 +34,12 @@ class BaseSerializer
       end
     end
 
+    def money_attribute(key, opts)
+      attribute key, opts do |object|
+        object.send(key)&.cents
+      end
+    end
+
     def never(_object, _params)
       false
     end
