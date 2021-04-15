@@ -17,7 +17,7 @@ LinkedRails.controller_parent_class = 'ParentableController'
 LinkedRails.policy_parent_class = 'RestrictivePolicy'
 LinkedRails.serializer_parent_class = 'BaseSerializer'
 
-LinkedRails.vocabulary_class = 'Vocabulary'
+LinkedRails.vocabulary_class = 'Ontology'
 
 LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
