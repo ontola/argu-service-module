@@ -195,6 +195,8 @@ submissions_collection_iri: "{/parent_iri*}/submissions{?before%5B%5D*,display,f
 surveys_iri: "{/root_id}/surveys{/id}{?destroy}"
 surveys_collection_canonical: "{/parent_iri*}/surveys{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 surveys_collection_iri: "{/parent_iri*}/surveys{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
+taggings_collection_canonical: "{/parent_iri*}/taggings{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
+taggings_collection_iri: "{/parent_iri*}/taggings{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 terms_iri: "{/root_id}/terms{/id}"
 terms_collection_canonical: "{/parent_iri*}/terms{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 terms_collection_iri: "{/parent_iri*}/terms{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
