@@ -37,7 +37,8 @@ class Collection < LinkedRails::Collection
 
   def iri_opts
     opts = super
-    iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path)) if parent
+    iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path))
+    iri_opts_add(opts, :iri, parent&.iri_opts.try(:[], :iri))
     opts.merge(parent_uri_template_opts || {})
   end
 
@@ -91,8 +92,8 @@ class Collection < LinkedRails::Collection
   end
 
   class << self
-    def iri
-      [super, NS::AS['Collection']]
+    def iri_template_keys
+      @iri_template_keys ||= super + %i[iri]
     end
   end
 end

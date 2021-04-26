@@ -57,7 +57,7 @@ module UriTemplateHelper
   def split_iri_segments(iri)
     return if iri.blank?
 
-    iri.to_s.split('/').map(&:presence).compact.presence
+    iri.to_s.split('?').first.split('/').map(&:presence).compact.presence
   end
 
   # @return [URITemplat]
