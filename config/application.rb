@@ -39,6 +39,8 @@ module Service
     config.origin = "https://#{Rails.application.config.host_name}"
     config.oauth_url = ENV['OAUTH_URL']
 
+    config.jwt_encryption_method = :hs512
+
     config.middleware.use TenantMiddleware
     config.middleware.use LinkedRails::Middleware::LinkedDataParams
 
