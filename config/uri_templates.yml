@@ -189,7 +189,7 @@ shortnames_collection_canonical: "{/parent_iri*}/shortnames{?before%5B%5D*,displ
 shortnames_collection_iri: "{/parent_iri*}/shortnames{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 sources_iri: "{/parent_iri*}/s{/id}"
 statistics_iri: "{/parent_iri*}/statistics"
-submissions_iri: "{/parent_iri*}/submission"
+submissions_iri: "{/parent_iri*}/submissions{/id}"
 submissions_collection_canonical: "{/parent_iri*}/submissions{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 submissions_collection_iri: "{/parent_iri*}/submissions{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 surveys_iri: "{/root_id}/surveys{/id}{?destroy}"
