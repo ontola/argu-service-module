@@ -28,6 +28,8 @@ module Dummy
     config.origin = "http://#{Rails.application.config.host_name}"
     LinkedRails.host = Rails.application.config.host_name # .force_encoding(Encoding::UTF_8)
 
+    config.jwt_encryption_method = :hs512
+
     config.oauth_url = ENV['OAUTH_URL']
     config.filter_parameters += [:password]
     config.uri_templates =

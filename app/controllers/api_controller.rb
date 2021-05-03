@@ -28,7 +28,7 @@ class APIController < ActionController::API
   end
 
   def internal_request?
-    Argu::WhitelistConstraint.matches?(request)
+    LinkedRails::Constraints::Whitelist.matches?(request)
   end
 
   def set_locale
