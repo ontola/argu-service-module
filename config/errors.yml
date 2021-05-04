@@ -19,7 +19,7 @@ Argu::Errors::WrongPassword:
 Argu::Errors::NoPassword:
   id: 'NO_PASSWORD'
   status: 422
-LinkedRails::Errors::Expired:
+LinkedRails::Auth::Errors::Expired:
   id: 'GONE'
   status: 410
 ActiveRecord::RecordNotFound:
