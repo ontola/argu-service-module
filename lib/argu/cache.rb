@@ -17,6 +17,8 @@ module Argu
       end
 
       def warm
+        Rails.application.eager_load!
+
         Apartment::Tenant.each do
           Page.find_each do |page|
             Warmer.warm(page)
@@ -158,7 +160,7 @@ module Argu
 
         def static_iris
           [
-            Vocabulary.new.iri
+            Ontology.new.iri
           ]
         end
 
@@ -185,7 +187,8 @@ module Argu
           $stdout.write "]\n"
           # rubocop:enable Rails/Output
 
-          Rails.logger.warn("Errors while warming: #{errors.join("\n")}") if errors.present?
+          raise("Errors while warming: #{errors.compact.join("\n")}") if errors.compact.present?
+
           Rails.logger.info('Finished warming cache')
         end
       end
