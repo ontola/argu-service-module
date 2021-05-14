@@ -16,6 +16,8 @@ banners_collection_iri: "{/parent_iri*}/banners{?before%5B%5D*,display,filter%5B
 banner_dismissals_iri: "{/root_id}/banner_dismissals{/id}{?destroy}"
 banner_dismissals_collection_canonical: "{/parent_iri*}/banner_dismissals{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 banner_dismissals_collection_iri: "{/parent_iri*}/banner_dismissals{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
+banner_managements_collection_canonical: "{/parent_iri*}/banner_managements{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
+banner_managements_collection_iri: "{/parent_iri*}/banner_managements{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 bearer_tokens_collection_iri: "/tokens/bearer/g{/group_id}{?before%5B%5D*,display,page,type}"
 bearer_tokens_iri: "/tokens{/secret}"
 blog_posts_iri: "{/root_id}/posts{/id}{?destroy}"
