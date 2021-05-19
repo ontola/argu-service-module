@@ -10,7 +10,7 @@ LinkedRails.collection_infinite_view_class = 'InfiniteView'
 LinkedRails.collection_paginated_view_class = 'PaginatedView'
 
 LinkedRails.actions_item_class = 'Actions::Item'
-LinkedRails.menus_item_class = 'MenuItem'
+LinkedRails.menus_item_class = 'Menus::Item'
 LinkedRails.entry_point_class = 'EntryPoint'
 
 LinkedRails.controller_parent_class = 'ParentableController'
