@@ -29,6 +29,13 @@ module UriTemplateHelper
     iri_from_template(:vote_iri, parent_iri: split_iri_segments(object.iri_path))
   end
 
+  def drafts_iri
+    Edge.root_collection(
+      filter: {NS::ARGU[:isDraft] => [true]},
+      title: I18n.t('users.drafts.title')
+    ).iri
+  end
+
   # @return [String]
   def expand_uri_template(template, args = {})
     tmpl = uri_template(template)
