@@ -31,10 +31,6 @@ module Argu
         true
       end
 
-      def authorize_action
-        authorize current_resource!, action_query
-      end
-
       def action_query
         self.class.action_queries[params[:action].chomp('!').to_sym] ||
           raise(Pundit::AuthorizationNotPerformedError.new(self.class))
