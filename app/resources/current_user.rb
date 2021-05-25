@@ -8,6 +8,10 @@ class CurrentUser
   attr_accessor :token, :email, :id, :iri, :scopes, :type, :language
   attr_writer :argu_user
 
+  def doorkeeper_token
+    @doorkeeper_token ||= Doorkeeper::AccessToken.new(scopes: scopes)
+  end
+
   def guest?
     type == 'guest'
   end

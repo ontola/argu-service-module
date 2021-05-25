@@ -16,7 +16,7 @@ module Argu
       end
 
       def user_context
-        @user_context ||= UserContext.new(api: api, user: current_user, doorkeeper_scopes: current_user.scopes)
+        @user_context ||= UserContext.new(api: api, user: current_user, doorkeeper_token: current_user.doorkeeper_token)
       end
 
       private
