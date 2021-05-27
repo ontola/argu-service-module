@@ -4,6 +4,18 @@ class Collection < LinkedRails::Collection
   include Collection::CounterCache
   include IRITemplateHelper
 
+  def search_result_collection(params = {})
+    return unless association_class.enhanced_with?(Searchable)
+
+    SearchResult.root_collection_class.collection_or_view(
+      SearchResult.root_collection_opts.merge(
+        association_class: association_class,
+        parent: self
+      ),
+      params
+    )
+  end
+
   attr_accessor :parent_uri_template, :parent_uri_template_canonical
   attr_writer :parent_uri_template_opts
 
@@ -42,16 +54,16 @@ class Collection < LinkedRails::Collection
     opts.merge(parent_uri_template_opts || {})
   end
 
-  def search_result(opts = {})
-    SearchResult.new(
-      opts.merge(
-        parent: self,
-        association_class: association_class,
-        parent_uri_template: :search_results_iri,
-        parent_uri_template_canonical: :search_results_iri
-      )
-    )
-  end
+  # def search_result(opts = {})
+  #   SearchResult.new(
+  #     opts.merge(
+  #       parent: self,
+  #       association_class: association_class,
+  #       parent_uri_template: :search_results_iri,
+  #       parent_uri_template_canonical: :search_results_iri
+  #     )
+  #   )
+  # end
 
   private
 
