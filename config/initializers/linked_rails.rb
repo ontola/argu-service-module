@@ -25,6 +25,7 @@ LinkedRails.whitelisted_spi_ips = ENV['INT_IP_WHITELIST']&.split(',')&.map { |ip
 
 if defined?(LinkedRails::Auth)
   LinkedRails.confirmation_class = 'Users::Confirmation'
+  LinkedRails.password_class = 'Users::Password'
   LinkedRails.registration_form_class = 'Users::RegistrationForm'
   LinkedRails.otp_attempt_class = 'OtpAttempt'
   LinkedRails.otp_secret_class = 'OtpSecret'

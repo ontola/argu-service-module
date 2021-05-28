@@ -17,7 +17,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
 
   def as_guest_with_account(with_access_token = true)
     token = with_access_token ? as_guest : generate_guest_token_mock
-    stub_request(:post, expand_service_url(:argu, '/argu/users'))
+    stub_request(:post, expand_service_url(:argu, '/argu/u/registration'))
       .with(headers: {'Authorization' => "Bearer #{token}"})
       .to_return(
         status: 422,
@@ -36,7 +36,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
 
   def as_guest_without_account(email)
     token = generate_guest_token_mock
-    stub_request(:post, expand_service_url(:argu, '/argu/users'))
+    stub_request(:post, expand_service_url(:argu, '/argu/u/registration'))
       .with(headers: {'Authorization' => "Bearer #{token}"})
       .to_return(
         status: 201,
@@ -192,7 +192,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
   end
 
   def confirm_email_mock(email)
-    stub_request(:put, expand_service_url(:argu, '/argu/users/confirmation'))
+    stub_request(:put, expand_service_url(:argu, '/argu/u/confirmation'))
       .with(body: {email: email}, headers: {'Accept' => 'application/json'})
       .to_return(status: 200)
   end

@@ -40,7 +40,7 @@ module Argu
       api_request(
         :argu,
         :put,
-        expand_uri_template(:settings_iri, parent_iri: 'u'),
+        '/user',
         token: user_token,
         body: {user: {email_addresses_attributes: {999 => {email: email}}}},
         headers: {accept: 'application/json'}
