@@ -62,7 +62,7 @@ module UriTemplateHelper
 
   # @return [Array<String>]
   def split_iri_segments(iri)
-    return if iri.blank?
+    return if iri.to_s.blank?
 
     iri.to_s.split('?').first.split('/').map(&:presence).compact.presence
   end
