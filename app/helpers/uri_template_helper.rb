@@ -21,12 +21,12 @@ module UriTemplateHelper
     canonical = opts.delete(:canonical) && uri_template("#{type}_collection_canonical")
     expand_uri_template(
       "#{type}_collection_#{canonical ? 'canonical' : 'iri'}",
-      opts.merge(parent_iri: split_iri_segments(parent.try(:iri_path) || parent))
+      opts.merge(parent_iri: split_iri_segments(parent.try(:root_relative_iri) || parent))
     )
   end
 
   def current_vote_iri(object)
-    iri_from_template(:vote_iri, parent_iri: split_iri_segments(object.iri_path))
+    iri_from_template(:vote_iri, parent_iri: split_iri_segments(object.root_relative_iri))
   end
 
   def drafts_iri
@@ -80,7 +80,7 @@ module UriTemplateHelper
   # @return [String]
   def new_iri_path(parent, collection = nil, opts = {})
     query = opts.delete(:query)
-    iri = parent.is_a?(String) ? parent : collection_iri_path(parent, collection, opts)
+    iri = parent.is_a?(String) || parent.is_a?(RDF::URI) ? parent : collection_iri_path(parent, collection, opts)
     uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: split_iri_segments(iri))))
     uri.query = query.to_param if query
     uri.to_s
@@ -93,7 +93,7 @@ module UriTemplateHelper
 
   # @return [String]
   def settings_iri_path(parent, opts = {})
-    iri = parent.try(:iri_path) || parent
+    iri = parent.try(:root_relative_iri) || parent
     opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
     opts[:only_path] = true
     opts[:fragment] = opts.delete(:tab) if opts[:tab]
@@ -108,7 +108,7 @@ module UriTemplateHelper
 
     # @return [String]
     define_method "#{method}_iri_path" do |parent, opts = {}|
-      iri = parent.try(:iri_path) || parent
+      iri = parent.try(:root_relative_iri) || parent
       opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
       opts[:only_path] = true
       expand_uri_template("#{method}_iri", opts)

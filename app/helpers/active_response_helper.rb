@@ -76,7 +76,11 @@ module ActiveResponseHelper
   end
 
   def redirect_location
-    current_resource.persisted? ? current_resource.iri_path : current_resource.parent.iri_path
+    if current_resource.persisted?
+      current_resource.root_relative_iri.to_s
+    else
+      current_resource.parent.root_relative_iri.to_s
+    end
   end
 
   def redirect_message

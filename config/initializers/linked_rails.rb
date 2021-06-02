@@ -42,10 +42,6 @@ module LinkedRailsDynamicIRI
   def iri_with_root(_opts = {})
     RDF::DynamicURI(super)
   end
-
-  def iri_path(opts = {})
-    root_relative_iri(opts).to_s
-  end
 end
 
 LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI

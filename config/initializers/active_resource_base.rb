@@ -4,8 +4,8 @@ module ActiveResource
   class Base
     include LinkedRails::Model
 
-    def iri_path
-      @iri_path ||= iri.to_s.split(ActsAsTenant.current_tenant.iri).last if respond_to?(:iri)
+    def root_relative_iri
+      @root_relative_iri ||= RDF::URI(iri.to_s.split(ActsAsTenant.current_tenant.iri).last) if respond_to?(:iri)
     end
 
     def uuid

@@ -37,7 +37,7 @@ class Collection < LinkedRails::Collection
 
   def iri_opts
     opts = super
-    iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.iri_path))
+    iri_opts_add(opts, :parent_iri, split_iri_segments(parent&.root_relative_iri))
     iri_opts_add(opts, :iri, parent&.iri_opts.try(:[], :iri))
     opts.merge(parent_uri_template_opts || {})
   end
@@ -57,7 +57,7 @@ class Collection < LinkedRails::Collection
 
   def canonical_iri_opts
     opts = iri_opts
-    opts[:parent_iri] = split_iri_segments(parent.try(:canonical_iri_path) || parent&.iri_path)
+    opts[:parent_iri] = split_iri_segments(parent.try(:root_relative_canonical_iri) || parent&.root_relative_iri)
     opts
   end
 
