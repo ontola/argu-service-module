@@ -66,7 +66,7 @@ class TenantMiddleware
 
   def redirect_correct_iri_prefix(requested_url)
     url = shortname_in_url(requested_url)
-    iri = ActsAsTenant.current_tenant.iri
+    iri = defined?(Shortname) ? Shortname.find_resource(url).iri : ActsAsTenant.current_tenant.iri
     location = requested_url.downcase.sub("#{Rails.application.config.origin}/#{url.downcase}", iri)
     [301, {'Location' => location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
