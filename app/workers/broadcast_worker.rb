@@ -14,16 +14,11 @@ class BroadcastWorker
 
     self.data_event = data_event_from_attrs(attrs)
 
-    invalidate_cache
     publish_data_event
   end
 
   def resource=(resource)
     self.data_event = data_event_from_attrs(resource: resource)
-  end
-
-  def invalidate_cache
-    resource.try(:invalidate_cache)
   end
 
   private

@@ -3,17 +3,13 @@
 module Argu
   class Cache
     SLICE_SIZE = 20
-
-    extend DeltaHelper
-    extend RDF::Serializers::HextupleSerializer
+    extend ServiceHelper
 
     class << self
-      def invalidate(iri)
-        write([invalidate_resource(iri)])
-      end
-
       def invalidate_all
-        invalidate(NS::SP.Variable)
+        response = service(:cache, token: nil).get('link-lib/cache/clear')
+
+        raise("Wrong response for clearing cache (#{response.status}): #{response.body}") unless response.body == 'OK'
       end
 
       def warm
@@ -24,20 +20,6 @@ module Argu
             Warmer.warm(page)
           end
         end
-      end
-
-      def write(delta)
-        Timeout.timeout(5) do
-          RedisPublishWorker.new.perform(ENV['CACHE_CHANNEL'], hex_delta(delta), 1)
-        end
-      rescue StandardError
-        RedisPublishWorker.perform_async(ENV['CACHE_CHANNEL'], hex_delta(delta), 1)
-      end
-
-      private
-
-      def invalidate_resource(iri)
-        [NS::SP.Variable, NS::SP.Variable, NS::SP.Variable, NS::ONTOLA["invalidate?graph=#{CGI.escape(iri)}"]]
       end
     end
 
@@ -68,7 +50,7 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = 'http://apex-rs.svc.cluster.local:3030/link-lib/bulk'
+          url = 'http://cache.svc.cluster.local:3030/link-lib/bulk'
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)
