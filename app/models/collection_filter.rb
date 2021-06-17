@@ -1,9 +1,3 @@
 # frozen_string_literal: true
 
-class CollectionFilter < LinkedRails::Collection::Filter
-  include LinkedRails::Model
-
-  def iri(_opts = {})
-    self
-  end
-end
+class CollectionFilter < LinkedRails::Collection::Filter; end
