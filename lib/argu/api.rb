@@ -47,14 +47,17 @@ module Argu
       )
     end
 
-    def create_email(template, recipient, options = {})
-      recipient = recipient.slice(:display_name, :email, :language, :id)
+    def create_email(template, recipient, options = {}) # rubocop:disable Metrics/MethodLength
+      recipient_opts = recipient.slice(:email, :language, :id)
+      display_name = recipient[:display_name] || recipient.try(:name_with_fallback)
+      recipient_opts[:display_name] = display_name if display_name
+
       api_request(
         :email,
         :post,
         expand_uri_template(:email_spi_create),
         token: service_token,
-        body: {email: {template: template, recipient: recipient, options: options}},
+        body: {email: {template: template, recipient: recipient_opts, options: options}},
         headers: {accept: 'application/json'}
       )
     end
