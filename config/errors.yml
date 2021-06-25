@@ -10,9 +10,6 @@ Argu::Errors::Unauthorized:
 Argu::Errors::UnknownEmail:
   id: 'UNKNOWN_EMAIL'
   status: 422
-Argu::Errors::UnknownUsername:
-  id: 'UNKNOWN_USERNAME'
-  status: 422
 Argu::Errors::WrongPassword:
   id: 'WRONG_PASSWORD'
   status: 422

@@ -21,7 +21,7 @@ module Argu
         end
 
         def user_with_r(redirect)
-          User.new(redirect_url: redirect, shortname: Shortname.new)
+          User.new(redirect_url: redirect)
         end
       end
     end
