@@ -31,7 +31,7 @@ module UriTemplateHelper
 
   def drafts_iri
     Edge.root_collection(
-      filter: {NS::ARGU[:isDraft] => [true]},
+      filter: {NS.argu[:isDraft] => [true]},
       title: I18n.t('users.drafts.title')
     ).iri
   end

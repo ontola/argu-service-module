@@ -103,6 +103,6 @@ module ActiveResponseHelper
   end
 
   def meta_replace_collection_count(data, collection)
-    data.push [collection.iri, NS::AS[:totalItems], collection.total_count, NS::LL[:replace]]
+    data.push [collection.iri, NS.as.totalItems, collection.total_count, NS.ll[:replace]]
   end
 end

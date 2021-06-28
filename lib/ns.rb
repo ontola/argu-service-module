@@ -3,103 +3,29 @@
 require 'rdf'
 require 'rdf/vocab'
 
-module NS
-  ARGU = RDF::Vocabulary.new('https://argu.co/ns/core#')
-  MAPPING = RDF::Vocabulary.new('https://argu.co/voc/mapping/')
-  MEETING = RDF::Vocabulary.new('https://argu.co/ns/meeting/')
-  META = RDF::Vocabulary.new('https://argu.co/ns/meta#')
-  ORI = RDF::Vocabulary.new('https://id.openraadsinformatie.nl/')
-  RIVM = RDF::Vocabulary.new('https://argu.co/ns/rivm#')
-
-  BIO = RDF::Vocabulary.new('http://purl.org/vocab/bio/0.1/')
-  CUBE = RDF::Vocabulary.new('http://purl.org/linked-data/cube#')
-  DBO = RDF::Vocabulary.new('http://dbpedia.org/ontology/')
-  DBPEDIA = RDF::Vocabulary.new('http://dbpedia.org/resource/')
-  FHIR = RDF::Vocabulary.new('http://hl7.org/fhir/')
-  HYDRA = RDF::Vocabulary.new('http://www.w3.org/ns/hydra/core#')
-  NCAL = RDF::Vocabulary.new('http://www.semanticdesktop.org/ontologies/2007/04/02/ncal#')
-  OPENGOV = RDF::Vocabulary.new('http://www.w3.org/ns/opengov#')
-  P = RDF::Vocabulary.new('http://www.wikidata.org/prop/')
-  PAV = RDF::Vocabulary.new('http://purl.org/pav/')
-  PERSON = RDF::Vocabulary.new('http://www.w3.org/ns/person#')
-  TIME = RDF::Vocabulary.new('http://www.w3.org/2006/time#')
-  WDATA = RDF::Vocabulary.new('https://www.wikidata.org/wiki/Special:EntityData/')
-  WD = RDF::Vocabulary.new('http://www.wikidata.org/entity/')
-  WDS = RDF::Vocabulary.new('http://www.wikidata.org/entity/statement/')
-  WDREF = RDF::Vocabulary.new('http://www.wikidata.org/reference/')
-  WDV = RDF::Vocabulary.new('http://www.wikidata.org/value/')
-  WDT = RDF::Vocabulary.new('http://www.wikidata.org/prop/direct/')
-  XMLNS = RDF::Vocabulary.new('http://www.w3.org/2000/xmlns/')
-
-  LIBRO = LinkedRails::Vocab::LIBRO
-  LL = LinkedRails::Vocab::LL
-  ONTOLA = LinkedRails::Vocab::ONTOLA
-  FORM = LinkedRails::Vocab::FORM
-  SP = LinkedRails::Vocab::SP
-
-  ACL = RDF::Vocab::ACL
-  AS = RDF::Vocab::AS
-  BF2 = RDF::Vocab::BF2
-  BIBFRAME = RDF::Vocab::Bibframe
-  BIBO = RDF::Vocab::BIBO
-  CC = RDF::Vocab::CC
-  CERT = RDF::Vocab::CERT
-  CNT = RDF::Vocab::CNT
-  DATACITE = RDF::Vocab::DataCite
-  DC = RDF::Vocab::DC
-  DC11 = RDF::Vocab::DC11
-  DCAT = RDF::Vocab::DCAT
-  DCMITYPE = RDF::Vocab::DCMIType
-  DOAP = RDF::Vocab::DOAP
-  DWC = RDF::Vocab::DWC
-  EDM = RDF::Vocab::EDM
-  EBUCORE = RDF::Vocab::EBUCore
-  EXIF = RDF::Vocab::EXIF
-  FCREPO4 = RDF::Vocab::Fcrepo4
-  FOAF = RDF::Vocab::FOAF
-  GEO = RDF::Vocab::GEO
-  GR = RDF::Vocab::GR
-  HT = RDF::Vocab::HT
-  ICAL = RDF::Vocab::ICAL
-  IDENTIFIERS = RDF::Vocab::Identifiers
-  IIIF = RDF::Vocab::IIIF
-  JSONLD = RDF::Vocab::JSONLD
-  LDP = RDF::Vocab::LDP
-  LRMI = RDF::Vocab::LRMI
-  MA = RDF::Vocab::MA
-  MADS = RDF::Vocab::MADS
-  MARCRELATORS = RDF::Vocab::MARCRelators
-  MO = RDF::Vocab::MO
-  MODS = RDF::Vocab::MODS
-  NFO = RDF::Vocab::NFO
-  OA = RDF::Vocab::OA
-  OG = RDF::Vocab::OG
-  OGC = RDF::Vocab::OGC
-  ORE = RDF::Vocab::ORE
-  ORG = RDF::Vocab::ORG
-  OWL = RDF::OWL
-  PPLAN = RDF::Vocab::PPLAN
-  PREMIS = RDF::Vocab::PREMIS
-  PREMISEVENTTYPE = RDF::Vocab::PremisEventType
-  PROV = RDF::Vocab::PROV
-  RDFS = RDF::RDFS
-  RDFV = RDF::RDFV
-  RSA = RDF::Vocab::RSA
-  RSS = RDF::Vocab::RSS
-  SCHEMA = RDF::Vocab::SCHEMA
-  SH = RDF::Vocab::SH
-  SIOC = RDF::Vocab::SIOC
-  SIOCSERVICES = RDF::Vocab::SiocServices
-  SKOS = RDF::Vocab::SKOS
-  SKOSXL = RDF::Vocab::SKOSXL
-  V = RDF::Vocab::V
-  VCARD = RDF::Vocab::VCARD
-  VMD = RDF::Vocab::VMD
-  VOID = RDF::Vocab::VOID
-  VS = RDF::Vocab::VS
-  WOT = RDF::Vocab::WOT
-  WDRS = RDF::Vocab::WDRS
-  XHTML = RDF::Vocab::XHTML
-  XHV = RDF::Vocab::XHV
-  XSD = RDF::XSD
+class NS < LinkedRails::Vocab
+  register(:argu, 'https://argu.co/ns/core#')
+  register(:mapping, 'https://argu.co/voc/mapping/')
+  register(:meeting, 'https://argu.co/ns/meeting/')
+  register(:meta, 'https://argu.co/ns/meta#')
+  register(:ori, 'https://id.openraadsinformatie.nl/')
+  register(:rivm, 'https://argu.co/ns/rivm#')
+  register(:bio, 'http://purl.org/vocab/bio/0.1/')
+  register(:cube, 'http://purl.org/linked-data/cube#')
+  register(:dbo, 'http://dbpedia.org/ontology/')
+  register(:dbpedia, 'http://dbpedia.org/resource/')
+  register(:hydra, 'http://www.w3.org/ns/hydra/core#')
+  register(:ncal, 'http://www.semanticdesktop.org/ontologies/2007/04/02/ncal#')
+  register(:opengov, 'http://www.w3.org/ns/opengov#')
+  register(:p, 'http://www.wikidata.org/prop/')
+  register(:pav, 'http://purl.org/pav/')
+  register(:person, 'http://www.w3.org/ns/person#')
+  register(:time, 'http://www.w3.org/2006/time#')
+  register(:wdata, 'https://www.wikidata.org/wiki/Special:EntityData/')
+  register(:wd, 'http://www.wikidata.org/entity/')
+  register(:wds, 'http://www.wikidata.org/entity/statement/')
+  register(:wdref, 'http://www.wikidata.org/reference/')
+  register(:wdv, 'http://www.wikidata.org/value/')
+  register(:wdt, 'http://www.wikidata.org/prop/direct/')
+  register(:xmlns, 'http://www.w3.org/2000/xmlns/')
 end

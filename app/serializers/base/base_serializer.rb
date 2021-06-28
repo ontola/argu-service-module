@@ -15,7 +15,7 @@ class BaseSerializer
   class << self
     def count_attribute(type, opts = {})
       attribute "#{type}_count",
-                {predicate: NS::ARGU["#{type.to_s.camelcase(:lower)}Count".to_sym]}.merge(opts) do |object, params|
+                {predicate: NS.argu["#{type.to_s.camelcase(:lower)}Count".to_sym]}.merge(opts) do |object, params|
         block_given? ? yield(object, params) : object.children_count(type)
       end
     end

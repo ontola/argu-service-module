@@ -21,14 +21,14 @@ class Collection < LinkedRails::Collection
 
   delegate :searchable_aggregations, to: :association_class
 
-  def action_triples
+  def action_triples # rubocop:disable Metrics/AbcSize
     return super unless association_class.to_s == 'Discussion'
 
     triples = super
     Discussion.descendants.each do |klass|
       next unless parent.respond_to?("#{klass.to_s.underscore}_collection")
 
-      triples << RDF::Statement.new(iri, NS::ONTOLA[:createAction], iri_with_root(sanitized_action_url(klass)))
+      triples << RDF::Statement.new(iri, NS.ontola[:createAction], iri_with_root(sanitized_action_url(klass)))
     end
     triples
   end

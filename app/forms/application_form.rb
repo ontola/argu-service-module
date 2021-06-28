@@ -31,7 +31,7 @@ class ApplicationForm < LinkedRails::Form
 
     def actor_selector(attr = :creator)
       field attr,
-            datatype: NS::XSD[:string],
+            datatype: NS.xsd.string,
             max_count: 1,
             sh_in: -> { actors_iri }
     end
