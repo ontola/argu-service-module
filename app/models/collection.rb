@@ -16,7 +16,7 @@ class Collection < LinkedRails::Collection
     )
   end
 
-  attr_accessor :parent_uri_template, :parent_uri_template_canonical
+  attr_accessor :parent_uri_template
   attr_writer :parent_uri_template_opts
 
   delegate :searchable_aggregations, to: :association_class
@@ -67,26 +67,12 @@ class Collection < LinkedRails::Collection
 
   private
 
-  def canonical_iri_opts
-    opts = iri_opts
-    opts[:parent_iri] = split_iri_segments(parent.try(:root_relative_canonical_iri) || parent&.root_relative_iri)
-    opts
-  end
-
-  def canonical_iri_template_name
-    return @canonical_iri_template_name if @canonical_iri_template_name
-
-    canonical_name ||= @parent_uri_template_canonical || "#{association_class.to_s.tableize}_collection_canonical"
-    @canonical_iri_template_name = uri_template(canonical_name) ? canonical_name : iri_template_name
-  end
-
   def iri_template_name
     @parent_uri_template || "#{association_class.to_s.tableize}_collection_iri"
   end
 
   def new_child_values
     super.merge(
-      parent_uri_template_canonical: parent_uri_template_canonical,
       parent_uri_template_opts: parent_uri_template_opts,
       parent_uri_template: parent_uri_template
     )

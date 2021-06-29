@@ -7,16 +7,6 @@ module ApplicationModel
     include IRITemplateHelper
   end
 
-  def canonical_iri
-    super if persisted?
-  end
-
-  def canonical_iri_opts
-    return iri_opts unless respond_to?(:id)
-
-    {id: id, "#{self.class.name.underscore}_id": id}
-  end
-
   def class_name
     self.class.name.tableize
   end
