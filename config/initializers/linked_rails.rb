@@ -17,7 +17,8 @@ LinkedRails.controller_parent_class = 'ParentableController'
 LinkedRails.policy_parent_class = 'RestrictivePolicy'
 LinkedRails.serializer_parent_class = 'BaseSerializer'
 
-LinkedRails.vocabulary_class = 'Ontology'
+LinkedRails.ontology_class = 'Ontology'
+LinkedRails.ontology_class_class = 'Ontology::Class'
 
 LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
@@ -48,13 +49,14 @@ end
 
 LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
 
-LinkedRails::Translate.translations_for(:property, :description) do |object|
+LinkedRails::Translate.translations_for(:field, :description) do |object|
   if object.model_attribute.present?
     model_key = object.model_class.to_s.demodulize.tableize
 
     I18n.t(
       "#{model_key}.form.#{object.model_attribute}.description",
       default: [
+        :"properties.#{object.model_attribute}.description",
         :"formtastic.placeholders.#{model_key.singularize}.#{object.model_attribute}",
         :"formtastic.placeholders.#{object.model_attribute}",
         :"formtastic.hints.#{model_key.singularize}.#{object.model_attribute}",
@@ -65,13 +67,14 @@ LinkedRails::Translate.translations_for(:property, :description) do |object|
   end
 end
 
-LinkedRails::Translate.translations_for(:property, :label) do |object|
+LinkedRails::Translate.translations_for(:field, :label) do |object|
   if object.model_attribute.present?
     model_key = object.model_class.to_s.demodulize.tableize
 
     I18n.t(
       "#{model_key}.form.#{object.model_attribute}.label",
       default: [
+        :"properties.#{object.model_attribute}.label",
         :"formtastic.labels.#{model_key.singularize}.#{object.model_attribute}",
         :"formtastic.labels.#{object.model_attribute}",
         ''

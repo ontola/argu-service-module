@@ -4,6 +4,7 @@ require 'rdf'
 require 'rdf/vocab'
 
 class NS < LinkedRails::Vocab
+  register_strict(org)
   register(:argu, 'https://argu.co/ns/core#')
   register(:mapping, 'https://argu.co/voc/mapping/')
   register(:meeting, 'https://argu.co/ns/meeting/')
