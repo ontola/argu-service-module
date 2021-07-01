@@ -71,7 +71,7 @@ module ActiveResponseHelper
   end
 
   def index_success_options_rdf
-    skip_verify_policy_scoped(true) if index_collection_or_view.present?
+    skip_verify_policy_scoped(true)
     super
   end
 
