@@ -26,6 +26,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include AssertDifference
   config.include Argu::TestHelpers::RequestHelpers
+  config.include Argu::TestHelpers::TestAssertions
   config.include TestMocks
   config.include IriHelpers
 
