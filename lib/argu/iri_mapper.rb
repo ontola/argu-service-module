@@ -14,11 +14,10 @@ module Argu
         tenant_path = ActsAsTenant.current_tenant&.iri&.path
         uri = tenant_path.present? ? iri.to_s.split("#{ActsAsTenant.current_tenant.iri.path}/").last : iri
         path = URI(uri).path
-        if Rails.application.config.iri_suffix.blank? || path.start_with?(Rails.application.config.iri_suffix)
-          return path
-        end
+        iri_suffix = Rails.application.config.try(:iri_suffix)
+        return path if iri_suffix.blank? || path.start_with?(iri_suffix)
 
-        [Rails.application.config.iri_suffix, path].join('/')
+        [iri_suffix, path.delete_prefix('/')].join('/')
       end
     end
   end

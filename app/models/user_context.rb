@@ -3,6 +3,8 @@
 class UserContext
   attr_reader :api, :user, :actor, :doorkeeper_token, :tree_root_id
 
+  delegate :guest?, to: :user
+
   def initialize(api: nil, user: nil, doorkeeper_token: nil, profile: nil, tree_root_id: nil)
     @api = api
     @user = user
