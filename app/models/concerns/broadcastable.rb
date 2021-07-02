@@ -28,6 +28,8 @@ module Broadcastable
   end
 
   def publish_message(type)
+    ResourceInvalidationStreamWorker.new.perform(type, iri.to_s, self.class.iri.to_s)
+  rescue StandardError
     ResourceInvalidationStreamWorker.perform_async(type, iri.to_s, self.class.iri.to_s)
   end
 
