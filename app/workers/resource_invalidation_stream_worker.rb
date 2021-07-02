@@ -6,7 +6,7 @@ class ResourceInvalidationStreamWorker
   def perform(type, iri, resource_type)
     return if Rails.env.test?
 
-    redis = Redis.new(db: Rails.configuration.cache_redis_database)
+    redis = Redis.new(db: Rails.configuration.stream_redis_database)
 
     entry = {
       type: type,

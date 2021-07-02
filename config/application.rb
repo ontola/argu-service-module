@@ -51,6 +51,9 @@ module Service
     config.autoload_paths += %W[#{config.root}/app/responders]
     config.autoload_paths += Dir["#{config.root}/app/enhancements/**/"]
 
+    config.cache_stream = ENV['CACHE_STREAM'].presence || 'transactions'
+    config.stream_redis_database = (ENV['STREAM_REDIS_DATABASE'])&.to_i || 7
+
     config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
     Rails.application.routes.default_url_options[:host] = config.host_name
