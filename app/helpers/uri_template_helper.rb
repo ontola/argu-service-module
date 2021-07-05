@@ -24,8 +24,20 @@ module UriTemplateHelper
     )
   end
 
+  def current_submission_iri_path(object)
+    expand_uri_template(:submission_iri, parent_iri: split_iri_segments(object.root_relative_iri))
+  end
+
+  def current_submission_iri(object)
+    LinkedRails.iri(path: current_vote_iri_path(object))
+  end
+
+  def current_vote_iri_path(object)
+    expand_uri_template(:vote_iri, parent_iri: split_iri_segments(object.root_relative_iri))
+  end
+
   def current_vote_iri(object)
-    iri_from_template(:vote_iri, parent_iri: split_iri_segments(object.root_relative_iri))
+    LinkedRails.iri(path: current_vote_iri_path(object))
   end
 
   def drafts_iri
