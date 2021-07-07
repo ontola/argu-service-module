@@ -40,7 +40,6 @@ creative_works_collection_iri: "{/parent_iri*}/creative_works{?before%5B%5D*,dis
 current_actors_iri: "/c_a"
 custom_actions_iri: "{/parent_iri*}/custom_actions{/id}{?destroy}"
 custom_actions_collection_iri: "{/parent_iri*}/custom_actions{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
-custom_menu_items_iri: "{/parent_iri*}/menus/{menu_type}#menu_item_{id}"
 custom_menu_items_collection_iri: "{/parent_iri*}/custom_menu_items{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 dashboards_collection_iri: "{/parent_iri*}/dashboards{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 decisions_iri: "{/parent_iri*}/decisions{/id}{?destroy}"
