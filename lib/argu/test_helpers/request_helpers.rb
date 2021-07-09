@@ -75,6 +75,10 @@ module Argu
         JSON.parse(response.body).with_indifferent_access
       end
 
+      def parsed_access_token
+        JWT.decode(parsed_body['access_token'], nil, false)[0]
+      end
+
       def primary_resource
         parsed_body['data']
       end
