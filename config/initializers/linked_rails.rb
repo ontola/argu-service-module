@@ -49,35 +49,43 @@ end
 
 LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
 
-LinkedRails::Translate.translations_for(:field, :description) do |object|
+LinkedRails::Translate.translations_for(:field, :description) do |object, fallback|
   if object.model_attribute.present?
     model_key = object.model_class.to_s.demodulize.tableize
 
     I18n.t(
       "#{model_key}.form.#{object.model_attribute}.description",
       default: [
-        :"properties.#{object.model_attribute}.description",
-        :"formtastic.placeholders.#{model_key.singularize}.#{object.model_attribute}",
-        :"formtastic.placeholders.#{object.model_attribute}",
-        :"formtastic.hints.#{model_key.singularize}.#{object.model_attribute}",
-        :"formtastic.hints.#{object.model_attribute}",
-        ''
+        :"forms.#{object.model_attribute}.description",
+        fallback ? object.model_attribute.to_s.humanize : ''
       ]
     ).presence
   end
 end
 
-LinkedRails::Translate.translations_for(:field, :label) do |object|
+LinkedRails::Translate.translations_for(:field, :helper_text) do |object, fallback|
+  if object.model_attribute.present?
+    model_key = object.model_class&.to_s&.demodulize&.tableize
+
+    I18n.t(
+      "#{model_key}.form.#{object.model_attribute}.helper_text",
+      default: [
+        :"forms.#{object.model_attribute}.helper_text",
+        fallback ? object.model_attribute.to_s.humanize : ''
+      ]
+    )
+  end
+end
+
+LinkedRails::Translate.translations_for(:field, :label) do |object, fallback|
   if object.model_attribute.present?
     model_key = object.model_class.to_s.demodulize.tableize
 
     I18n.t(
       "#{model_key}.form.#{object.model_attribute}.label",
       default: [
-        :"properties.#{object.model_attribute}.label",
-        :"formtastic.labels.#{model_key.singularize}.#{object.model_attribute}",
-        :"formtastic.labels.#{object.model_attribute}",
-        ''
+        :"forms.#{object.model_attribute}.label",
+        fallback ? object.model_attribute.to_s.humanize : ''
       ]
     ).presence
   end
