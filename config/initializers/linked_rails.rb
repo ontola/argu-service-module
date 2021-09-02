@@ -22,6 +22,8 @@ LinkedRails.iri_mapper_class = 'Argu::IRIMapper'
 
 LinkedRails.whitelisted_spi_ips = ENV['INT_IP_WHITELIST']&.split(',')&.map { |ip| IPAddr.new(ip) } || []
 
+LinkedRails::Renderers.register!
+
 if defined?(LinkedRails::Auth)
   LinkedRails.confirmation_class = 'Users::Confirmation'
   LinkedRails.password_class = 'Users::Password'
@@ -46,45 +48,3 @@ module LinkedRailsDynamicIRI
 end
 
 LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
-
-LinkedRails::Translate.translations_for(:field, :description) do |object, fallback|
-  if object.model_attribute.present?
-    model_key = object.model_class.to_s.demodulize.tableize
-
-    I18n.t(
-      "#{model_key}.form.#{object.model_attribute}.description",
-      default: [
-        :"forms.#{object.model_attribute}.description",
-        fallback ? object.model_attribute.to_s.humanize : ''
-      ]
-    ).presence
-  end
-end
-
-LinkedRails::Translate.translations_for(:field, :helper_text) do |object, fallback|
-  if object.model_attribute.present?
-    model_key = object.model_class&.to_s&.demodulize&.tableize
-
-    I18n.t(
-      "#{model_key}.form.#{object.model_attribute}.helper_text",
-      default: [
-        :"forms.#{object.model_attribute}.helper_text",
-        fallback ? object.model_attribute.to_s.humanize : ''
-      ]
-    )
-  end
-end
-
-LinkedRails::Translate.translations_for(:field, :label) do |object, fallback|
-  if object.model_attribute.present?
-    model_key = object.model_class.to_s.demodulize.tableize
-
-    I18n.t(
-      "#{model_key}.form.#{object.model_attribute}.label",
-      default: [
-        :"forms.#{object.model_attribute}.label",
-        fallback ? object.model_attribute.to_s.humanize : ''
-      ]
-    ).presence
-  end
-end

@@ -7,9 +7,9 @@ module Argu
     module ErrorHandling
       extend ActiveSupport::Concern
 
-      include DataStructures
-      include Handlers
-      include Helpers
+      include ErrorHandling::DataStructures
+      include ErrorHandling::Handlers
+      include ErrorHandling::Helpers
 
       included do
         rescue_from Argu::Errors::Unauthorized, with: :handle_error

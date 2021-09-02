@@ -30,7 +30,9 @@ module Argu
           respond_to do |format|
             format.json { error_response_json(error) }
             format.json_api { error_response_json_api(error) }
-            RDF_CONTENT_TYPES.each { |type| format.send(type) { error_response_serializer(error, type) } }
+            LinkedRails::Renderers.rdf_content_types.each do |type|
+              format.send(type) { error_response_serializer(error, type) }
+            end
             format.any { head(error_status(error)) }
           end
         end

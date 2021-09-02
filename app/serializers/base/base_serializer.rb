@@ -40,10 +40,6 @@ class BaseSerializer
       end
     end
 
-    def never(_object, _params)
-      false
-    end
-
     def validate_includes!(_includes); end
   end
 end
