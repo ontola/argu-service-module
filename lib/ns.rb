@@ -29,4 +29,6 @@ class NS < LinkedRails::Vocab
   register(:wdv, 'http://www.wikidata.org/value/')
   register(:wdt, 'http://www.wikidata.org/prop/direct/')
   register(:xmlns, 'http://www.w3.org/2000/xmlns/')
+
+  app_vocabulary :argu
 end

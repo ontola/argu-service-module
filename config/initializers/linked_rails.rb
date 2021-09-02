@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-LinkedRails.app_vocab = NS.argu
-
 LinkedRails.collection_class = 'Collection'
 LinkedRails.collection_filter_class = 'CollectionFilter'
 LinkedRails.collection_sorting_class = 'CollectionSorting'
