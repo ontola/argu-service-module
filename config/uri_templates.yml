@@ -85,7 +85,7 @@ interventions_collection_iri: "{/parent_iri*}/interventies{?before%5B%5D*,displa
 intervention_types_iri: "{/root_id}/interventie_types{/id}{?destroy}"
 intervention_types_collection_iri: "{/parent_iri*}/interventie_types{?before%5B%5D*,display,filter%5B%5D*,iri,sort%5B%5D*,page,page_size,title,type}"
 invites_iri: "{/parent_iri*}/invites"
-languages_iri: "/u/language{/language}"
+languages_iri: "/user/language{/language}"
 linked_records_iri: "{/root_id}/resource{?iri}"
 logs_iri: "{/parent_iri*}/log"
 manifests_iri: "{/root_id}/manifest"
