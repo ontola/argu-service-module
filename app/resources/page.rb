@@ -3,6 +3,10 @@
 class Page < ActiveResourceModel
   include LinkedRails::Model
 
+  def logo
+    "https://dptr8y9slmfgv.cloudfront.net/sales/images/argu-logo.svg" #todo
+  end
+
   def from
     "#{display_name.split(',').first} <noreply@argu.co>"
   end
