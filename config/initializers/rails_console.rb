@@ -23,7 +23,7 @@ module Rails
           Rails.logger.info(
             ActiveSupport::LogSubscriber.new.send(:color, "Set Apartment tenant: (#{available_str})", :yellow)
           )
-          current = STDIN.gets.chomp
+          current = $stdin.gets.chomp
           current = available[current.to_i] if current.scan(/\D/).empty?
         end
       end

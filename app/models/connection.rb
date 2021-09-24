@@ -28,8 +28,8 @@ class Connection
 
   private
 
-  def with_channel
-    connection.with_channel { |c| yield c }
+  def with_channel(&block)
+    connection.with_channel(&block)
   end
 
   class << self

@@ -21,7 +21,7 @@ class Collection < LinkedRails::Collection
 
   delegate :searchable_aggregations, to: :association_class
 
-  def action_triples # rubocop:disable Metrics/AbcSize
+  def action_triples
     return super unless association_class.to_s == 'Discussion'
 
     triples = super

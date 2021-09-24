@@ -16,7 +16,7 @@ class CurrentUser
     type == 'guest'
   end
 
-  def respond_to_missing?(method_name, *args)
+  def respond_to_missing?(method_name, *args) # rubocop:disable Lint/MissingSuper
     argu_user.respond_to?(method_name, *args)
   end
 
@@ -53,7 +53,7 @@ class CurrentUser
 
     private
 
-    def attributes_from_token(token)
+    def attributes_from_token(token) # rubocop:disable Metrics/AbcSize
       token_data = decode_token(token)
       attrs = {token: token, scopes: token_data['scopes'] || []}
       user_data = token_data['user']

@@ -83,7 +83,7 @@ module Argu
       # @param [Array] path The property path to traverse
       # @param [IRI|IRI[]] value The value to match at the end, pass an array to
       #                            match multiple values.
-      def expect_path(start, path, value) # rubocop:disable Metrics/AbcSize
+      def expect_path(start, path, value) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         match = path.each_with_index.reduce(start) do |node, (path_seg, i)|
           obj = [*node].map { |cur_node| rdf_body.query([cur_node, path_seg, nil, nil]).map(&:object) }.flatten
           break (obj & [*value]).present? if path.length - 1 == i

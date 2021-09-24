@@ -13,13 +13,11 @@ module ActsAsTenant
     end
 
     class Server
-      def call(_worker_class, msg, _queue)
+      def call(_worker_class, msg, _queue, &block)
         if msg.key?('acts_as_tenant')
           tenant = Page.new(msg['acts_as_tenant'])
 
-          ActsAsTenant.with_tenant(tenant) do
-            yield
-          end
+          ActsAsTenant.with_tenant(tenant, &block)
         else
           yield
         end

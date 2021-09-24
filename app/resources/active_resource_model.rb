@@ -15,10 +15,12 @@ class ActiveResourceModel < ActiveResource::Base
 
   class_attribute :service, default: :argu
 
+  # rubocop:disable Style/OptionalBooleanParameter
   def load(attributes, remove_root = false, persisted = false)
     attributes = JsonApiResourceParser.new(attributes).parse if (attributes.keys & %w[data attributes]).any?
     super
   end
+  # rubocop:enable Style/OptionalBooleanParameter
 
   protected
 
@@ -47,11 +49,13 @@ class ActiveResourceModel < ActiveResource::Base
       {}
     end
 
+    # rubocop:disable Style/OptionalBooleanParameter
     def connection(refresh = false)
       con = super
       con.site = site
       con
     end
+    # rubocop:enable Style/OptionalBooleanParameter
 
     def prefix(_options = {})
       site.path.ends_with?('/') ? site.path : "#{site.path}/"

@@ -25,6 +25,7 @@ module Argu
 
     class Warmer # rubocop:disable Metrics/ClassLength
       class << self
+        # rubocop:disable Rails/Output
         def warm(page)
           ActsAsTenant.with_tenant(page) do
             warm_iris(page.iri, collect_iris)
@@ -35,7 +36,6 @@ module Argu
 
         def bulk_request(iris, website)
           iris.each_slice(SLICE_SIZE).flat_map do |resources|
-            # rubocop:disable Rails/Output
             $stdout.write '*'
             party = bulk_request_batch(resources, website)
 
@@ -45,7 +45,6 @@ module Argu
               $stdout.write "\be"
               "Received status #{party.response.code} on resources [#{resources.join(', ')}]"
             end
-            # rubocop:enable Rails/Output
           end
         end
 
@@ -159,20 +158,18 @@ module Argu
           ].flatten.compact.uniq
         end
 
-        def warm_iris(website, iris) # rubocop:disable Metrics/AbcSize
+        def warm_iris(website, iris)
           Rails.logger.info(
             "Warming up to #{iris.length} resources for website #{website} in #{(iris.length / SLICE_SIZE).ceil} steps"
           )
-          # rubocop:disable Rails/Output
           $stdout.write '['
           errors = bulk_request(iris, website)
           $stdout.write "]\n"
-          # rubocop:enable Rails/Output
-
           raise("Errors while warming: #{errors.compact.join("\n")}") if errors.compact.present?
 
           Rails.logger.info('Finished warming cache')
         end
+        # rubocop:enable Rails/Output
       end
     end
   end

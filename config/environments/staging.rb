@@ -35,7 +35,7 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = false
   config.ssl_options = {
-    hsts: {expires: 0, subdomains: true}, redirect: {exclude: ->(request) { request.path =~ %r{\/d\/health$} }}
+    hsts: {expires: 0, subdomains: true}, redirect: {exclude: ->(request) { request.path =~ %r{/d/health$} }}
   }
 
   # Use the lowest log level to ensure availability of diagnostic information
@@ -72,7 +72,7 @@ Rails.application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end

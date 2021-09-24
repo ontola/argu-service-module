@@ -15,6 +15,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     @bearer_token = doorkeeper_token('service')
   end
 
+  # rubocop:disable Style/OptionalBooleanParameter
   def as_guest_with_account(with_access_token = true)
     token = with_access_token ? as_guest : generate_guest_token_mock
     stub_request(:post, expand_service_url(:argu, '/argu/u/registration'))
@@ -33,6 +34,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
         }.to_json
       )
   end
+  # rubocop:enable Style/OptionalBooleanParameter
 
   def as_guest_without_account(email)
     token = generate_guest_token_mock

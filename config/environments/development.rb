@@ -36,7 +36,7 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = false
   config.ssl_options = {
-    hsts: {expires: 0, subdomains: true}, redirect: {exclude: ->(request) { request.path =~ %r{\/d\/health$} }}
+    hsts: {expires: 0, subdomains: true}, redirect: {exclude: ->(request) { request.path =~ %r{/d/health$} }}
   }
 
   # Don't care if the mailer can't send.
