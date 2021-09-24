@@ -10,7 +10,7 @@ module Argu
       # @option options [ActiveRecord::Base] record The record that was requested
       # @option options [Policy] policy The policy that raised the exception
       # @return [String] the message
-      def initialize(options = {})
+      def initialize(**options)
         @query  = options.fetch(:query).to_s
         @record = options[:record]
         @policy = options[:policy]

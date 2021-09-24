@@ -17,14 +17,14 @@ module Argu
 
       private
 
-      def authorize(record, query = nil, *opts)
+      def authorize(record, query = nil, *args, **opts)
         query ||= action_query
 
         @_pundit_policy_authorized = true
 
         policy = policy(record)
 
-        unless policy.public_send(query, *opts)
+        unless policy.public_send(query, *args, **opts)
           raise Argu::Errors::Forbidden.new(query: query, record: record, policy: policy, message: policy.try(:message))
         end
 

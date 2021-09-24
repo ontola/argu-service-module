@@ -14,7 +14,7 @@ module Argu
     end
     attr_reader :service_token, :user_token
 
-    def authorize_action(opts = {})
+    def authorize_action(**opts)
       opts[:authorize_action] = opts.delete(:action)
       api_request(:argu, :get, uri_template(:spi_authorize).expand(opts))
     rescue OAuth2::Error
@@ -47,7 +47,7 @@ module Argu
       )
     end
 
-    def create_email(template, recipient, options = {}) # rubocop:disable Metrics/MethodLength
+    def create_email(template, recipient, **options) # rubocop:disable Metrics/MethodLength
       recipient_opts = recipient.slice(:email, :language, :id)
       display_name = recipient[:display_name] || recipient.try(:name_with_fallback)
       recipient_opts[:display_name] = display_name if display_name
@@ -143,9 +143,9 @@ module Argu
 
     private
 
-    def api_request(service, method, path, opts = {})
+    def api_request(service, method, path, **opts)
       opts[:headers] = default_headers.merge(opts[:headers] || {})
-      raw_api_request(service, method, path_with_prefix(path), opts)
+      raw_api_request(service, method, path_with_prefix(path), **opts)
     end
 
     def create_user_request(email, redirect)
@@ -180,7 +180,7 @@ module Argu
       [uri.path, uri.query.presence].compact.join('?')
     end
 
-    def raw_api_request(service, method, path, opts = {})
+    def raw_api_request(service, method, path, **opts)
       token = opts.delete(:token)
       service(service, token: token || user_token)
         .request(method, path, opts)

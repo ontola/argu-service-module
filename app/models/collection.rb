@@ -38,7 +38,7 @@ class Collection < LinkedRails::Collection
     @total_count = nil
   end
 
-  def iri(opts = {})
+  def iri(**opts)
     return super if ActsAsTenant.current_tenant.present? || parent.blank?
     return @iri if @iri && opts.blank?
 
@@ -54,7 +54,7 @@ class Collection < LinkedRails::Collection
     opts.merge(parent_uri_template_opts || {})
   end
 
-  # def search_result(opts = {})
+  # def search_result(**opts)
   #   SearchResult.new(
   #     opts.merge(
   #       parent: self,

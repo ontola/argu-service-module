@@ -35,14 +35,14 @@ end
 
 module LinkedRails
   class << self
-    def iri(opts = {})
+    def iri(**opts)
       RDF::DynamicURI(RDF::URI(**{scheme: LinkedRails.scheme, host: LinkedRails.host}.merge(opts)))
     end
   end
 end
 
 module LinkedRailsDynamicIRI
-  def iri_with_root(_opts = {})
+  def iri_with_root(_root_relative_iri)
     RDF::DynamicURI(super)
   end
 end

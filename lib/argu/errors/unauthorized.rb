@@ -9,7 +9,7 @@ module Argu
       # @option options [String] redirect_url The url to redirect to after sign in
       # @option options [String] message The message to show
       # @return [String] the message
-      def initialize(options = {})
+      def initialize(**options)
         @redirect = options[:redirect_url]
 
         message = options[:message] || I18n.t('errors.unauthorized')

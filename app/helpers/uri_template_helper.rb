@@ -12,15 +12,15 @@ module UriTemplateHelper
   end
 
   # @return [RDF::URI]
-  def collection_iri(parent, type, opts = {})
-    RDF::DynamicURI(path_with_hostname(collection_iri_path(parent, type, opts)))
+  def collection_iri(parent, type, **opts)
+    RDF::DynamicURI(path_with_hostname(collection_iri_path(parent, type, **opts)))
   end
 
   # @return [String]
-  def collection_iri_path(parent, type, opts = {})
+  def collection_iri_path(parent, type, **opts)
     expand_uri_template(
       "#{type}_collection_iri",
-      opts.merge(parent_iri: split_iri_segments(parent.try(:root_relative_iri) || parent))
+      **opts.merge(parent_iri: split_iri_segments(parent.try(:root_relative_iri) || parent))
     )
   end
 
@@ -48,7 +48,7 @@ module UriTemplateHelper
   end
 
   # @return [String]
-  def expand_uri_template(template, args = {})
+  def expand_uri_template(template, **args)
     tmpl = uri_template(template)
     raise "Uri template #{template} is missing" unless tmpl
 
@@ -60,9 +60,9 @@ module UriTemplateHelper
     RDF::URI("http://fontawesome.io/icon/#{icon.sub('fa-', '')}")
   end
 
-  def iri_from_template(template, opts = {})
+  def iri_from_template(template, **opts)
     ActsAsTenant.with_tenant(opts.delete(:root) || ActsAsTenant.current_tenant) do
-      RDF::DynamicURI(expand_uri_template(template, opts.merge(with_hostname: true)))
+      RDF::DynamicURI(expand_uri_template(template, **opts.merge(with_hostname: true)))
     end
   end
 
@@ -84,31 +84,31 @@ module UriTemplateHelper
   end
 
   # @return [RDF::URI]
-  def new_iri(parent, collection = nil, opts = {})
-    RDF::DynamicURI(path_with_hostname(new_iri_path(parent, collection, opts)))
+  def new_iri(parent, collection = nil, **opts)
+    RDF::DynamicURI(path_with_hostname(new_iri_path(parent, collection, **opts)))
   end
 
   # @return [String]
-  def new_iri_path(parent, collection = nil, opts = {})
+  def new_iri_path(parent, collection = nil, **opts)
     query = opts.delete(:query)
-    iri = parent.is_a?(String) || parent.is_a?(RDF::URI) ? parent : collection_iri_path(parent, collection, opts)
-    uri = URI(expand_uri_template(:new_iri, opts.merge(parent_iri: split_iri_segments(iri))))
+    iri = parent.is_a?(String) || parent.is_a?(RDF::URI) ? parent : collection_iri_path(parent, collection, **opts)
+    uri = URI(expand_uri_template(:new_iri, **opts.merge(parent_iri: split_iri_segments(iri))))
     uri.query = query.to_param if query
     uri.to_s
   end
 
   # @return [RDF::URI]
-  def settings_iri(parent, opts = {})
-    RDF::DynamicURI(path_with_hostname(settings_iri_path(parent, opts)))
+  def settings_iri(parent, **opts)
+    RDF::DynamicURI(path_with_hostname(settings_iri_path(parent, **opts)))
   end
 
   # @return [String]
-  def settings_iri_path(parent, opts = {})
+  def settings_iri_path(parent, **opts)
     iri = parent.try(:root_relative_iri) || parent
     opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
     opts[:only_path] = true
     opts[:fragment] = opts.delete(:tab) if opts[:tab]
-    expand_uri_template(:settings_iri, opts)
+    expand_uri_template(:settings_iri, **opts)
   end
 
   %i[edit delete trash untrash statistics feeds conversions invites export logs search_results].each do |method|
@@ -122,7 +122,7 @@ module UriTemplateHelper
       iri = parent.try(:root_relative_iri) || parent
       opts[:parent_iri] ||= split_iri_segments(iri) if iri.present?
       opts[:only_path] = true
-      expand_uri_template("#{method}_iri", opts)
+      expand_uri_template("#{method}_iri", **opts)
     end
   end
 

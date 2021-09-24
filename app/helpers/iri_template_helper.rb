@@ -13,7 +13,7 @@ module IRITemplateHelper
     "#{model_name.route_key}_iri"
   end
 
-  def reload(_opts = {})
+  def reload(**_opts)
     @iri = nil
     super
   end

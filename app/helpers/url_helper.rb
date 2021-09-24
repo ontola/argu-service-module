@@ -3,7 +3,7 @@
 module UrlHelper
   include ServiceHelper
 
-  def argu_url(path = '', params = {})
+  def argu_url(path = '', **params)
     url = URI(Rails.application.config.origin)
     url.path = path
     url.fragment = params.delete(:fragment)
