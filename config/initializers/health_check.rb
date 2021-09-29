@@ -25,11 +25,9 @@ HealthCheck.setup do |config|
   # You can customize which checks happen on a standard health check, eg to set an explicit list use:
   config.standard_checks = ENV['HEALTH_CHECKS']&.split(',') || %w[database migrations redis rabbitmq]
 
-  # Add one or more custom checks that return a blank string if ok, or an error message if there is an error
-  config.add_custom_check('rabbitmq') do
-    # Check RabbitMQ connection
-    Connection.new.connection.close && ''
-  end
+  # # Add one or more custom checks that return a blank string if ok, or an error message if there is an error
+  # config.add_custom_check('custom') do
+  # end
 
   # max-age of response in seconds
   # cache-control is public when max_age > 1 and basic_auth_username is not set
@@ -41,4 +39,7 @@ HealthCheck.setup do |config|
   config.http_status_for_ip_whitelist_error = 403
 
   config.redis_url = ENV['REDIS_URL']
+  config.redis_password = nil
+
+  config.rabbitmq_config = ENV['RABBITMQ_URL']
 end
