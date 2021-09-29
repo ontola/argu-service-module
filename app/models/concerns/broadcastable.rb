@@ -10,9 +10,9 @@ module Broadcastable
     after_initialize :reset_broadcastable_changes
     after_save :add_broadcastable_changes
 
-    after_commit :publish_create, on: :create
-    after_commit :publish_update, on: :update
-    after_commit :publish_delete, on: :destroy
+    after_commit :publish_create, on: :create, if: :should_publish_changes
+    after_commit :publish_update, on: :update, if: :should_publish_changes
+    after_commit :publish_delete, on: :destroy, if: :should_publish_changes
   end
 
   def publish_create
@@ -70,6 +70,10 @@ module Broadcastable
 
   # @deprecated Stop using rabbitMQ
   def should_broadcast_changes
-    true
+    should_publish_changes
+  end
+
+  def should_publish_changes
+    !RequestStore.store[:disable_broadcast]
   end
 end
