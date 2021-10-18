@@ -11,19 +11,6 @@ module UriTemplateHelper
     iri_from_template(:actors_iri)
   end
 
-  # @return [RDF::URI]
-  def collection_iri(parent, type, **opts)
-    RDF::DynamicURI(path_with_hostname(collection_iri_path(parent, type, **opts)))
-  end
-
-  # @return [String]
-  def collection_iri_path(parent, type, **opts)
-    expand_uri_template(
-      "#{type}_collection_iri",
-      **opts.merge(parent_iri: split_iri_segments(parent.try(:root_relative_iri) || parent))
-    )
-  end
-
   def current_submission_iri_path(object)
     expand_uri_template(:submission_iri, parent_iri: split_iri_segments(object.root_relative_iri))
   end
@@ -91,7 +78,8 @@ module UriTemplateHelper
   # @return [String]
   def new_iri_path(parent, collection = nil, **opts)
     query = opts.delete(:query)
-    iri = parent.is_a?(String) || parent.is_a?(RDF::URI) ? parent : collection_iri_path(parent, collection, **opts)
+    is_iri = parent.is_a?(String) || parent.is_a?(RDF::URI)
+    iri = is_iri ? parent : parent.collection_root_relative_iri(collection, **opts)
     uri = URI(expand_uri_template(:new_iri, **opts.merge(parent_iri: split_iri_segments(iri))))
     uri.query = query.to_param if query
     uri.to_s

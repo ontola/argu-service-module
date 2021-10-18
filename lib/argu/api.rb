@@ -63,11 +63,10 @@ module Argu
     end
 
     def create_membership(token)
-      group_iri = expand_uri_template(:groups_iri, id: token.group_id)
       api_request(
         :argu,
         :post,
-        collection_iri_path(group_iri, :group_memberships),
+        expand_uri_template(:group_membership_create_iri, group_id: token.group_id),
         body: {token: token.secret},
         headers: {accept: 'application/json'}
       )

@@ -11,6 +11,10 @@ module ApplicationModel
     self.class.name.tableize
   end
 
+  def collection_iri(collection, **opts)
+    ActsAsTenant.with_tenant(opts.delete(:root) || ActsAsTenant.current_tenant) { super }
+  end
+
   def edited?
     updated_at - 2.minutes > created_at
   end
@@ -34,6 +38,10 @@ module ApplicationModel
   module ClassMethods
     def class_name
       name.tableize
+    end
+
+    def collection_iri(**opts)
+      ActsAsTenant.with_tenant(opts.delete(:root) || ActsAsTenant.current_tenant) { super }
     end
   end
 end
