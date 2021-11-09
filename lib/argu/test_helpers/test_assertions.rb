@@ -49,9 +49,10 @@ module Argu
 
       def expect_ontola_action(redirect: nil, snackbar: nil, reload: nil)
         if redirect
-          expect_header('Exec-Action', "actions/redirect?#{{location: redirect, reload: reload}.compact.to_param}")
+          query = {location: redirect, reload: reload}.compact.to_param.gsub('+', '%20')
+          expect_exec_header("actions/redirect?#{query}")
         end
-        expect_header('Exec-Action', "actions/snackbar?#{{text: snackbar}.to_param}") if snackbar
+        expect_exec_header("actions/snackbar?#{{text: snackbar}.to_param.gsub('+', '%20')}") if snackbar
 
         expect_ontola_action_count([redirect, snackbar].compact.size)
       end
@@ -66,6 +67,10 @@ module Argu
 
       def expect_header(key, value)
         expect(response.headers[key]).to(include(value))
+      end
+
+      def expect_exec_header(value)
+        expect_header('Exec-Action', value)
       end
 
       def expect_errors(iri, errors)
