@@ -32,7 +32,7 @@ module ApplicationModel
   end
 
   def removed_delta
-    []
+    added_delta
   end
 
   module ClassMethods
