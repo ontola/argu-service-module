@@ -20,9 +20,9 @@ module ActiveResponseHelper
 
   def redirect_location
     if current_resource.persisted?
-      current_resource.root_relative_iri.to_s
+      current_resource.iri.to_s
     else
-      current_resource.parent.root_relative_iri.to_s
+      current_resource.parent.iri.to_s
     end
   end
 
