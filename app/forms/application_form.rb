@@ -4,9 +4,9 @@ class ApplicationForm < LinkedRails::Form
   extend UriTemplateHelper
 
   class << self
-    def form_iri
-      LinkedRails.iri(
-        path: [
+    def form_iri_path
+      RDF::URI(
+        [
           '',
           Rails.application.config.try(:iri_suffix),
           :forms,
