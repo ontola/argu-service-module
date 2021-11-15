@@ -14,7 +14,7 @@ module ActiveResponseHelper
   end
 
   def index_success_options_rdf
-    skip_verify_policy_scoped(true)
+    skip_verify_policy_scoped(sure: true)
     super
   end
 

@@ -27,6 +27,8 @@ class CurrentUser
   private
 
   def argu_user
+    raise('Cannot find user without id') if id.blank?
+
     @argu_user ||= User.find(id)
   end
 

@@ -6,6 +6,8 @@ module Argu
   module Controller
     module Authentication
       extend ActiveSupport::Concern
+      SAFE_METHODS = %w[GET HEAD OPTIONS CONNECT TRACE].freeze
+      UNSAFE_METHODS = %w[POST PUT PATCH DELETE].freeze
 
       included do
         before_action :check_if_registered
@@ -29,18 +31,8 @@ module Argu
         raise Argu::Errors::Unauthorized if current_user.guest?
       end
 
-      def generate_guest_token
-        token_response = api.generate_guest_token(redirect: r_for_guest_token)
-        @user_token = token_response['access_token']
-
-        response.headers['New-Authorization'] = @user_token
-        response.headers['New-Refresh-Token'] = token_response['refresh_token']
-
-        token_response
-      end
-
       def guest_user
-        CurrentUser.from_token(generate_guest_token['access_token'])
+        CurrentUser.new(type: 'guest')
       end
 
       def r_for_guest_token

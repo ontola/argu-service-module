@@ -15,11 +15,9 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
     @bearer_token = doorkeeper_token('service')
   end
 
-  # rubocop:disable Style/OptionalBooleanParameter
-  def as_guest_with_account(with_access_token = true)
-    token = with_access_token ? as_guest : generate_guest_token_mock
+  def as_guest_with_account
     stub_request(:post, expand_service_url(:argu, '/argu/u/registration'))
-      .with(headers: {'Authorization' => "Bearer #{token}"})
+      .with(headers: {'Authorization' => "Bearer #{as_guest}"})
       .to_return(
         status: 422,
         body: {
@@ -34,12 +32,10 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
         }.to_json
       )
   end
-  # rubocop:enable Style/OptionalBooleanParameter
 
   def as_guest_without_account(email)
-    token = generate_guest_token_mock
     stub_request(:post, expand_service_url(:argu, '/argu/u/registration'))
-      .with(headers: {'Authorization' => "Bearer #{token}"})
+      .with(headers: {'Authorization' => "Bearer #{as_guest}"})
       .to_return(
         status: 201,
         body: {
@@ -167,7 +163,7 @@ module TestMocks # rubocop:disable Metrics/ModuleLength
           id: 1,
           type: 'group',
           attributes: {
-            iri: argu_url('/argug/1'),
+            iri: argu_url('/argu/g/1').sub('http', 'https'),
             display_name: "Group#{id}"
           },
           relationships: {

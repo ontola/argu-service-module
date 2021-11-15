@@ -87,20 +87,6 @@ module Argu
       false
     end
 
-    def generate_guest_token(redirect: nil)
-      result = api_request(
-        :argu,
-        :post,
-        expand_uri_template(:oauth_token),
-        token: user_token || service_token,
-        body: guest_token_params(redirect)
-      )
-      parsed_body = JSON.parse(result.body)
-      @user_token = parsed_body['access_token']
-
-      parsed_body
-    end
-
     def get_tenant(iri)
       result = raw_api_request(:argu, :get, expand_uri_template(:spi_find_tenant, iri: iri), token: service_token)
       body = JSON.parse(result.body)
@@ -161,16 +147,6 @@ module Argu
       {
         'X-Forwarded-Host': ActsAsTenant.current_tenant.tenant.host,
         'X-Forwarded-Proto': 'https'
-      }
-    end
-
-    def guest_token_params(redirect)
-      {
-        client_id: ENV['ARGU_APP_ID'],
-        client_secret: ENV['ARGU_APP_SECRET'],
-        grant_type: :password,
-        scope: :guest,
-        redirect_url: redirect
       }
     end
 
