@@ -1,9 +1,0 @@
-en:
-  active_response:
-    actions:
-      create:
-        success: "%{type} created successfully"
-      update:
-        success: "%{type} saved successfully"
-      destroy:
-        success: "%{type} deleted successfully"

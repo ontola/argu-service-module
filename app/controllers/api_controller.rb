@@ -36,6 +36,8 @@ class APIController < ActionController::API
   end
 
   def success_message_translation_opts
-    {type: I18n.t("#{current_resource.model_name.collection}.type").capitalize}
+    super.merge(
+      type: I18n.t("#{current_resource.model_name.collection}.type").capitalize
+    )
   end
 end
