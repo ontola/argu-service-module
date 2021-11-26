@@ -7,7 +7,7 @@ module Argu
 
     class << self
       def invalidate_all
-        response = service(:cache, token: nil).get('link-lib/cache/clear')
+        response = service(:frontend, token: nil).get('link-lib/cache/clear')
 
         raise("Wrong response for clearing cache (#{response.status}): #{response.body}") unless response.body == 'OK'
       end
@@ -49,7 +49,7 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = 'http://cache.svc.cluster.local:3030/link-lib/bulk'
+          url = 'http://frontend.svc.cluster.local:3080/link-lib/bulk'
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)
