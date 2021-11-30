@@ -1,0 +1,9 @@
+de:
+  active_response:
+    actions:
+      create:
+        success: '%{type} erfolgreich erstellt'
+      update:
+        success: '%{type} erfolgreich gespeichert'
+      destroy:
+        success: '%{type} erfolgreich gelöscht'

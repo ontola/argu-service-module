@@ -1,0 +1,8 @@
+de:
+  od:
+    meetings:
+      type: Treffen
+      plural: Begegnungen
+    motions:
+      type: Anträge
+      plural: Anträge
