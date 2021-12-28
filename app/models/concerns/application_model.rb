@@ -23,10 +23,6 @@ module ApplicationModel
     "#{class_name}_#{id}"
   end
 
-  def iri_opts
-    {id: to_param, "#{self.class.name.underscore}_id": to_param}
-  end
-
   def added_delta
     []
   end
