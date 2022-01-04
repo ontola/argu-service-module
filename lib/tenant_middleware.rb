@@ -3,19 +3,14 @@
 require_relative '../app/helpers/jwt_helper'
 
 class TenantMiddleware
-  REDIRECTS_KEY = 'backend.redirects'
   include JWTHelper
 
   def initialize(app)
     @app = app
   end
 
-  def call(env) # rubocop:disable Metrics/MethodLength
+  def call(env)
     request = Rack::Request.new(env)
-
-    redirect = redirect_for_url(request)
-    return redirect if redirect
-
     if tenantize(env, request)
       return tenant_is_missing unless ActsAsTenant.current_tenant
       return redirect_correct_iri_prefix(request.url) if wrong_iri_prefix?(request)
@@ -46,13 +41,6 @@ class TenantMiddleware
     else
       Rails.logger.debug 'No tenant found'
     end
-  end
-
-  def redirect_for_url(request)
-    location = Argu::Redis.get([REDIRECTS_KEY, request.url.chomp('/')].join('.'))
-    return unless location
-
-    [301, {'Location' => location, 'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def rewrite_path(env, request)
