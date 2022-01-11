@@ -14,6 +14,6 @@ module RDF
   class DynamicURI < RDF::URI; end
 
   def self.DynamicURI(uri, *args, &block)
-    DynamicURI.new(DynamicUriHelper.rewrite(uri), *args, &block)
+    DynamicURI.new(DynamicURIHelper.rewrite(uri), *args, &block)
   end
 end

@@ -2,7 +2,7 @@
 
 require 'active_response/responders/json_api'
 
-class JsonApiResponder < ActiveResponse::Responders::JsonApi
+class JsonAPIResponder < ActiveResponse::Responders::JsonApi
   respond_to :json_api
 
   def updated_resource(**_opts)

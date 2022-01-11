@@ -8,6 +8,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'SPI'
   inflect.acronym 'IRI'
   inflect.acronym 'ORI'
+  inflect.acronym 'URI'
   inflect.acronym 'UUID'
   inflect.acronym 'LD'
   inflect.acronym 'RIVM'

@@ -5,7 +5,7 @@ require 'oauth2'
 module Argu
   class API # rubocop:disable Metrics/ClassLength
     include ServiceHelper
-    include UriTemplateHelper
+    include URITemplateHelper
     include JWTHelper
 
     def initialize(service_token: nil, user_token: nil)

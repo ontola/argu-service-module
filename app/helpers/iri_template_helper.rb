@@ -3,7 +3,7 @@
 module IRITemplateHelper
   extend ActiveSupport::Concern
 
-  include UriTemplateHelper
+  include URITemplateHelper
 
   def iri_template
     uri_template(iri_template_name) || super

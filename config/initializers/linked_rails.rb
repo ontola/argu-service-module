@@ -47,4 +47,4 @@ module LinkedRailsDynamicIRI
   end
 end
 
-LinkedRails::Model::Iri.prepend LinkedRailsDynamicIRI
+LinkedRails::Model::IRI.prepend LinkedRailsDynamicIRI

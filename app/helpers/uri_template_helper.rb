@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module UriTemplateHelper
+module URITemplateHelper
   # @return [RDF::URI]
   def current_actor_iri
     iri_from_template(:current_actors_iri)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DynamicUriHelper
+module DynamicURIHelper
   module_function
 
   def tenant_prefix(tenant)

@@ -2,6 +2,6 @@
 
 require 'active_response/responders/json'
 
-class JSONResponder < ActiveResponse::Responders::JSON
+class JsonResponder < ActiveResponse::Responders::JSON
   respond_to :json
 end
