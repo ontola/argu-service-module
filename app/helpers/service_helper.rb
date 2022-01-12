@@ -22,8 +22,10 @@ module ServiceHelper
   end
 
   def service_url(service)
+    port = ENV["#{service.upcase}_SERVICE_PORT"] || DEFAULT_SERVICE_PORT
+
     ENV["#{service.upcase}_URL"] ||
-      "#{DEFAULT_SERVICE_PROTO}://#{service}.#{[CLUSTER_URL_BASE, DEFAULT_SERVICE_PORT].compact.join(':')}"
+      "#{DEFAULT_SERVICE_PROTO}://#{service}.#{[CLUSTER_URL_BASE, port].compact.join(':')}"
   end
 
   private

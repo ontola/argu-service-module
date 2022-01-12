@@ -49,7 +49,7 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = 'http://frontend.svc.cluster.local:3080/link-lib/bulk'
+          url = "#{service_url(:frontend)}/link-lib/bulk"
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)
