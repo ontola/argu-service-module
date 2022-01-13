@@ -16,17 +16,10 @@ module Argu
           render json_api_error(status || error_status(error), json_error_hash(error))
         end
 
-        def handle_and_report_error(error)
-          raise if Rails.env.development? || Rails.env.test?
-
-          Bugsnag.notify(error)
-          raise if response_body
-
-          handle_error(error)
-        end
-
         def handle_error(error)
-          error_mode(error)
+          report_error(error) if error_status(error) == 500
+          Rails.logger.error(error)
+
           respond_to do |format|
             format.json { error_response_json(error) }
             format.json_api { error_response_json_api(error) }
@@ -45,6 +38,12 @@ module Argu
         def handle_oauth_error(error)
           Bugsnag.notify(error)
           handle_error(StandardError.new(error.response.body))
+        end
+
+        def report_error(error)
+          super
+
+          Bugsnag.notify(error)
         end
 
         def respond_with_422?(resources)

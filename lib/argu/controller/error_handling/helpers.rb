@@ -10,18 +10,8 @@ module Argu
           Argu::Errors::ERROR_TYPES[error.class.to_s].try(:[], :id) || 'SERVER_ERROR'
         end
 
-        def error_mode(exception)
-          @_error_mode = true
-          Rails.logger.error exception
-          @_uc = nil
-        end
-
         def error_status(error)
           Argu::Errors::ERROR_TYPES[error.class.to_s].try(:[], :status) || 500
-        end
-
-        def user_with_r(redirect)
-          User.new(redirect_url: redirect)
         end
       end
     end

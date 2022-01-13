@@ -12,13 +12,6 @@ module Argu
       include ErrorHandling::Helpers
 
       included do
-        rescue_from Argu::Errors::Unauthorized, with: :handle_error
-        rescue_from Argu::Errors::Forbidden, with: :handle_error
-        rescue_from Argu::Errors::Forbidden, with: :handle_error
-        rescue_from ActiveRecord::RecordNotUnique, with: :handle_error
-        rescue_from ActionController::BadRequest, with: :handle_error
-        rescue_from ActionController::ParameterMissing, with: :handle_error
-        rescue_from ActionController::UnpermittedParameters, with: :handle_error
         rescue_from OAuth2::Error, with: :handle_oauth_error
       end
     end
