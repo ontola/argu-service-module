@@ -24,6 +24,8 @@ module Argu
     end
 
     class Warmer # rubocop:disable Metrics/ClassLength
+      extend ServiceHelper
+
       class << self
         # rubocop:disable Rails/Output
         def warm(page)
