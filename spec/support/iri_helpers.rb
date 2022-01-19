@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module IriHelpers
-  include UriTemplateHelper
+  include URITemplateHelper
 
   def resource_iri(resource, iri_prefix: "#{ENV['HOSTNAME']}/argu")
     resource.instance_variable_set(:@iri, nil) if resource.instance_variable_get(:@iri)

@@ -5,7 +5,7 @@ require_relative '../../spec/support/test_root_id'
 module TestMocks # rubocop:disable Metrics/ModuleLength
   include JWTHelper
   include UrlHelper
-  include UriTemplateHelper
+  include URITemplateHelper
 
   def as_guest
     @bearer_token = doorkeeper_token('guest')

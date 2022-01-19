@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationForm < LinkedRails::Form
-  extend UriTemplateHelper
+  extend URITemplateHelper
 
   class << self
     def form_iri_path

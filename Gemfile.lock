@@ -18,10 +18,10 @@ GIT
 
 GIT
   remote: https://github.com/ontola/linked_rails
-  revision: 55a6aa7b6a6feb2b26c2a4a8c3abbc1a99f63c9d
-  branch: collections-dsl
+  revision: 1cd8dda26d4c8d502a2f1d794ba9a7dd36fb7184
+  branch: zeitwerk
   specs:
-    linked_rails (0.0.3)
+    linked_rails (0.0.4)
       active_response (~> 0.0.2)
       kaminari-activerecord
       pundit
@@ -190,13 +190,13 @@ GEM
       multi_json (~> 1.14)
       rack (~> 2.0)
       rdf (~> 3.1)
-    jsonapi-serializer (2.0.0)
+    jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (2.3.0)
-    kaminari-activerecord (1.2.1)
+    kaminari-activerecord (1.2.2)
       activerecord
-      kaminari-core (= 1.2.1)
-    kaminari-core (1.2.1)
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     link_header (0.0.8)
     logger (1.4.3)
     loofah (2.12.0)
@@ -291,8 +291,8 @@ GEM
       rdf (~> 3.1)
       rdf-rdfa (~> 3.1)
       rdf-xsd (~> 3.1)
-    rdf-serializers (0.0.10)
-      jsonapi-serializer (~> 2.0.0)
+    rdf-serializers (0.0.11)
+      jsonapi-serializer (>= 2.1.0)
       oj
       railties (>= 4.2.0, < 7)
       rdf (~> 3.0)
