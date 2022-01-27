@@ -6,7 +6,7 @@ require 'json_api_resource_parser'
 
 class ActiveResourceModel < ActiveResource::Base
   extend ServiceHelper
-  self.collection_parser = JsonApiCollectionParser
+  self.collection_parser = JsonAPICollectionParser
   self.include_format_in_path = false
   self.auth_type = :bearer
   self.bearer_token = ENV['SERVICE_TOKEN']
@@ -17,7 +17,7 @@ class ActiveResourceModel < ActiveResource::Base
 
   # rubocop:disable Style/OptionalBooleanParameter
   def load(attributes, remove_root = false, persisted = false)
-    attributes = JsonApiResourceParser.new(attributes).parse if (attributes.keys & %w[data attributes]).any?
+    attributes = JsonAPIResourceParser.new(attributes).parse if (attributes.keys & %w[data attributes]).any?
     super
   end
   # rubocop:enable Style/OptionalBooleanParameter

@@ -27,7 +27,7 @@ RSpec.configure do |config|
   config.include AssertDifference
   config.include Argu::TestHelpers::RequestHelpers
   config.include Argu::TestHelpers::TestAssertions
-  config.include TestMocks
+  config.include Argu::TestMocks
   config.include IriHelpers
 
   config.before(:each, type: :request) do

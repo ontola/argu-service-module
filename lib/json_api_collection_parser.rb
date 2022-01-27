@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class JsonApiCollectionParser < ActiveResource::Collection
+class JsonAPICollectionParser < ActiveResource::Collection
   # rubocop:disable Lint/MissingSuper
   def initialize(elements = [])
     @elements = if elements.is_a?(Hash)
