@@ -17,8 +17,7 @@ module Argu
         end
 
         def handle_error(error)
-          report_error(error) if error_status(error) == 500
-          Rails.logger.error(error)
+          raise(error) if response_body
 
           respond_to do |format|
             format.json { error_response_json(error) }
