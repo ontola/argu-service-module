@@ -117,11 +117,7 @@ spi_email_addresses: "/spi/email_addresses{?email}"
 default_vote_event_votes_index: "{/parent_iri*}/vote_events/default"
 oauth_token: "/oauth/token"
 # Token Service
-bearer_token: "{/root_id}/tokens/{access_token}"
-bearer_tokens_iri: "/tokens{/secret}"
-email_tokens_iri: "/tokens{/secret}"
 tokens_collection_iri: "/tokens/g{/group_id}{/token_type}{?before%5B%5D*,display,page,type}"
-tokens_iri: "/tokens{/secret}"
 verify_token: "{/root_id}/tokens/verify{?jwt}"
 # Email Service
 email_spi_create: "/email/spi/emails"
