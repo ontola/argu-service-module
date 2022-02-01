@@ -45,7 +45,7 @@ class DataEvent
     # @return [Hash] The attributes to be assigned to the data event
     def publish(resource)
       attrs = attributes_from_resource(resource)
-      BroadcastWorker.perform_async(attrs)
+      BroadcastWorker.perform_async(attrs.as_json)
       attrs
     end
 
