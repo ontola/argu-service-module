@@ -4,7 +4,12 @@ module Argu
   class IRIMapper < LinkedRails::IRIMapper
     class << self
       def opts_from_iri(iri, method: 'GET')
-        super(sanitized_path(URI(iri)), method: method)
+        query = Rack::Utils.parse_nested_query(URI(iri.to_s).query)
+        params = Rails.application.routes.recognize_path(sanitized_path(RDF::URI(iri.to_s)), method: method)
+
+        route_params_to_opts(params.merge(query), iri.to_s)
+      rescue ActionController::RoutingError
+        EMPTY_IRI_OPTS.dup
       end
 
       private
