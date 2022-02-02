@@ -39,7 +39,5 @@ class BaseSerializer
         object.send(key)&.cents
       end
     end
-
-    def validate_includes!(_includes); end
   end
 end
