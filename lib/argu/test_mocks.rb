@@ -96,9 +96,6 @@ module Argu
           headers: {'Content-Type' => 'application/json'},
           body: {
             data: user_data(id, opts[:email], opts[:language], opts[:secondary_emails]),
-            included:
-              included_emails(id, [email: opts[:email], confirmed: opts[:confirmed]] + opts[:secondary_emails])
-                .append(included_profile_photo)
           }.to_json
         )
     end
@@ -175,17 +172,7 @@ module Argu
                 }
               }
             }
-          },
-          included: [
-            {
-              id: 1,
-              type: 'organization',
-              attributes: {
-                display_name: 'Organization Name',
-                iri: argu_url('/argu')
-              }
-            }
-          ]
+          }
         }.to_json
       )
     end
@@ -194,6 +181,24 @@ module Argu
       stub_request(:put, expand_service_url(:argu, '/argu/u/confirmation'))
         .with(body: {email: email}, headers: {'Accept' => 'application/json'})
         .to_return(status: 200)
+    end
+
+    def profile_photo_mock(id = 1)
+      stub_request(
+        :get,
+        expand_service_url(:argu, ['/argu', :profile_photo, id].compact.join('/'))
+      ).to_return(
+        status: 200,
+        body: {
+          data: {
+            id: "https://argu.dev/argu/profile_photo/#{id}",
+            type: 'photo',
+            attributes: {
+              thumbnail: nil
+            }
+          }
+        }.to_json
+      )
     end
 
     def authorized_mock(type: nil, id: nil, iri: nil, action: nil)
@@ -258,16 +263,6 @@ module Argu
       end
     end
 
-    def included_profile_photo(id = '1')
-      {
-        id: id,
-        type: 'photo',
-        attributes: {
-          thumbnail: nil
-        }
-      }
-    end
-
     def user_data(id, email, language = NS.argu['language#en'], secondary_emails = [])
       {
         id: NS.argu["u/#{id}"],
@@ -294,7 +289,7 @@ module Argu
         relationships: {
           default_profile_photo: {
             data: {
-              id: '1',
+              id: 'https://argu.dev/argu/profile_photo/1',
               type: 'photo'
             },
             links: {
