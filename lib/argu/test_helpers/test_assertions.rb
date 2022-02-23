@@ -117,8 +117,8 @@ module Argu
 
       def refute_triple(subject, predicate, object, graph = nil)
         statement = RDF::Statement(subject, predicate, object, graph_name: graph)
-        assert_not rdf_body.query([subject, predicate, object, graph]).present?,
-                   "Expected not to find #{statement} in\n#{response.body}"
+        refute rdf_body.query([subject, predicate, object, graph]).present?,
+               "Expected not to find #{statement} in\n#{response.body}"
       end
 
       def expect_sequence(subject, predicate)
