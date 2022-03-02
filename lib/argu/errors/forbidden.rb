@@ -11,6 +11,9 @@ module Argu
       # @option options [Policy] policy The policy that raised the exception
       # @return [String] the message
       def initialize(**options)
+        Rails.logger.info "FORBIDDEN ERROR RAISED"
+        Rails.logger.info caller
+
         @query  = options.fetch(:query).to_s
         @record = options[:record]
         @policy = options[:policy]
