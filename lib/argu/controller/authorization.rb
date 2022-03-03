@@ -4,7 +4,7 @@ module Argu
   module Controller
     module Authorization
       extend ActiveSupport::Concern
-      include Pundit
+      include Pundit::Authorization
 
       included do
         class_attribute :policy_scope_verification

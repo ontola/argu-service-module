@@ -16,6 +16,12 @@ module Argu
           render json_api_error(status || error_status(error), json_error_hash(error))
         end
 
+        def handle_and_report_error(error)
+          Rails.logger.info("===> Error status: #{error_status(error)}")
+
+          super
+        end
+
         def handle_error(error)
           raise(error) if response_body
 
