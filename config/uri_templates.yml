@@ -31,7 +31,7 @@ email_addresses_iri: "{/parent_iri*}/email_addresses{/id}{?email_address%5Bprima
 email_conflicts_iri: "{/parent_iri*}/email_conflict"
 export_iri: "{/parent_iri*}/exports"
 exports_iri: "{/root_id*}/exports{/id}{?destroy}"
-feeds_iri: "{/parent_iri*}/feed{.format}{?complete}"
+feeds_iri: "{/parent_iri*}/feed{.format}{?complete,type}"
 follows_iri: "{/parent_iri*}/follows{/id}{?follow_type}"
 grant_tree_nodes_iri: "/edges{/edge_id}/permissions"
 grant_tree_permission_groups_iri: "/edges{/edge_id}/permissions/g{/group_id}"
