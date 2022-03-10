@@ -41,7 +41,7 @@ def drop_table
 end
 
 RSpec.configure do |config|
-  config.include TestMocks
+  config.include Argu::TestMocks
   config.include Argu::TestHelpers::RequestHelpers
 
   # rspec-expectations config goes here. You can use an alternate
