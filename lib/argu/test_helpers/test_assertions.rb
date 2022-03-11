@@ -108,7 +108,7 @@ module Argu
         expect_triple(iri, RDF[:type], type)
       end
 
-      def expect_triple(subject, predicate, object, graph = NS.ll[:supplant])
+      def expect_triple(subject, predicate, object, graph = NS.ld[:supplant])
         statement = RDF::Statement(subject, predicate, object, graph_name: graph)
         match = rdf_body.query(statement)
         assert match.present?, "Expected to find #{statement} in\n#{response.body}"

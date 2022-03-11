@@ -2,5 +2,5 @@
 
 RDF::Serializers.configure do |config|
   config.always_include_named_graphs = false
-  config.default_graph = NS.ll[:supplant]
+  config.default_graph = NS.ld[:supplant]
 end
