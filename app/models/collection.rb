@@ -4,6 +4,10 @@ class Collection < LinkedRails::Collection
   include Collection::CounterCache
   include IRITemplateHelper
 
+  def action_dialog
+    association_class.try(:action_dialog, self)
+  end
+
   def search_result_collection(params = {})
     return unless association_class.enhanced_with?(Searchable)
 
