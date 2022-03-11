@@ -49,7 +49,7 @@ module Argu
       end
 
       def verify_policy_scoped?
-        action_name == 'index' && request.method != 'HEAD'
+        action_name == 'index' && response.body.present?
       end
 
       module ClassMethods
