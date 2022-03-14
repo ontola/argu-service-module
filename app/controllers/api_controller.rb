@@ -15,7 +15,6 @@ class APIController < ActionController::API
   include UrlHelper
   serialization_scope :user_context
 
-  force_ssl unless: :internal_request?
   before_action :set_locale
 
   private
@@ -25,10 +24,6 @@ class APIController < ActionController::API
       service_token: ENV['SERVICE_TOKEN'],
       user_token: user_token
     )
-  end
-
-  def internal_request?
-    LinkedRails::Constraints::Whitelist.matches?(request)
   end
 
   def set_locale
