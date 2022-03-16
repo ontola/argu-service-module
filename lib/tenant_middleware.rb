@@ -31,6 +31,7 @@ class TenantMiddleware
     status, headers, response = @app.call(env)
 
     headers['Manifest'] = "#{ActsAsTenant.current_tenant.iri}/manifest.json" if ActsAsTenant.current_tenant
+    headers['X-API-Version'] = VERSION
 
     [status, headers, response]
   end
