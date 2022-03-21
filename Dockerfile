@@ -1,4 +1,4 @@
-FROM ruby:2.7.0-alpine
+FROM ruby:3-alpine
 ARG C66=true
 
 RUN apk --update --no-cache add openssh-client postgresql-dev libffi-dev libxml2 libxml2-dev libxslt libxslt-dev
