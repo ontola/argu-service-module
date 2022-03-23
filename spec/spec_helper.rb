@@ -40,6 +40,17 @@ RSpec.configure do |config|
     find_tenant_mock
   end
 
+  config.after do
+    mail_workers = Sidekiq::Worker.jobs.select { |j| j['class'] == 'SendEmailWorker' }
+    Sidekiq::Worker.clear_all
+
+    assert_equal(
+      0,
+      mail_workers.count,
+      "Found #{mail_workers.count} unexpected mail(s): #{mail_workers.map { |opts| opts['args'].first }}"
+    )
+  end
+
   config.use_transactional_fixtures = true
 
   config.infer_spec_type_from_file_location!

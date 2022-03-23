@@ -51,6 +51,7 @@ module Argu
       recipient_opts = recipient.slice(:email, :language, :id)
       display_name = recipient[:display_name] || recipient.try(:name_with_fallback)
       recipient_opts[:display_name] = display_name if display_name
+      recipient_opts[:language] ||= I18n.locale
 
       api_request(
         :email,
