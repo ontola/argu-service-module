@@ -27,7 +27,7 @@ module Argu
       end
 
       def assert_email_sent(count: 1, skip_sidekiq: false, root: :argu) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        unless skip_sidekiq
+        unless skip_sidekiq || Sidekiq::Testing.inline?
           assert_equal count, Sidekiq::Worker.jobs.select { |j| j['class'] == 'SendEmailWorker' }.count
           SendEmailWorker.drain
         end
