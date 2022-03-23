@@ -206,6 +206,22 @@ module Argu
       stub_request(:get, expand_service_url(:argu, '/argu/spi/authorize', params)).to_return(status: 200)
     end
 
+    def create_email_mock(template, email, **options)
+      tenant = options.delete(:tenant) || :argu
+      recipient = {email: email, language: /.+/}
+
+      stub_request(:post, expand_service_url(:email, "/#{tenant}/email/spi/emails"))
+        .with(
+          body: {
+            email: {
+              template: template,
+              recipient: recipient,
+              options: options.presence
+            }.compact
+          }
+        )
+    end
+
     def unauthorized_mock(type: nil, id: nil, iri: nil, action: nil)
       params = {
         authorize_action: action,
