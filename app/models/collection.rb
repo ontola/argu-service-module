@@ -21,4 +21,12 @@ class Collection < LinkedRails::Collection
   end
 
   delegate :searchable_aggregations, to: :association_class
+
+  private
+
+  def iri_template_parent_iri
+    return super unless Rails.application.config.try(:iri_suffix)
+
+    LinkedRails.iri(path: LinkedRails.iri_mapper.send(:sanitized_path, URI(super))).to_s.chomp('/')
+  end
 end
