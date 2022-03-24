@@ -47,20 +47,33 @@ module Argu
       )
     end
 
-    def create_email(template, recipient, **options) # rubocop:disable Metrics/MethodLength
-      recipient_opts = recipient.slice(:email, :language, :id)
-      display_name = recipient[:display_name] || recipient.try(:name_with_fallback)
-      recipient_opts[:display_name] = display_name if display_name
-      recipient_opts[:language] ||= I18n.locale
-
+    def create_email(template, recipient, **options)
       api_request(
         :email,
         :post,
         expand_uri_template(:email_spi_create),
         token: service_token,
-        body: {email: {template: template, recipient: recipient_opts, options: options}},
+        body: {email: create_email_body(template, recipient, options)},
         headers: {accept: 'application/json'}
       )
+    end
+
+    def create_email_body(template, recipient, options)
+      body = {
+        template: template,
+        recipient: create_email_recipient_opts(recipient)
+      }
+      body[:mail_identifier] = options.delete(:mail_identifier) if options.key?(:mail_identifier)
+      body[:options] = options
+      body
+    end
+
+    def create_email_recipient_opts(recipient)
+      recipient_opts = recipient.slice(:email, :language, :id)
+      display_name = recipient[:display_name] || recipient.try(:name_with_fallback)
+      recipient_opts[:display_name] = display_name if display_name
+      recipient_opts[:language] ||= I18n.locale
+      recipient_opts
     end
 
     def create_membership(token)
