@@ -2,13 +2,24 @@
 
 class BaseSerializer
   include RDF::Serializers::ObjectSerializer
+  include RDF::Serializers::Relationship
   include LinkedRails::Serializer
+  include EmpJsonSerializer
 
   class_attribute :_enums
 
   %i[export_scope? service_scope? system_scope?].each do |method|
     define_singleton_method(method) do |_object, params|
       params[:scope]&.send(method)
+    end
+  end
+
+  def dump(*args, **options)
+    case args.first
+    when :empjson
+      render_emp_json(*args, **options)
+    else
+      super(*args, **options)
     end
   end
 
