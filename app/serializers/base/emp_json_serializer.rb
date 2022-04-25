@@ -22,7 +22,10 @@ module EmpJsonSerializer
   def create_slice(**options)
     slice = {}
 
-    resource_to_emp_json(slice, **options, includes: @rdf_includes)
+    resource_to_emp_json(slice,
+                         **options,
+                         serializer_class: self.class,
+                         includes: @rdf_includes)
 
     slice
   end
@@ -52,10 +55,11 @@ module EmpJsonSerializer
 
   def record_to_emp_json(slice, **options)
     resource = options.delete(:resource)
-    serializer = options[:serializer_class] || RDF::Serializers.serializer_for(resource)
+    serializer = options.delete(:serializer_class) || RDF::Serializers.serializer_for(resource)
 
     record = create_record(resource)
     serialize_attributes(serializer, resource, record, **options)
+    serialize_statements(serializer, resource, record, **options)
     nested = serialize_relations(serializer, resource, record, **options)
 
     slice[record[:_id][:v]] = record
@@ -97,6 +101,20 @@ module EmpJsonSerializer
     attr.method&.call(resource)
   end
 
+  def serialize_statements(serializer, resource, record, **options)
+    _statements&.each do |key|
+      serializer.send(key, resource, options).each do |statement|
+        predicate = statement.try(:predicate) || statement[1]
+        value = statement.try(:object) || statement[2]
+
+        next if value.blank?
+
+        symbol = uri_to_symbol(predicate, symbolize: options[:symbolize])
+        record[symbol] = value_to_emp_json(value) if value.present?
+      end
+    end
+  end
+
   # Modifies the record parameter
   def serialize_relations(serializer, resource, record, **options)
     return if serializer.relationships_to_serialize.blank?
@@ -106,9 +124,11 @@ module EmpJsonSerializer
       next unless relationship.include_relationship?(resource, @params)
 
       value = value_for_relation(relationship, resource)
-      next if value.blank?
+      next if value.nil?
 
-      record[predicate_to_symbol(relationship, symbolize: options[:symbolize])] = value_to_emp_json(value)
+      symbol = predicate_to_symbol(relationship, symbolize: options[:symbolize])
+      record[symbol] = value_to_emp_json(value)
+
       add_nested_resources(nested_resources, resource, value)
     end
 
@@ -122,8 +142,12 @@ module EmpJsonSerializer
     when Array
       value.map { |m| add_nested_resources(nested_resources, resource, m) }
     else
-      nested_resources.push value if nested_resource?(resource, value)
+      nested_resources.push value if blank_value(value) || nested_resource?(resource, value)
     end
+  end
+
+  def blank_value(value)
+    value.try(:iri)&.is_a?(RDF::Node)
   end
 
   def nested_resource?(resource, value)
@@ -135,7 +159,18 @@ module EmpJsonSerializer
   def value_for_relation(attr, resource)
     return FastJsonapi.call_proc(attr.object_block, resource, @params) if attr.object_block
 
-    resource.try(attr.key)
+    value = resource.try(attr.key)
+    return if value.nil?
+
+    if attr.sequence
+      LinkedRails::Sequence.new(
+        value.is_a?(Array) ? value : [value],
+        parent: resource,
+        scope: false
+      )
+    else
+      value
+    end
   end
 
   def process_includes(slice, **options) # rubocop:disable Metrics/MethodLength
@@ -154,22 +189,28 @@ module EmpJsonSerializer
     end
   end
 
-  def predicate_to_symbol(attr, symbolize: false)
+  def uri_to_symbol(uri, symbolize: false)
     casing = symbolize == :class ? :upper : :lower
 
-    if symbolize && attr.predicate.present?
-      (attr.predicate.fragment || attr.predicate.path.split('/').last).camelize(casing)
-    elsif symbolize
-      attr.name.to_s.camelize(casing)
+    if symbolize
+      (uri.fragment || uri.path.split('/').last).camelize(casing)
     else
-      attr.predicate.to_s
+      uri.to_s
     end
+  end
+
+  def predicate_to_symbol(attr, symbolize: false)
+    uri_to_symbol(uri, symbolize: symbolize) if symbolize && attr.predicate.blank?
+
+    uri_to_symbol(attr.predicate)
   end
 
   def value_to_emp_json(value)
     case value
     when ActiveRecord::Associations::CollectionProxy
       value.map { |iri| primitive_to_emp_json(iri) }.compact
+    when LinkedRails::Sequence
+      primitive_to_emp_json(value.iri)
     when Array, ActiveRecord::Relation, RDF::List
       value.map { |v| primitive_to_emp_json(v) }.compact
     else
