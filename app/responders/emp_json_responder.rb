@@ -19,5 +19,5 @@ ActionController::Renderers.add :empjson do |resource, options|
   )
   serializer = RDF::Serializers.serializer_for(resource)&.new(resource, serializer_opts)
 
-  serializer&.dump(:empjson, options.merge(resource: resource, symbolize: true))
+  serializer&.dump(:empjson)
 end

@@ -11,41 +11,69 @@ module EmpJsonSerializer
   EMP_TYPE_PRIMITIVE = 'p'
   EMP_TYPE_LANGSTRING = 'ls'
 
-  def render_emp_json(*args, **options)
-    Oj.fast_generate(create_slice(**args[1], **options))
+  def render_emp_json
+    Oj.fast_generate(emp_json_hash)
+  end
+
+  def emp_json_hash
+    create_slice(resource: @resource, includes: @includes)
   end
 
   def create_slice(**options)
     slice = {}
 
-    resource_to_emp_json(slice, **options)
+    resource_to_emp_json(slice, **options, includes: @rdf_includes)
 
     slice
   end
 
   def resource_to_emp_json(slice, **options)
+    return if options[:resource].iri.is_a?(Proc)
+
+    return sequence_to_emp_json(slice, **options) if options[:resource].is_a?(LinkedRails::Sequence)
+
+    record_to_emp_json(slice, **options)
+  end
+
+  def sequence_to_emp_json(slice, **options)
     resource = options.delete(:resource)
     serializer = options[:serializer_class] || RDF::Serializers.serializer_for(resource)
 
     record = create_record(resource)
     serialize_attributes(serializer, resource, record, **options)
-    serialize_relations(serializer, resource, record, **options)
 
-    slice[record[:_id].to_s] = record
-    process_includes(slice, resource: resource, **options) if options[:include]
+    index_predicate = serializer.relationships_to_serialize[:members].predicate
+    resource.members.each_with_index.map do |m, i|
+      record[index_predicate.call(self, i)] = value_to_emp_json(m)
+    end
 
-    record
+    slice[record[:_id][:v]] = record
+  end
+
+  def record_to_emp_json(slice, **options)
+    resource = options.delete(:resource)
+    serializer = options[:serializer_class] || RDF::Serializers.serializer_for(resource)
+
+    record = create_record(resource)
+    serialize_attributes(serializer, resource, record, **options)
+    nested = serialize_relations(serializer, resource, record, **options)
+
+    slice[record[:_id][:v]] = record
+    nested.map { |r| resource_to_emp_json(slice, resource: r, **options) }
+    process_includes(slice, resource: resource, **options) if options[:includes]
+
+    slice[record[:_id][:v]] = record
   end
 
   def create_record(resource)
     {
-      "_id": record_id(resource)
+      "_id": primitive_to_emp_json(record_id(resource))
     }
   end
 
   def record_id(resource)
     iri = resource.try(:iri)
-    return iri.id if iri.is_a?(RDF::Node)
+    return "_:#{iri.id}" if iri.is_a?(RDF::Node)
 
     iri&.to_s || resource.id
   end
@@ -55,7 +83,7 @@ module EmpJsonSerializer
     return if serializer.attributes_to_serialize.blank?
 
     serializer.attributes_to_serialize.each do |_, attr|
-      next if attr.key == :rdf_type || attr.predicate.blank?
+      next if attr.predicate.blank?
 
       value = value_for_attr(attr, resource)
       symbol = predicate_to_symbol(attr, symbolize: options[:symbolize])
@@ -73,30 +101,55 @@ module EmpJsonSerializer
   def serialize_relations(serializer, resource, record, **options)
     return if serializer.relationships_to_serialize.blank?
 
+    nested_resources = []
     serializer.relationships_to_serialize.each do |_, relationship|
+      next unless relationship.include_relationship?(resource, @params)
+
       value = value_for_relation(relationship, resource)
-      if value.present?
-        record[predicate_to_symbol(relationship, symbolize: options[:symbolize])] = value_to_emp_json(value)
-      end
+      next if value.blank?
+
+      record[predicate_to_symbol(relationship, symbolize: options[:symbolize])] = value_to_emp_json(value)
+      add_nested_resources(nested_resources, resource, value)
+    end
+
+    nested_resources
+  end
+
+  def add_nested_resources(nested_resources, resource, value)
+    case value
+    when LinkedRails::Sequence
+      value.members.map { |m| add_nested_resources(nested_resources, resource, m) }
+    when Array
+      value.map { |m| add_nested_resources(nested_resources, resource, m) }
+    else
+      nested_resources.push value if nested_resource?(resource, value)
     end
   end
 
+  def nested_resource?(resource, value)
+    value.try(:iri)&.to_s&.include?('#') &&
+      !resource.iri.to_s.include?('#') &&
+      value.iri.to_s.starts_with?(resource.iri.to_s)
+  end
+
   def value_for_relation(attr, resource)
+    return FastJsonapi.call_proc(attr.object_block, resource, @params) if attr.object_block
+
     resource.try(attr.key)
   end
 
   def process_includes(slice, **options) # rubocop:disable Metrics/MethodLength
-    include = options.delete(:include)
+    includes = options.delete(:includes)
     resource = options.delete(:resource)
 
-    include.each do |prop|
+    includes.each do |prop, nested|
       value = resource.try(prop)
       next if value.blank?
 
-      if value.is_a?(Array)
-        value.each { |v| resource_to_emp_json(slice, resource: v, **options) }
+      if value.is_a?(Array) || value.is_a?(ActiveRecord::Relation)
+        value.each { |v| resource_to_emp_json(slice, resource: v, includes: nested, **options) }
       else
-        resource_to_emp_json(slice, resource: value, **options)
+        resource_to_emp_json(slice, resource: value, includes: nested, **options)
       end
     end
   end
@@ -116,9 +169,9 @@ module EmpJsonSerializer
   def value_to_emp_json(value)
     case value
     when ActiveRecord::Associations::CollectionProxy
-      value.iri.map { |iri| primitive_to_emp_json(iri) }
-    when Array
-      value.map { |v| primitive_to_emp_json(v) }
+      value.map { |iri| primitive_to_emp_json(iri) }.compact
+    when Array, ActiveRecord::Relation, RDF::List
+      value.map { |v| primitive_to_emp_json(v) }.compact
     else
       primitive_to_emp_json(value)
     end
@@ -126,9 +179,13 @@ module EmpJsonSerializer
 
   def primitive_to_emp_json(value) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
     case value
-    when LinkedRails::Model::IRI
+    when RDF::Node
+      emp_short_value(EMP_TYPE_LOCAL_ID, value.to_s)
+    when LinkedRails::Model::IRI, LinkedRails::Sequence
+      return if value.iri.is_a?(Proc) # TODO: Remove this case
+
       primitive_to_emp_json(value.iri)
-    when RDF::URI
+    when RDF::URI, URI
       emp_short_value(EMP_TYPE_GLOBAL_ID, value.to_s)
     when ActiveSupport::TimeWithZone
       emp_short_value(EMP_TYPE_DATETIME, value.iso8601)
@@ -136,6 +193,12 @@ module EmpJsonSerializer
       emp_short_value(EMP_TYPE_STRING, value)
     when true, false
       emp_short_value(EMP_TYPE_BOOL, value)
+    when Symbol
+      {
+        type: EMP_TYPE_PRIMITIVE,
+        dt: NS.xsd.token,
+        v: value.to_s
+      }
     when Numeric
       rdf = RDF::Literal(value)
       if rdf.datatype == NS.xsd.integer

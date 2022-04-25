@@ -17,7 +17,7 @@ class BaseSerializer
   def dump(*args, **options)
     case args.first
     when :empjson
-      render_emp_json(*args, **options)
+      render_emp_json
     else
       super(*args, **options)
     end
