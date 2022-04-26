@@ -60,7 +60,7 @@ module EmpJsonSerializer
     record = create_record(resource)
     serialize_attributes(serializer, resource, record, **options)
     serialize_statements(serializer, resource, record, **options)
-    nested = serialize_relations(serializer, resource, record, **options)
+    nested = serialize_relations(serializer, slice, resource, record, **options)
 
     slice[record[:_id][:v]] = record
     nested.map { |r| resource_to_emp_json(slice, resource: r, **options) }
@@ -116,7 +116,7 @@ module EmpJsonSerializer
   end
 
   # Modifies the record parameter
-  def serialize_relations(serializer, resource, record, **options)
+  def serialize_relations(serializer, slice, resource, record, **options)
     return if serializer.relationships_to_serialize.blank?
 
     nested_resources = []
@@ -129,18 +129,19 @@ module EmpJsonSerializer
       symbol = predicate_to_symbol(relationship, symbolize: options[:symbolize])
       record[symbol] = value_to_emp_json(value)
 
-      add_nested_resources(nested_resources, resource, value)
+      add_nested_resources(nested_resources, slice, resource, value)
     end
 
     nested_resources
   end
 
-  def add_nested_resources(nested_resources, resource, value)
+  def add_nested_resources(nested_resources, slice, resource, value)
     case value
     when LinkedRails::Sequence
-      value.members.map { |m| add_nested_resources(nested_resources, resource, m) }
+      value.members.map { |m| add_nested_resources(nested_resources, slice, resource, m) }
+      sequence_to_emp_json(slice, resource: value) unless slice[value.iri.to_s]
     when Array
-      value.map { |m| add_nested_resources(nested_resources, resource, m) }
+      value.map { |m| add_nested_resources(nested_resources, slice, resource, m) }
     else
       nested_resources.push value if blank_value(value) || nested_resource?(resource, value)
     end
@@ -157,9 +158,13 @@ module EmpJsonSerializer
   end
 
   def value_for_relation(attr, resource)
-    return FastJsonapi.call_proc(attr.object_block, resource, @params) if attr.object_block
+    value =
+      if attr.object_block
+        FastJsonapi.call_proc(attr.object_block, resource, @params)
+      else
+        resource.try(attr.key)
+      end
 
-    value = resource.try(attr.key)
     return if value.nil?
 
     if attr.sequence
@@ -200,9 +205,9 @@ module EmpJsonSerializer
   end
 
   def predicate_to_symbol(attr, symbolize: false)
-    uri_to_symbol(uri, symbolize: symbolize) if symbolize && attr.predicate.blank?
+    return uri_to_symbol(attr.predicate, symbolize: symbolize) if attr.predicate.present?
 
-    uri_to_symbol(attr.predicate)
+    attr.key
   end
 
   def value_to_emp_json(value)
