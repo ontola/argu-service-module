@@ -233,37 +233,52 @@ module EmpJsonSerializer
       primitive_to_emp_json(value.iri)
     when RDF::URI, URI
       emp_short_value(EMP_TYPE_GLOBAL_ID, value.to_s)
-    when ActiveSupport::TimeWithZone
+    when DateTime, ActiveSupport::TimeWithZone
       emp_short_value(EMP_TYPE_DATETIME, value.iso8601)
     when String
       emp_short_value(EMP_TYPE_STRING, value)
     when true, false
-      emp_short_value(EMP_TYPE_BOOL, value)
+      emp_short_value(EMP_TYPE_BOOL, value.to_s)
     when Symbol
       {
         type: EMP_TYPE_PRIMITIVE,
         dt: NS.xsd.token,
         v: value.to_s
       }
-    when Numeric
+    when Float
       rdf = RDF::Literal(value)
-      if rdf.datatype == NS.xsd.integer
-        emp_short_value(EMP_TYPE_INTEGER, rdf.value)
-      elsif rdf.datatype == NS.xsd.long
-        emp_short_value(EMP_TYPE_LONG, rdf.value)
+      {
+        type: EMP_TYPE_PRIMITIVE,
+        dt: rdf.datatype.to_s,
+        v: rdf.value
+      }
+    when Integer
+      size = value.bit_length
+      if size <= 32
+        emp_short_value(EMP_TYPE_INTEGER, value.to_s)
+      elsif size > 32 && size <= 64
+        emp_short_value(EMP_TYPE_LONG, value.to_s)
       else
+        rdf = RDF::Literal(value)
         {
           type: EMP_TYPE_PRIMITIVE,
           dt: rdf.datatype.to_s,
           v: rdf.value
         }
       end
+    when Numeric
+      rdf = RDF::Literal(value)
+      {
+        type: EMP_TYPE_PRIMITIVE,
+        dt: rdf.datatype.to_s,
+        v: rdf.value
+      }
     when RDF::Literal
       case value.datatype
       when RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#langString')
         {
           type: EMP_TYPE_LANGSTRING,
-          l: value.language,
+          l: value.language.to_s,
           v: value.value
         }
       else
