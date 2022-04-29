@@ -2,7 +2,6 @@
 
 class BaseSerializer
   include RDF::Serializers::ObjectSerializer
-  include RDF::Serializers::Relationship
   include LinkedRails::Serializer
   include EmpJsonSerializer
 
