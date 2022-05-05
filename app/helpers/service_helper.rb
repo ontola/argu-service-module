@@ -31,6 +31,6 @@ module ServiceHelper
   private
 
   def service_client(service_name)
-    OAuth2::Client.new(ENV['ARGU_APP_ID'], ENV['ARGU_APP_SECRET'], site: service_url(service_name))
+    OAuth2::Client.new(ENV['LIBRO_CLIENT_ID'], ENV['LIBRO_CLIENT_SECRET'], site: service_url(service_name))
   end
 end
