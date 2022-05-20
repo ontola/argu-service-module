@@ -3,6 +3,11 @@
 class BaseSerializer
   include RDF::Serializers::ObjectSerializer
   include LinkedRails::Serializer
+  include LinkedRails::EmpJSON::Instrument
+
+  def render_emp_json
+    instrumented_render_emp_json
+  end
 
   class_attribute :_enums
 
