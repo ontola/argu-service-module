@@ -63,7 +63,7 @@ class CurrentUser
 
       attrs[:email] = user_data['email']
       attrs[:id] = user_data['id']
-      attrs[:iri] = user_data['@id'] && RDF::URI(user_data['@id'])
+      attrs[:iri] = LinkedRails.iri(path: user_data['@id'].split(token_data['iss']).last) if user_data['@id']
       attrs[:type] = user_data['type']
       attrs[:language] = user_data['language']
       attrs
