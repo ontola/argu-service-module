@@ -10,7 +10,6 @@ class NS < LinkedRails::Vocab
   register(:meeting, 'https://argu.co/ns/meeting/')
   register(:meta, 'https://argu.co/ns/meta#')
   register(:ori, 'https://id.openraadsinformatie.nl/')
-  register(:rivm, 'https://argu.co/ns/rivm#')
   register(:bio, 'http://purl.org/vocab/bio/0.1/')
   register(:cube, 'http://purl.org/linked-data/cube#')
   register(:dbo, 'http://dbpedia.org/ontology/')
