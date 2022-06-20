@@ -6,6 +6,7 @@ LinkedRails.collection_sorting_class = 'CollectionSorting'
 LinkedRails.collection_view_class = 'CollectionView'
 LinkedRails.collection_infinite_view_class = 'InfiniteView'
 LinkedRails.collection_paginated_view_class = 'PaginatedView'
+Collection
 
 LinkedRails.actions_item_class = 'Actions::Item'
 LinkedRails.menus_item_class = 'Menus::Item'
