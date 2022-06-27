@@ -8,6 +8,10 @@ class Collection < LinkedRails::Collection
     association_class.try(:action_dialog, self)
   end
 
+  def action_precedence
+    association_class.try(:action_precedence)
+  end
+
   def search_result_collection(params = {})
     return unless association_class.enhanced_with?(Searchable)
 
