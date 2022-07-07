@@ -17,6 +17,7 @@ class TenantMiddleware
 
       rewrite_path(env, request)
     else
+      ActsAsTenant.current_tenant = nil
       Apartment::Tenant.switch!('public')
     end
 
@@ -42,6 +43,12 @@ class TenantMiddleware
     else
       Rails.logger.debug 'No tenant found'
     end
+  end
+
+  def request_path_starts_with?(env, path)
+    scoped_path = ['', Rails.application.routes.default_scope, path , ''].compact.join('/')
+
+    env['PATH_INFO'].start_with?(scoped_path)
   end
 
   def rewrite_path(env, request)
@@ -81,7 +88,9 @@ class TenantMiddleware
   end
 
   def tenantized_url?(env)
-    !env['PATH_INFO'].start_with?(['', Rails.application.routes.default_scope, '_public', ''].compact.join('/'))
+    %w[_public .well-known].none? do |path|
+      request_path_starts_with?(env, path)
+    end
   end
 
   def wrong_iri_prefix?(request)
