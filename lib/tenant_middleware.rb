@@ -1,24 +1,25 @@
 # frozen_string_literal: true
 
 require_relative '../app/helpers/jwt_helper'
+require_relative '../app/helpers/service_helper'
 
 class TenantMiddleware
   include JWTHelper
+  include ServiceHelper
 
   def initialize(app)
     @app = app
   end
 
   def call(env)
-    request = Rack::Request.new(env)
+    request = ActionDispatch::Request.new(env)
     if tenantize(env, request)
       return tenant_is_missing unless ActsAsTenant.current_tenant
       return redirect_correct_iri_prefix(request.url) if wrong_iri_prefix?(request)
 
       rewrite_path(env, request)
     else
-      ActsAsTenant.current_tenant = nil
-      Apartment::Tenant.switch!('public')
+      switch_to_public
     end
 
     I18n.locale = I18n.default_locale
@@ -37,6 +38,14 @@ class TenantMiddleware
     [status, headers, response]
   end
 
+  def default_oauth_route?(request)
+    return true if request.url.starts_with?("#{Rails.application.config.origin}/oauth")
+
+    return false unless LinkedRails::Constraints::Whitelist.matches?(request)
+
+    request.path.starts_with?('/oauth')
+  end
+
   def log_tenant
     if ActsAsTenant.current_tenant
       Rails.logger.debug "Tenant: #{ActsAsTenant.current_tenant.iri}"
@@ -46,7 +55,7 @@ class TenantMiddleware
   end
 
   def request_path_starts_with?(env, path)
-    scoped_path = ['', Rails.application.routes.default_scope, path , ''].compact.join('/')
+    scoped_path = ['', Rails.application.routes.default_scope, path, ''].compact.join('/')
 
     env['PATH_INFO'].start_with?(scoped_path)
   end
@@ -73,12 +82,17 @@ class TenantMiddleware
     end
   end
 
+  def switch_to_public
+    ActsAsTenant.current_tenant = nil
+    Apartment::Tenant.switch!('public')
+  end
+
   def tenant_is_missing
     [404, {'Content-Type' => 'text/html', 'Content-Length' => '0'}, []]
   end
 
   def tenantize(env, request)
-    return false unless tenantized_url?(env)
+    return false unless tenantized_url?(env, request)
 
     ActsAsTenant.current_tenant = TenantFinder.from_request(request)
 
@@ -87,7 +101,9 @@ class TenantMiddleware
     true
   end
 
-  def tenantized_url?(env)
+  def tenantized_url?(env, request)
+    return false if default_oauth_route?(request)
+
     %w[_public .well-known].none? do |path|
       request_path_starts_with?(env, path)
     end
