@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 require_relative '../app/helpers/jwt_helper'
-require_relative '../app/helpers/service_helper'
 
 class TenantMiddleware
   include JWTHelper
-  include ServiceHelper
 
   def initialize(app)
     @app = app

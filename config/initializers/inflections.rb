@@ -11,6 +11,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'URI'
   inflect.acronym 'UUID'
   inflect.acronym 'LD'
+  inflect.acronym 'OAuth'
   inflect.acronym 'RIVM'
   inflect.acronym 'SHACL'
 end

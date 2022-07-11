@@ -25,6 +25,6 @@ class TenantFinder
   private
 
   def api
-    @api ||= Argu::API.new(service_token: ENV['SERVICE_TOKEN'])
+    @api ||= Argu::API.new
   end
 end

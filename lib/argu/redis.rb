@@ -11,6 +11,16 @@ module Argu
       ::Redis.new(opts)
     end
 
+    def self.cached_lookup(key, opts = {})
+      opts[:redis] ||= redis_instance(opts.delete(:redis_opts) || {})
+
+      return get(key, opts) if exists?(key, opts)
+
+      value = yield
+      set(key, value, opts)
+      value
+    end
+
     def self.exists?(key, opts = {})
       opts[:redis] ||= redis_instance(opts[:redis_opts] || {})
 

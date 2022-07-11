@@ -3,11 +3,10 @@
 module Argu
   class Cache
     SLICE_SIZE = 20
-    extend ServiceHelper
 
     class << self
       def invalidate_all
-        response = service(:frontend, token: nil).get('link-lib/cache/clear')
+        response = Argu::Service.new(:frontend).client.get('link-lib/cache/clear')
 
         raise("Wrong response for clearing cache (#{response.status}): #{response.body}") unless response.body == 'OK'
       end
@@ -24,8 +23,6 @@ module Argu
     end
 
     class Warmer # rubocop:disable Metrics/ClassLength
-      extend ServiceHelper
-
       class << self
         # rubocop:disable Rails/Output
         def warm(page)
@@ -51,7 +48,7 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = "#{service_url(:frontend)}/link-lib/bulk"
+          url = Argu::Service.new(:frontend).expand_url('/link-lib/bulk')
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)

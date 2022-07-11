@@ -4,9 +4,7 @@ require_relative '../spec_helper'
 
 describe Resource do
   before do
-    extend ServiceHelper
-
-    stub_request(:get, expand_service_url(:argu, '/resources/1'))
+    stub_request(:get, Argu::Service.new(:argu).expand_url('/resources/1'))
       .with(headers: {'Accept': 'application/vnd.api+json'})
       .to_return(
         status: 200,

@@ -51,7 +51,7 @@ Apartment.configure do |config|
   # end
 
   config.tenant_names = lambda {
-    Rails.env.test? ? %w[argu] : Argu::API.new(service_token: ENV['SERVICE_TOKEN']).get_tenants
+    Rails.env.test? ? %w[argu] : Argu::API.new.get_tenants
   }
 
   # PostgreSQL:

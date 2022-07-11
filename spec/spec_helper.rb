@@ -15,6 +15,7 @@ require 'assert_difference'
 require 'webmock/rspec'
 require 'argu/test_helpers'
 require 'argu/test_mocks'
+require 'fakeredis/rspec'
 require 'support/iri_helpers'
 require 'sidekiq/testing'
 
@@ -29,9 +30,12 @@ RSpec.configure do |config|
   config.include Argu::TestHelpers::TestAssertions
   config.include Argu::TestMocks
   config.include IriHelpers
+  config.include JWTHelper
 
   config.before(:each, type: :request) do
     host! ENV['HOSTNAME']
+
+    Argu::Redis.set(Argu::OAuth::REDIS_CLIENT_KEY, {token: sign_payload({scopes: %w[service]})}.to_json)
   end
 
   config.before do

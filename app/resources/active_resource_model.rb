@@ -5,15 +5,14 @@ require 'json_api_collection_parser'
 require 'json_api_resource_parser'
 
 class ActiveResourceModel < ActiveResource::Base
-  extend ServiceHelper
   self.collection_parser = JsonAPICollectionParser
   self.include_format_in_path = false
   self.auth_type = :bearer
-  self.bearer_token = ENV['SERVICE_TOKEN']
+
   headers['Accept'] = 'application/vnd.api+json'
   headers['X-Forwarded-Proto'] = 'https'
 
-  class_attribute :service, default: :argu
+  class_attribute :service_name, default: :argu
 
   # rubocop:disable Style/OptionalBooleanParameter
   def load(attributes, remove_root = false, persisted = false)
@@ -49,6 +48,10 @@ class ActiveResourceModel < ActiveResource::Base
       {}
     end
 
+    def bearer_token
+      Argu::OAuth.service_token
+    end
+
     # rubocop:disable Style/OptionalBooleanParameter
     def connection(refresh = false)
       con = super
@@ -65,8 +68,12 @@ class ActiveResourceModel < ActiveResource::Base
       prefix
     end
 
+    def service
+      Argu::Service.new(service_name)
+    end
+
     def site
-      URI("#{service_url(service)}/#{ActsAsTenant.current_tenant&.tenant&.path}")
+      URI(service.expand_url("/#{ActsAsTenant.current_tenant&.tenant&.path}"))
     end
 
     def headers

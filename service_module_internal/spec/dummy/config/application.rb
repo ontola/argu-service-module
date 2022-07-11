@@ -30,6 +30,7 @@ module Dummy
 
     config.jwt_encryption_method = :hs512
 
+    config.service_name = 'service_module'
     config.oauth_url = ENV['OAUTH_URL']
     config.filter_parameters += [:password]
     config.uri_templates =

@@ -24,6 +24,9 @@ require 'sidekiq/testing'
 
 require_relative '../../lib/argu/test_mocks'
 require_relative '../../lib/argu/test_helpers'
+require_relative '../../lib/argu/redis'
+require_relative '../../lib/argu/oauth'
+require_relative '../../lib/argu/service'
 
 Sidekiq::Testing.fake!
 
@@ -78,6 +81,10 @@ RSpec.configure do |config|
   config.before(:all) { create_table }
   config.after(:all) { drop_table }
   # rubocop:enable RSpec/BeforeAfterAll
+
+  config.before do
+    Argu::Redis.set(Argu::OAuth::REDIS_CLIENT_KEY, {token: sign_payload({scopes: %w[service]})}.to_json)
+  end
 
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.

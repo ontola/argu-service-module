@@ -20,10 +20,7 @@ class APIController < ActionController::API
   private
 
   def api
-    @api ||= Argu::API.new(
-      service_token: ENV['SERVICE_TOKEN'],
-      user_token: user_token
-    )
+    @api ||= Argu::API.new(user_token: user_token)
   end
 
   def set_locale
