@@ -1,5 +1,4 @@
 FROM ruby:2.7.0-alpine
-ARG C66=true
 
 RUN apk --update --no-cache add openssh-client postgresql-dev libffi-dev libxml2 libxml2-dev libxslt libxslt-dev
 
@@ -18,10 +17,6 @@ RUN apk --update --no-cache add git build-base pkgconfig\
     && apk del git pkgconfig build-base
 
 COPY . /usr/src/app
-RUN rm -f /usr/src/app/config/database.yml
-RUN rm -f /usr/src/app/config/secrets.yml
-COPY ./config/database.docker.yml /usr/src/app/config/database.yml
-COPY ./config/secrets.docker.yml /usr/src/app/config/secrets.yml
 
 EXPOSE 3000
 CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
