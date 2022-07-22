@@ -12,7 +12,7 @@ class ActiveResourceModel < ActiveResource::Base
   headers['Accept'] = 'application/vnd.api+json'
   headers['X-Forwarded-Proto'] = 'https'
 
-  class_attribute :service_name, default: :argu
+  class_attribute :service_name, default: :apex
 
   # rubocop:disable Style/OptionalBooleanParameter
   def load(attributes, remove_root = false, persisted = false)

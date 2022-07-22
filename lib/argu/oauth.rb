@@ -54,7 +54,7 @@ module Argu
     end
 
     def request_new_token
-      Argu::Service.new(:argu).oauth_client.client_credentials.get_token(scope: 'service').token
+      Argu::Service.new(:apex).oauth_client.client_credentials.get_token(scope: 'service').token
     end
 
     def valid_token?(token)

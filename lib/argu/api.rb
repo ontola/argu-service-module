@@ -16,7 +16,7 @@ module Argu
     def authorize_action(**opts)
       opts[:authorize_action] = opts.delete(:action)
       api_request(
-        user_client(:argu),
+        user_client(:apex),
         :get,
         uri_template(:spi_authorize).expand(opts)
       )
@@ -30,7 +30,7 @@ module Argu
 
     def confirm_email_address(email)
       api_request(
-        service_client(:argu),
+        service_client(:apex),
         :put,
         expand_uri_template(:user_confirmation),
         body: {email: email},
@@ -40,7 +40,7 @@ module Argu
 
     def couple_email(email)
       api_request(
-        user_client(:argu),
+        user_client(:apex),
         :put,
         '/user',
         body: {user: {email_addresses_attributes: {999 => {email: email}}}},
@@ -60,7 +60,7 @@ module Argu
 
     def create_membership(token)
       api_request(
-        user_client(:argu),
+        user_client(:apex),
         :post,
         expand_uri_template(:group_membership_create_iri, group_id: token.group_id),
         body: {token: token.secret},
@@ -78,7 +78,7 @@ module Argu
 
     def email_address_exists?(email)
       api_request(
-        service_client(:argu),
+        service_client(:apex),
         :get,
         expand_uri_template(:spi_email_addresses, email: email)
       )
@@ -89,7 +89,7 @@ module Argu
 
     def get_tenant(iri)
       result = api_request(
-        service_client(:argu),
+        service_client(:apex),
         :get,
         expand_uri_template(:spi_find_tenant, iri: iri)
       )
@@ -101,7 +101,7 @@ module Argu
 
     def get_tenants # rubocop:disable Naming/AccessorMethodName
       result = api_request(
-        service_client(:argu),
+        service_client(:apex),
         :get,
         '/_public/spi/tenants'
       )
@@ -156,7 +156,7 @@ module Argu
 
     def create_user_request(email, redirect)
       api_request(
-        user_client(:argu),
+        user_client(:apex),
         :post,
         expand_uri_template(:user_registration),
         body: {user: {email: email}, redirect_url: redirect},
