@@ -8,6 +8,10 @@ gem 'acts_as_tenant', git: 'https://github.com/ErwinM/acts_as_tenant', ref: '1ba
 gem 'combustion', '~> 0.5.5'
 gem 'doorkeeper'
 gem 'doorkeeper-jwt'
+gem 'fakeredis',
+    require: false,
+    git: 'https://github.com/magicguitarist/fakeredis',
+    branch: 'fix-sadd-return-when-0-or-1'
 gem 'json-ld'
 gem 'linked_rails', git: 'https://github.com/ontola/linked_rails'
 gem 'linked_rails-auth', git: 'https://github.com/ontola/linked_rails-auth'

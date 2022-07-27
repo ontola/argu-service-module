@@ -21,6 +21,7 @@ require File.expand_path('dummy/config/environment', __dir__)
 
 require 'webmock/rspec'
 require 'sidekiq/testing'
+require 'fakeredis/rspec'
 
 require_relative '../../lib/argu/test_mocks'
 require_relative '../../lib/argu/test_helpers'

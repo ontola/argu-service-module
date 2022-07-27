@@ -17,6 +17,14 @@ GIT
       request_store (>= 1.0.5)
 
 GIT
+  remote: https://github.com/magicguitarist/fakeredis
+  revision: 5dbb823ecf7894fd6ff150fab64bff0f2e568df1
+  branch: fix-sadd-return-when-0-or-1
+  specs:
+    fakeredis (0.8.0)
+      redis (~> 4.1)
+
+GIT
   remote: https://github.com/ontola/linked_rails
   revision: a46ea7ab20604cbe2eed9dd2e605bc22cbfe01e9
   specs:
@@ -406,6 +414,7 @@ DEPENDENCIES
   combustion (~> 0.5.5)
   doorkeeper
   doorkeeper-jwt
+  fakeredis!
   json-ld
   linked_rails!
   linked_rails-auth!
