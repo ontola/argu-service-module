@@ -27,7 +27,7 @@ module JsonAPIHelper
   end
 
   def json_api_formatted_model_errors(errors, status)
-    errors.keys.reduce([]) do |array, key|
+    errors.to_hash.keys.reduce([]) do |array, key|
       array.concat(
         errors.full_messages_for(key).map.with_index do |m, i|
           {code: "value_#{errors.details[key][i][:error]}".upcase, message: m, status: status, source: {parameter: key}}

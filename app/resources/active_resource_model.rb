@@ -9,9 +9,6 @@ class ActiveResourceModel < ActiveResource::Base
   self.include_format_in_path = false
   self.auth_type = :bearer
 
-  headers['Accept'] = 'application/vnd.api+json'
-  headers['X-Forwarded-Proto'] = 'https'
-
   class_attribute :service_name, default: :apex
 
   # rubocop:disable Style/OptionalBooleanParameter
@@ -77,7 +74,11 @@ class ActiveResourceModel < ActiveResource::Base
     end
 
     def headers
-      super.merge('X-Forwarded-Host' => ActsAsTenant.current_tenant.tenant.host)
+      super.merge(
+        'Accept' => 'application/vnd.api+json',
+        'X-Forwarded-Host' => ActsAsTenant.current_tenant.tenant.host,
+        'X-Forwarded-Proto' => 'https'
+      )
     end
   end
 end

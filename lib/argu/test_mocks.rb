@@ -84,7 +84,6 @@ module Argu
     def user_mock(id = 1, opts = {}) # rubocop:disable Metrics/AbcSize
       opts[:confirmed] ||= true
       opts[:secondary_emails] ||= []
-      opts[:token] ||= ENV['SERVICE_TOKEN']
       opts[:url] ||= Argu::Service.new(:apex).expand_url("/argu/u/#{id}")
       opts[:email] ||= "user#{id}@email.com"
       headers = {'Accept': 'application/vnd.api+json'}
@@ -203,7 +202,7 @@ module Argu
         resource_iri: iri,
         resource_type: type
       }.delete_if { |_k, v| v.nil? }
-      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', params)).to_return(status: 200)
+      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', **params)).to_return(status: 200)
     end
 
     def create_email_mock(template, email, **options)
@@ -229,7 +228,7 @@ module Argu
         resource_iri: iri,
         resource_type: type
       }.delete_if { |_k, v| v.nil? }
-      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', params)).to_return(status: 403)
+      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', **params)).to_return(status: 403)
     end
 
     def not_found_mock(url)
