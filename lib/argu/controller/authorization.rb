@@ -24,9 +24,7 @@ module Argu
 
         policy = policy(record)
 
-        unless policy.public_send(query, *args, **opts)
-          raise Argu::Errors::Forbidden.new(query: query, record: record, policy: policy, message: policy.try(:message))
-        end
+        raise_authorization_error(query, record, policy) unless policy.public_send(query, *args, **opts)
 
         true
       end
@@ -34,6 +32,15 @@ module Argu
       def action_query
         self.class.action_queries[params[:action].chomp('!').to_sym] ||
           raise(Pundit::AuthorizationNotPerformedError.new(self.class))
+      end
+
+      def raise_authorization_error(query, record, policy)
+        raise LinkedRails::Errors::Forbidden.new(
+          query: query,
+          record: record,
+          policy: policy,
+          message: policy.try(:message)
+        )
       end
 
       def skip_verify_policy_authorized(sure: false)
@@ -72,7 +79,7 @@ module Argu
           policy = policy!(user, record)
 
           unless policy.public_send(query)
-            raise Argu::Errors::Forbidden.new(
+            raise LinkedRails::Errors::Forbidden.new(
               query: query,
               record: record,
               policy: policy,

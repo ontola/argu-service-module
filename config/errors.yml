@@ -1,7 +1,7 @@
 Argu::Errors::AccountLocked:
   id: 'ACCOUNT_LOCKED'
   status: 422
-Argu::Errors::Forbidden:
+LinkedRails::Errors::Forbidden:
   id: 'NOT_AUTHORIZED'
   status: 403
 Argu::Errors::Unauthorized:
