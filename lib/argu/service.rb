@@ -5,10 +5,9 @@ module Argu
     CLUSTER_DOMAIN = ENV['CLUSTER_DOMAIN'] || 'cluster.local'
     DEFAULT_SERVICE_PORT = ENV['DEFAULT_SERVICE_PORT'] || '3000'
     DEFAULT_SERVICE_PROTO = ENV['DEFAULT_SERVICE_PROTO'] || 'http'
-    NAMESPACE = ENV['NAMESPACE'] || ''
     SVC_DNS_PREFIX = ENV['SERVICE_DNS_PREFIX'] || 'svc'
     CLUSTER_URL_BASE = ENV['CLUSTER_URL_BASE'] ||
-      [NAMESPACE.presence, SVC_DNS_PREFIX.presence, CLUSTER_DOMAIN.presence].compact.join('.')
+      [SVC_DNS_PREFIX.presence, CLUSTER_DOMAIN.presence].compact.join('.')
 
     attr_accessor :service_name
 
