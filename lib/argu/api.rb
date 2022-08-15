@@ -99,15 +99,6 @@ module Argu
       nil
     end
 
-    def get_tenants # rubocop:disable Naming/AccessorMethodName
-      result = api_request(
-        service_client(:apex),
-        :get,
-        '/_public/spi/tenants'
-      )
-      JSON.parse(result.body)['schemas']
-    end
-
     def user_is_group_member?(group_id)
       authorize_action(
         resource_type: 'Group',

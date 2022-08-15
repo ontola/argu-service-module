@@ -39,8 +39,6 @@ RSpec.configure do |config|
   end
 
   config.before do
-    Apartment::Tenant.create('argu') unless ApplicationRecord.connection.schema_exists?('argu')
-    Apartment::Tenant.switch!('argu')
     find_tenant_mock
   end
 

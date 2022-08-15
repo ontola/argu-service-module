@@ -14,10 +14,8 @@ module Argu
       def warm
         Rails.application.eager_load!
 
-        Apartment::Tenant.each do
-          Page.find_each do |page|
-            Warmer.warm(page)
-          end
+        Page.find_each do |page|
+          Warmer.warm(page)
         end
       end
     end

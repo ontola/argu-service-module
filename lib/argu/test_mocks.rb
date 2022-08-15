@@ -61,7 +61,6 @@ module Argu
           accent_background_color: '#475668',
           accent_color: '#FFFFFF',
           all_shortnames: shortnames,
-          database_schema: 'argu',
           display_name: 'Page name',
           iri_prefix: prefix || "#{ENV['HOSTNAME']}/argu",
           navbar_background: '#475668',

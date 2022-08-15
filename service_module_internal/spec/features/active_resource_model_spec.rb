@@ -70,7 +70,7 @@ describe Resource do
     let(:resource) { described_class.find(1) }
 
     before do
-      ActsAsTenant.current_tenant = Page.new(iri_prefix: 'example.com', database_schema: 'argu')
+      ActsAsTenant.current_tenant = Page.new(iri_prefix: 'example.com')
     end
 
     it { expect(resource.id).to eq('resource_id') }

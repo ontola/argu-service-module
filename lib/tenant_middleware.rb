@@ -16,8 +16,6 @@ class TenantMiddleware
       return redirect_correct_iri_prefix(request.url) if wrong_iri_prefix?(request)
 
       rewrite_path(env, request)
-    else
-      switch_to_public
     end
 
     I18n.locale = I18n.default_locale
@@ -78,11 +76,6 @@ class TenantMiddleware
     ActsAsTenant.current_tenant.all_shortnames.detect do |shortname|
       url.downcase.include?("#{Rails.application.config.origin}/#{shortname.downcase}")
     end
-  end
-
-  def switch_to_public
-    ActsAsTenant.current_tenant = nil
-    Apartment::Tenant.switch!('public')
   end
 
   def tenant_is_missing
