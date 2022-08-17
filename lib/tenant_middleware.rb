@@ -35,11 +35,8 @@ class TenantMiddleware
   end
 
   def default_oauth_route?(request)
-    return true if request.url.starts_with?("#{Rails.application.config.origin}/oauth")
-
-    return false unless LinkedRails::Constraints::Whitelist.matches?(request)
-
-    request.path.starts_with?('/oauth')
+    request.url.starts_with?("#{Rails.application.config.origin}/oauth") ||
+      request.url.starts_with?(Argu::Service.new(:apex).expand_url('/oauth'))
   end
 
   def log_tenant
