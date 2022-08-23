@@ -17,8 +17,9 @@ module Argu
     end
 
     def as_guest_with_account
+      as_guest
       stub_request(:post, Argu::Service.new(:apex).expand_url('/argu/u/registration'))
-        .with(headers: {'Authorization' => "Bearer #{as_guest}"})
+        .with(headers: {'Authorization' => "Bearer #{Argu::OAuth.service_token}"})
         .to_return(
           status: 422,
           body: {
@@ -35,8 +36,9 @@ module Argu
     end
 
     def as_guest_without_account(email)
+      as_guest
       stub_request(:post, Argu::Service.new(:apex).expand_url('/argu/u/registration'))
-        .with(headers: {'Authorization' => "Bearer #{as_guest}"})
+        .with(headers: {'Authorization' => "Bearer #{Argu::OAuth.service_token}"})
         .to_return(
           status: 201,
           body: {

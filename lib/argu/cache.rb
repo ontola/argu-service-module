@@ -6,7 +6,7 @@ module Argu
 
     class << self
       def invalidate_all
-        response = Argu::Service.new(:libro).client.get('link-lib/cache/clear')
+        response = Faraday.get("#{Rails.application.config.origin}/link-lib/cache/clear")
 
         raise("Wrong response for clearing cache (#{response.status}): #{response.body}") unless response.body == 'OK'
       end

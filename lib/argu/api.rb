@@ -147,7 +147,7 @@ module Argu
 
     def create_user_request(email, redirect)
       api_request(
-        user_client(:apex),
+        service_client(:apex),
         :post,
         expand_uri_template(:user_registration),
         body: {user: {email: email}, redirect_url: redirect},
