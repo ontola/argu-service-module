@@ -13,7 +13,7 @@ gem 'fakeredis',
     git: 'https://github.com/magicguitarist/fakeredis',
     branch: 'fix-sadd-return-when-0-or-1'
 gem 'json-ld'
-gem 'linked_rails', git: 'https://github.com/ontola/linked_rails'
+gem 'linked_rails', '0.0.4.pre.g8d7195543'
 gem 'linked_rails-auth', git: 'https://github.com/ontola/linked_rails-auth'
 gem 'oauth2'
 gem 'oj'
