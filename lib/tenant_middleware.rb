@@ -36,7 +36,7 @@ class TenantMiddleware
 
   def default_oauth_route?(request)
     request.url.starts_with?("#{Rails.application.config.origin}/oauth") ||
-      request.url.starts_with?(Argu::Service.new(:apex).expand_url('/oauth'))
+      request.url.starts_with?(Argu::Service.new(:data).expand_url('/oauth'))
   end
 
   def log_tenant

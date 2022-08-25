@@ -4,7 +4,7 @@ require_relative '../spec_helper'
 
 describe Resource do
   before do
-    stub_request(:get, Argu::Service.new(:apex).expand_url('/resources/1'))
+    stub_request(:get, Argu::Service.new(:data).expand_url('/resources/1'))
       .with(headers: {'Accept': 'application/vnd.api+json'})
       .to_return(
         status: 200,

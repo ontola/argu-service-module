@@ -9,7 +9,7 @@ class ActiveResourceModel < ActiveResource::Base
   self.include_format_in_path = false
   self.auth_type = :bearer
 
-  class_attribute :service_name, default: :apex
+  class_attribute :service_name, default: :data
 
   # rubocop:disable Style/OptionalBooleanParameter
   def load(attributes, remove_root = false, persisted = false)

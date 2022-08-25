@@ -30,7 +30,7 @@ module Argu
     end
 
     def request_new_token(retrying: false)
-      Argu::Service.new(:apex).oauth_client.client_credentials.get_token(scope: 'service').token
+      Argu::Service.new(:data).oauth_client.client_credentials.get_token(scope: 'service').token
     rescue OAuth2::Error => e
       raise(e) if retrying || e.code != 'invalid_client'
 

@@ -18,7 +18,7 @@ module Argu
 
     def as_guest_with_account
       as_guest
-      stub_request(:post, Argu::Service.new(:apex).expand_url('/argu/u/registration'))
+      stub_request(:post, Argu::Service.new(:data).expand_url('/argu/u/registration'))
         .with(headers: {'Authorization' => "Bearer #{Argu::OAuth.service_token}"})
         .to_return(
           status: 422,
@@ -37,7 +37,7 @@ module Argu
 
     def as_guest_without_account(email)
       as_guest
-      stub_request(:post, Argu::Service.new(:apex).expand_url('/argu/u/registration'))
+      stub_request(:post, Argu::Service.new(:data).expand_url('/argu/u/registration'))
         .with(headers: {'Authorization' => "Bearer #{Argu::OAuth.service_token}"})
         .to_return(
           status: 201,
@@ -56,7 +56,7 @@ module Argu
     def find_tenant_mock(iri = "#{ENV['HOSTNAME']}\/argu\/(tokens|email|spi).*", prefix: nil, shortnames: %w[argu])
       stub_request(
         :get,
-        /#{Argu::Service.new(:apex).expand_url('/_public/spi/find_tenant')}\?iri=#{iri}/
+        /#{Argu::Service.new(:data).expand_url('/_public/spi/find_tenant')}\?iri=#{iri}/
       ).to_return(
         status: 200,
         body: {
@@ -74,7 +74,7 @@ module Argu
 
     def generate_guest_token_mock
       token = doorkeeper_token('guest')
-      stub_request(:post, Argu::Service.new(:apex).expand_url('/argu/oauth/token'))
+      stub_request(:post, Argu::Service.new(:data).expand_url('/argu/oauth/token'))
         .to_return(
           status: 201,
           body: {access_token: token}.to_json
@@ -85,7 +85,7 @@ module Argu
     def user_mock(id = 1, opts = {}) # rubocop:disable Metrics/AbcSize
       opts[:confirmed] ||= true
       opts[:secondary_emails] ||= []
-      opts[:url] ||= Argu::Service.new(:apex).expand_url("/argu/u/#{id}")
+      opts[:url] ||= Argu::Service.new(:data).expand_url("/argu/u/#{id}")
       opts[:email] ||= "user#{id}@email.com"
       headers = {'Accept': 'application/vnd.api+json'}
       headers['Authorization'] = "Bearer #{opts[:token]}" if opts[:token]
@@ -104,7 +104,7 @@ module Argu
     end
 
     def create_membership_mock(opts = {})
-      stub_request(:post, Argu::Service.new(:apex).expand_url("/argu/g/#{opts[:group_id]}/group_memberships"))
+      stub_request(:post, Argu::Service.new(:data).expand_url("/argu/g/#{opts[:group_id]}/group_memberships"))
         .with(
           body: {
             token: opts[:secret]
@@ -149,14 +149,14 @@ module Argu
     end
 
     def email_check_mock(email, exists)
-      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/email_addresses', email: email))
+      stub_request(:get, Argu::Service.new(:data).expand_url('/argu/spi/email_addresses', email: email))
         .to_return(status: exists ? 200 : 404)
     end
 
     def group_mock(id)
       stub_request(
         :get,
-        Argu::Service.new(:apex).expand_url(['/argu', :g, id].compact.join('/'))
+        Argu::Service.new(:data).expand_url(['/argu', :g, id].compact.join('/'))
       ).to_return(
         status: 200,
         body: {
@@ -191,7 +191,7 @@ module Argu
     end
 
     def confirm_email_mock(email)
-      stub_request(:put, Argu::Service.new(:apex).expand_url('/argu/u/confirmation'))
+      stub_request(:put, Argu::Service.new(:data).expand_url('/argu/u/confirmation'))
         .with(body: {email: email}, headers: {'Accept' => 'application/json'})
         .to_return(status: 200)
     end
@@ -203,7 +203,7 @@ module Argu
         resource_iri: iri,
         resource_type: type
       }.delete_if { |_k, v| v.nil? }
-      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', **params)).to_return(status: 200)
+      stub_request(:get, Argu::Service.new(:data).expand_url('/argu/spi/authorize', **params)).to_return(status: 200)
     end
 
     def create_email_mock(template, email, **options)
@@ -229,7 +229,7 @@ module Argu
         resource_iri: iri,
         resource_type: type
       }.delete_if { |_k, v| v.nil? }
-      stub_request(:get, Argu::Service.new(:apex).expand_url('/argu/spi/authorize', **params)).to_return(status: 403)
+      stub_request(:get, Argu::Service.new(:data).expand_url('/argu/spi/authorize', **params)).to_return(status: 403)
     end
 
     def not_found_mock(url)

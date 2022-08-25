@@ -35,9 +35,10 @@ module Argu
 
     def service_url
       port = ENV["#{service_name.upcase}_SERVICE_PORT"] || DEFAULT_SERVICE_PORT
+      name = ENV["#{service_name.upcase}_SERVICE_NAME"] || service_name
 
       ENV["#{service_name.upcase}_URL"] ||
-        "#{DEFAULT_SERVICE_PROTO}://#{service_name}.#{[CLUSTER_URL_BASE, port].compact.join(':')}"
+        "#{DEFAULT_SERVICE_PROTO}://#{name}.#{[CLUSTER_URL_BASE, port].compact.join(':')}"
     end
   end
 end
