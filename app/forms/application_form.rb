@@ -33,6 +33,7 @@ class ApplicationForm < LinkedRails::Form
       field attr,
             datatype: NS.xsd.string,
             max_count: 1,
+            min_count: 1,
             sh_in: -> { actors_iri }
     end
   end
