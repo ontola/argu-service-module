@@ -1,7 +1,11 @@
+---
 en:
+  activerecord:
+    errors:
+      record_not_unique: This value has already been taken.
   errors:
-    general: "Something went wrong, reload the page or try again later."
-    unauthorized: "Please sign in to continue"
-    access_denied: "You're not authorized for this action. (%{action})"
-    record_not_unique: "A value in this object has already been entered, please try to edit the existing object."
-    unknown_format: 'Unknown format'
+    access_denied: You're not authorized for this action. (%{action})
+    general: Something went wrong, reload the page or try again later.
+    record_not_unique: A value in this object has already been entered, please try to edit the existing object.
+    unauthorized: Please sign in to continue
+    unknown_format: Unknown format

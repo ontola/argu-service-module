@@ -1,7 +1,11 @@
+---
 nl:
+  activerecord:
+    errors:
+      record_not_unique: Deze waarde(n) is al bezet.
   errors:
-    general: "Er is iets fout gegaan. Herlaad de pagina of probeer het later nog eens."
-    unauthorized: "Log in om door te gaan"
-    access_denied: "Je bent niet bevoegd om deze actie uit te voeren. (%{action})"
-    record_not_unique: "Een waarde in het object is al bezet, probeer het bestaande object te bewerken."
-    unknown_format: 'Onbekend formaat'
+    access_denied: Je bent niet bevoegd om deze actie uit te voeren. (%{action})
+    general: Er is iets fout gegaan. Herlaad de pagina of probeer het later nog eens.
+    record_not_unique: Een waarde in het object is al bezet, probeer het bestaande object te bewerken.
+    unauthorized: Log in om door te gaan
+    unknown_format: Onbekend formaat

@@ -1,11 +1,11 @@
+---
 de:
+  activerecord:
+    errors:
+      record_not_unique: Dieser Wert wurde bereits übernommen.
   errors:
-    general: >-
-      Es ist ein Fehler aufgetreten. Laden Sie die Seite neu oder versuchen Sie
-      es später noch einmal.
-    unauthorized: Bitte melden Sie sich an, um fortzufahren
     access_denied: Du bist für diese Aktion nicht autorisiert. (%{action})
-    record_not_unique: >-
-      Ein Wert in diesem Objekt wurde bereits eingegeben, bitte versuchen Sie,
-      das bestehende Objekt zu bearbeiten.
+    general: Es ist ein Fehler aufgetreten. Laden Sie die Seite neu oder versuchen Sie es später noch einmal.
+    record_not_unique: Ein Wert in diesem Objekt wurde bereits eingegeben, bitte versuchen Sie, das bestehende Objekt zu bearbeiten.
+    unauthorized: Bitte melden Sie sich an, um fortzufahren
     unknown_format: Unbekanntes Format
