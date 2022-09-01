@@ -49,7 +49,7 @@ module Argu
     end
 
     def as_user(id = 1, opts = {})
-      @bearer_token = doorkeeper_token('user', id: id)
+      @bearer_token = doorkeeper_token('user', id: id, language: opts[:language] || :en)
       user_mock(id, opts)
     end
 
@@ -208,7 +208,7 @@ module Argu
 
     def create_email_mock(template, email, **options)
       tenant = options.delete(:tenant) || :argu
-      recipient = {email: email, language: /.+/}
+      recipient = {email: email, language: 'en'}.merge(options.delete(:recipient) || {})
 
       stub_request(:post, Argu::Service.new(:email).expand_url("/#{tenant}/email/spi/emails"))
         .with(
