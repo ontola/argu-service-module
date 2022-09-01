@@ -15,7 +15,7 @@ class APIController < ActionController::API
   include UrlHelper
   serialization_scope :user_context
 
-  before_action :set_locale
+  prepend_before_action :set_locale
 
   private
 
