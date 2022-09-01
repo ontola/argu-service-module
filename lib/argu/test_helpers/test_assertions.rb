@@ -26,7 +26,7 @@ module Argu
         assert_response 403
       end
 
-      def assert_email_sent(count: 1, skip_sidekiq: false, root: :argu) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def assert_email_sent(count: 1, skip_sidekiq: false, root: :argu, reset: true) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         unless skip_sidekiq || Sidekiq::Testing.inline?
           assert_equal count, Sidekiq::Worker.jobs.select { |j| j['class'] == 'SendEmailWorker' }.count
           SendEmailWorker.drain
@@ -39,7 +39,7 @@ module Argu
                        .hash
                        .keys
                        .detect { |r| r.uri.to_s == Argu::Service.new(:email).expand_url("/#{root}/email/spi/emails") }
-        WebMock.reset!
+        WebMock.reset! if reset
         last_match
       end
 
