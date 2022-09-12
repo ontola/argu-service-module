@@ -46,7 +46,8 @@ module Argu
         end
 
         def bulk_request_batch(resources, website)
-          url = Argu::Service.new(:libro).expand_url('/link-lib/bulk')
+          prefix = website.path == '/' ? '/' : "#{website.path}/"
+          url = Argu::Service.new(:libro).expand_url("#{prefix}link-lib/bulk")
           opts = {
             body: {resource: resources},
             headers: bulk_request_headers(website)
