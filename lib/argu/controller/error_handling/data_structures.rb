@@ -7,7 +7,11 @@ module Argu
     module ErrorHandling
       module DataStructures
         def json_error_hash(error)
-          {code: error_id(error), message: error.message}
+          {
+            action_status: error.try(:action_status),
+            code: error_id(error),
+            message: error.message
+          }
         end
 
         # @param [Integer] status HTTP response code

@@ -36,10 +36,11 @@ module Argu
 
       def raise_authorization_error(query, record, policy)
         raise LinkedRails::Errors::Forbidden.new(
-          query: query,
-          record: record,
+          action_status: policy.action_status,
+          message: policy.try(:message),
           policy: policy,
-          message: policy.try(:message)
+          query: query,
+          record: record
         )
       end
 
@@ -80,10 +81,11 @@ module Argu
 
           unless policy.public_send(query)
             raise LinkedRails::Errors::Forbidden.new(
-              query: query,
-              record: record,
+              action_status: policy.action_status,
+              message: policy.try(:message),
               policy: policy,
-              message: policy.try(:message)
+              query: query,
+              record: record
             )
           end
 
