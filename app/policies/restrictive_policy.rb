@@ -25,6 +25,15 @@ class RestrictivePolicy
     @record = record
   end
 
+  def api_authorization(**opts)
+    user_context.api.authorize_action(**opts)
+  rescue OAuth2::Error => e
+    error = parse_api_error(e) || {}
+    status = RDF::URI(error['action_status']) if error['action_status']
+
+    forbid_with_message(error['message'], status)
+  end
+
   def create?
     false
   end
@@ -55,5 +64,9 @@ class RestrictivePolicy
 
   def update?
     false
+  end
+
+  def parse_api_error(error)
+    JSON.parse(error.body)['errors'].try(:first) if error.body.present?
   end
 end

@@ -76,7 +76,7 @@ module Argu
 
         private
 
-        def authorize(user, record, query)
+        def authorize(user, record, query) # rubocop:disable Metrics/MethodLength
           policy = policy!(user, record)
 
           unless policy.public_send(query)

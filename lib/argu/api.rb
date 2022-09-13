@@ -20,12 +20,12 @@ module Argu
         :get,
         uri_template(:spi_authorize).expand(opts)
       )
-    rescue OAuth2::Error
-      false
     end
 
     def authorize_redirect_resource(token)
       authorize_action(resource_iri: token.redirect_url, action: :show) if token&.redirect_url
+    rescue OAuth2::Error
+      false
     end
 
     def confirm_email_address(email)
@@ -62,7 +62,7 @@ module Argu
       api_request(
         user_client(:data),
         :post,
-        expand_uri_template(:group_membership_create_iri, group_id: token.group_id),
+        expand_uri_template(:group_memberships_iri, group_id: token.group_id),
         body: {token: token.secret},
         headers: {accept: 'application/json'}
       )
@@ -105,6 +105,8 @@ module Argu
         resource_id: group_id,
         action: 'is_member'
       )
+    rescue OAuth2::Error
+      false
     end
 
     def verify_token(token, group_id)
