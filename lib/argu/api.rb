@@ -62,7 +62,7 @@ module Argu
       api_request(
         user_client(:data),
         :post,
-        expand_uri_template(:group_memberships_iri, group_id: token.group_id),
+        expand_uri_template(:group_memberships_iri, parent_iri: token.group.iri_elements),
         body: {token: token.secret},
         headers: {accept: 'application/json'}
       )
