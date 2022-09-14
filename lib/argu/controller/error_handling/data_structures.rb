@@ -11,7 +11,7 @@ module Argu
             action_status: error.try(:action_status),
             code: error_id(error),
             message: error.message
-          }
+          }.compact
         end
 
         # @param [Integer] status HTTP response code
